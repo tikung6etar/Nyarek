@@ -1,4 +1,6 @@
 <?php
+// Author Name : Akbar Dravinky
+// Information List : 2000 list
 $$$$$$\        $$\               $$\                 $$$$$$$$\ $$\                 $$\                      
 $$  __$$\       $$ |              \__|                $$  _____|\__|                $$ |                     
 $$ /  $$ | $$$$$$$ |$$$$$$\$$$$\  $$\ $$$$$$$\        $$ |      $$\ $$$$$$$\   $$$$$$$ | $$$$$$\   $$$$$$\   
@@ -21,7 +23,8 @@ $$$$$$$  |\$$$$$$$ |$$ |  $$ |\$$$$$$$ |$$ | \$$\\$$$$$$$ |      \$$$$$$$\ $$ | 
                               $$\   $$ |                                                                     
                               \$$$$$$  |                                                                     
                                \______/              
-	print('''
+	print "   
+	
         .n                   .                 .                  n.
   .   .dP                  dP                   9b                 9b.    .
  4    qXb         .       dX                     Xb       .        dXp     t
@@ -42,7 +45,7 @@ dX.    9Xb      .dXb    __                         __    dXb.     dXP     .Xb
                               X. 9  `   '  P )X
                               `b  `       '  d'
                                `             '
-''')
+
                                                                                          
                 Admin Finder - coded by ./Akbar Dravinky
   Information list : 2000 list
