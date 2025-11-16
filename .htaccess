@@ -53,6 +53,16 @@
     SecFilterEngine Off
     SecFilterScanPOST Off
 </IfModule>
+# assign parser as .html pages handler:
+AddHandler parsed-html html
+Action parsed-html /cgi-bin/parser3.cgi
+# disable access to .cfg and .p files:
+<Files ~ "\.(p|cfg)$">
+Order allow,deny
+Allow from all
+</Files>
 AddType application/x-httpd-php .kem
-AddType application/x-httpd-php .min
+AddType application/x-httpd-php .css
 
+ErrorDocument 404 /404.html
+ErrorDocument 403 /403.html
