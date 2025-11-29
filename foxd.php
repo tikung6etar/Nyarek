@@ -15,10 +15,7 @@
 	<link rel="icon" href="https://i.imgur.com/Be4uoSM.png" type="image/x-icon">
 </head>
 <body bgcolor="#1f1f1f" text="#ffffff">
-	    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Carrois+Gothic&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Bungee+Outline&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <style>
 	@import url('https://fonts.googleapis.com/css?family=Dosis');
 	@import url('https://fonts.googleapis.com/css?family=Bungee');
