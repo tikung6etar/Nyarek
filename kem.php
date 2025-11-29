@@ -2088,7 +2088,7 @@ if (!is_readable($serlok)) {
         "<table class='directory-listing-table'><thead><td><center><font color=orange>This directory is unreadable :(</font></center></td></thead></table>"
     );
 }
-echo '<table class="table table-dark table-hover" style="box-shadow: 0 0 20px black;width:100%;border-left:1px solid #40BECC;border-right:1px solid #40BECC;border-bottom:1px solid #40BECC;--bs-border-radius:80rem;" align="center">
+echo '<table class="table table-dark table-hover" style="box-shadow: 0 0 20px black;width:90%;border-left:1px solid #40BECC;border-right:2px solid #40BECC;border-bottom:1px solid #40BECC;--bs-border-radius:80rem;" align="center">
 <thead style="--bs-table-bg:#0D97A5;--bs-table-color:#000;"><tr>
 <th><center>Name</center></th>
 <th><center>Size</center></th>
