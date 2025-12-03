@@ -1,8 +1,7 @@
 <?php
-ob_start();
+
 session_start();
-ignore_user_abort(true);
-set_time_limit(0);
+
 function getURL($url) {
     $parsed_url = parse_url($url);
     $host = $parsed_url['host'];
