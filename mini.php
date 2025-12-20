@@ -155,9 +155,9 @@ body {
     background-color: #212529;
     background-size: cover;
     background-attachment: fixed;
-    background-repeat: no-repeat;
-    background-size: 8%, 8%;
-    background-position: right bottom, left bottom;
+    background-repeat: no-repeat center;
+    
+    
 }
 
 .directory-listing-table {
