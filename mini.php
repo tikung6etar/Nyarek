@@ -153,9 +153,8 @@ body {
     color: #fff;
     text-shadow:0px 0px 1px #757575;
     background-color: #212529;
-    background-size: cover;
-    background-attachment: fixed;
-    background-repeat: no-repeat center;
+    background-size: center;
+    
     
     
 }
@@ -186,7 +185,7 @@ tbody td {
   font-size: 13px;
   padding: 0.5rem;
   color: #fff;
-  font-weight: 400;
+  font-weight: 500;
   font-family: Consolas,Menlo,monospace,ui-monospace;
 }
 tbody td a {
