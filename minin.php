@@ -279,7 +279,7 @@ echo '<script>
 				audio.load()
 				audio.play();
 				audio.src = source;
-			</script>';
+			</script><center>123';
         echo "<form method='POST'><input type='password' name='pass' placeholder='Enter Password'><input type='submit' value='Login'></form>";
         exit();
     }
