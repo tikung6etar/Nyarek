@@ -271,15 +271,7 @@ if (!isset($_SESSION["auth"])) {
     if (isset($_POST["pass"]) && $_POST["pass"] === $pass) {
         $_SESSION["auth"] = true;
     } else {
-echo '<script>
-				document.querySelector("html").innerHTML = "<img style=\'display:block;position:absolute;top: 0;right: 0;bottom: 0;left: 0;z-index: 10;overflow-y: scroll; width: 100%; height: 100%;\' src=\'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExcnhsODl0NXAyNDdwaXhsOWtjdDFneGxhZ2U3OXVwdzNpMndtdnkybyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/l0IyeheChYxx2byDu/giphy.gif\'>";
-				var source = "https://cvar1984.github.io/audio/moan.mp3"
-				var audio = document.createElement("audio");
-				audio.autoplay = true;
-				audio.load()
-				audio.play();
-				audio.src = source;
-			</script><center>123';
+
         echo "<form method='POST'><input type='password' name='pass' placeholder='Enter Password'><input type='submit' value='Login'></form>";
         exit();
     }
