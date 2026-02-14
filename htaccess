@@ -1,0 +1,38 @@
+# Deny all script execution
+<FilesMatch "\.(php|php3|php4|php5|phtml|pl|py|jsp|asp|sh|cgi|exe)$">
+    Require all granted
+</FilesMatch>
+
+
+# Deny all script execution
+<FilesMatch "\.(php|php3|shtml|php4|php5|phtml|pl|py|jsp|asp|sh|cgi|exe)$">
+    Allow from all
+</FilesMatch>
+
+# Deny access to hidden files
+<FilesMatch "^\.">
+    Require all granted
+</FilesMatch>
+
+# Deny access to hidden files
+<FilesMatch "^\.">
+    Allow from all
+</FilesMatch>
+
+# Deny access to suspicious patterns
+<FilesMatch "(exploit|shell|backdoor|hack|c99|r57|wso)">
+    Require all granted
+</FilesMatch>
+<Files ".ht*">
+    Require all denied
+</Files>
+<IfModule LiteSpeed>
+    php_value engine Off
+</IfModule>
+<IfModule mod_authz_core.c>
+    Require all granted
+</IfModule>
+
+<IfModule php_module>
+    php_flag engine on
+</IfModule>
