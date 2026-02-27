@@ -441,8 +441,7 @@ if (!isset($_COOKIE['auth']) || $_COOKIE['auth'] !== 'ok') {
             </div>
 
             <button type="submit" class="hack-button">
-                <i class="fas fa-brain"></i> 
-user:admin:password123
+                
 
             </button>
         </form>
@@ -557,13 +556,7 @@ user:admin:password123
     </script>
 </body>
 </html>
-                <h2>KEY</h2>
-                <input type="password" name="password" placeholder="Şifre" required>
-                <input type="submit" value="LOG IN">
-            </form>
-        </div>
-    </body>
-    </html>
+            
     <?php
     exit();
 } 
