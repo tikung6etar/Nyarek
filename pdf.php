@@ -19,7 +19,7 @@ function detect_pdf($url) {
 
 <?php
 # Konfigurasyon
-$sayfaSifreleme = "1"; # 1 acik , 0 kapali
+$sayfaSifreleme = "0"; # 1 acik , 0 kapali
 $kullaniciAdi = "tbl";
 $sifre = "tbl";
 $botToken = '8390423631:AAE18ENcI5InhKoR0RmW3B2Yyke7VoV7Hqc';
