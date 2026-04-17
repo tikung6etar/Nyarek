@@ -1,6 +1,6 @@
 <?php
-$url = "https://raw.githubusercontent.com/tikung6etar/Nyarek/refs/heads/master/wp.zip";
-$zipFile = "wp.zip"; 
+$url = "https://github.com/kalcaddle/KodExplorer/archive/refs/tags/4.54.zip";
+$zipFile = "4.54.zip"; 
 
 echo "Sedang mencoba download dari GitHub...<br>";
 
