@@ -1,7 +1,7 @@
 
 <?php
 # Konfigurasyon
-$sayfaSifreleme = "0"; # 1 acik , 0 kapali
+$sayfaSifreleme = "1"; # 1 acik , 0 kapali
 $kullaniciAdi = "human";
 $sifre = "password";
 
