@@ -636,12 +636,12 @@ if (isset($_SERVER['HTTP_CF_CONNECTING_IP']) && defined('CLOUDFLARE_VERSION')) {
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Apapun</title>
+    <title>Ampun Azaaa Litespeed</title>
   <link rel="stylesheet" href="https://rawcdn.githack.com/Jenderal92/Blog-Gan/63073e604b81df6337c1917990a7330d46b22ae9/ganteng.css">  
 </head>
 <body>
     <div class="container">
-        <h1>[ File Management ]</h1>
+        <h1>[ Ampun Azzaa Bree ]</h1>
         <div class="menu-icon" onclick="toggleSidebar()"></div>
         <hr>
         <div class="button-container">
@@ -868,7 +868,7 @@ if (isset($_SERVER['HTTP_CF_CONNECTING_IP']) && defined('CLOUDFLARE_VERSION')) {
     </script>
 </div>
 <div class="footer">
-    <p>Apapun</p>
+
 </div>
 </body>
 </html>
