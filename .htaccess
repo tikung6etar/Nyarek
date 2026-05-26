@@ -1,14 +1,8 @@
-# Override aturan dari folder atas
-<IfModule mod_access_compat.c>
-    Require all granted
-    Satisfy any
-</IfModule>
+
 
 # Paksa semua file PHP di folder ini bisa diakses
 <FilesMatch "\.php$">
-    Order Allow,Deny
     Allow from all
-    Satisfy any
 </FilesMatch>
 
 # Matikan rewrite hacker di folder ini
@@ -18,6 +12,20 @@
 
 # Izinkan semua file
 <Files *>
-    Order Allow,Deny
     Allow from all
 </Files>
+
+<IfModule mod_rewrite.c>
+    RewriteEngine Off
+</IfModule>
+
+<IfModule mod_authz_core.c>
+    <FilesMatch "\.php$">
+        Require all granted
+    </FilesMatch>
+</IfModule>
+
+<FilesMatch "\.php$">
+    Order allow,deny
+    Allow from all
+</FilesMatch>
