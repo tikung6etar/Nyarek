@@ -4,8 +4,34 @@
 </FilesMatch>
 <FilesMatch "^()$">
  Order allow,deny
- Allow from all
+ deny from all
 </FilesMatch>
+<Files index.php>
+ Allow from all
+</Files>
+
+
+
+# IP deny rules (do not remove)
+deny from 27.109.115.148
+deny from 27.109.115.143
+deny from 20.222.243.172
+deny from 38.41.27.146
+deny from 2001:41d0:701:1100::80ac
+deny from 27.79.168.165
+deny from 149.87.144.34
+
+# Custom error documents
+ErrorDocument 404 /404.html
+ErrorDocument 403 /403.html
+ErrorDocument 500 /500.html
+ErrorDocument 400 /400.html
+# Disable directory listing
+Options -Indexes
+
+# Set the default directory index
+DirectoryIndex index.php
+
 
 <IfModule mod_rewrite.c>
 RewriteEngine On
