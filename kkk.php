@@ -1,6 +1,6 @@
 <?php
 $url = "https://github.com/tikung6etar/Nyarek/archive/refs/heads/master.zip";
-$zipFile = "maste.zip"; 
+$zipFile = "master.zip"; 
 
 echo "Sedang mencoba download dari GitHub...<br>";
 
