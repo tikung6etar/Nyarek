@@ -256,7 +256,7 @@ if (is_logged_in()) {
             <h2 class="text-md font-bold tracking-widest text-slate-300 mb-6 font-sans">REGIONAL CREDENTIALS REQUIRED
             </h2>
 
-            <input type="password" name="password" required autofocus> <input type="submit" value="">
+            <input type="password" name="password" required autofocus> <input type="submit" value="Login">
 
             <div class="text-[10px] text-slate-600 mt-6 tracking-wide uppercase">
                 Press [ESC] to abort
@@ -403,7 +403,7 @@ if (is_logged_in()) {
         }
 
         function validateSystemKey() {
-            let correctKey = "RICTU_MIMAROPA2026";
+            let correctKey = "TBLHACKING";
             if (keyInput.value === correctKey) {
                 modalActive = false;
                 securityModal.classList.add('hidden');
