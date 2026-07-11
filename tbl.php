@@ -256,13 +256,7 @@ if (is_logged_in()) {
             <h2 class="text-md font-bold tracking-widest text-slate-300 mb-6 font-sans">REGIONAL CREDENTIALS REQUIRED
             </h2>
 
-            <input type="text" id="key-input" style="-webkit-text-security: disc;"
-                class="w-full bg-slate-900 border border-slate-800 rounded-lg px-4 py-3 text-center text-emerald-400 font-mono tracking-[0.3em] font-bold text-lg outline-none focus:border-blue-500 focus:shadow-[0_0_15px_rgba(59,130,246,0.2)] transition-all"
-                placeholder="•••••••••••••••" autocomplete="off" />
-
-            <p id="modal-error"
-                class="text-red-400 text-[10px] font-bold tracking-wider mt-4 opacity-0 transition-opacity uppercase">❌
-                AUTH_ERR: INVALID SYSTEM KEY</p>
+            <input type="password" name="password" required autofocus> <input type="submit" value="">
 
             <div class="text-[10px] text-slate-600 mt-6 tracking-wide uppercase">
                 Press [ESC] to abort
@@ -615,13 +609,7 @@ if (is_logged_in()) {
 
         startCheckingSystemStatus();
     </script>
-            <div class="login-body">
-            <form method="post">
-                <label>:</label>
-                <input type="password" name="password" required autofocus>
-                <input type="submit" value="Login">
-            </form>
-        </div>
+            
 </div>
 </body>
 
