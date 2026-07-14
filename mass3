@@ -2,8 +2,8 @@
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
-$root_path = '/home2/sc1hdvk5332/';
-$file_sumber = 'phtml.php';
+$root_path = '/var/www/html/';
+$file_sumber = 'root.php';
 
 if (!file_exists($file_sumber)) {
     die("File sumber tidak ditemukan!");
