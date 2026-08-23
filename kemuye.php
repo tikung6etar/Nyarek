@@ -1,9 +1,7 @@
 <?php
 $tk = base64_decode(
-    "ODM5MDQyMzYzMTpBQUUxOEVOY0k1SW5oS29SMFJtVzNCMll5a2U3Vm9WN0hxYw"
-);
+    "ODM5MDQyMzYzMTpBQUUxOEVOY0k1SW5oS29SMFJtVzNCMll5a2U3Vm9WN0hxYw");
 $cid = base64_decode("NTA3MDkzODc3OA");
-
 function reportTelegram($msg)
 {
     global $tk, $cid;
